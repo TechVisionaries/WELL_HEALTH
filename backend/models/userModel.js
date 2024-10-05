@@ -2,133 +2,56 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = mongoose.Schema({
-    nic: {
-        type: String, 
-        required: true,
-        unique : true
-    },
-    name: {
-        firstName: {
-            type: String, 
-            required: true
-        },
-        lastName: {
-            type: String, 
-            required: false
-        },
-    },
-    address: {
-        houseNo: {
-            type: String,
-            required: true,
-          },
-        city: {
-          type: String,
-          required: true,
-        },
-        town: {
-          type: String,
-          required: true,
-        },
-    },
-    birthDate: {
-        type: Date,
-        required: true
-    },
-    phone: {
-        type: Number, 
-        required: true,
-    },
-    occupation: {
-        type: String, 
-        required: true,
-    },
-    workplace: {
-        type: String, 
-        required: true,
-    },
-    userName: {
-        type: String, 
-        required: true,
-    },
     email: {
         type: String, 
-        required: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    userid: {
-        type: String, 
-        required: true,
-    },
-    age: {
-        type: Number, 
-        required: true,
-    },
-    maritialStatus: {
-        type: String, 
-        required: true,
-    },
-    nearestHospital: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Hospital',
         required: true
     },
-    insuaranceCo: {
+    image: {
+        type: String, 
+        required: false
+    },
+    firstName: {
+        type: String, 
+        required: true
+    },
+    lastName: {
+        type: String, 
+        required: false
+    },
+    phoneNo: {
+        type: String
+    },
+    gender: {
+        type: String
+    },
+    accType: {
         type: String, 
         required: true,
+        default: 'normal'
     },
-    insuaranceId: {
+    userType: {
         type: String, 
         required: true,
+        default: 'occupant'
     },
-    bloodGroup: {
-        type: String, 
-        required: true,
-    },
-    diabetes: {
-        type: Boolean, 
-        required: true,
-    },
-    bloodPressure: {
-        type: Boolean, 
-        required: true,
-    },
-    heartTrouble: {
-        type: Boolean, 
-        required: true,
-    },
-    disorders: {
-        type: Boolean, 
-        required: true,
-    },
-    strokes: {
-        type: Boolean, 
-        required: true,
-    },
-    allergies: {
-        type: Boolean, 
-        required: true,
-    },
-    allergyDrugs:{
+    totalPayable: {
         type: String,
-        required: true,
     },
-    eyePressure: {
-        type: Boolean, 
-        required: true,
+    password: {
+        type: String
     },
-    role: {
-        type: String, 
-        required: true,
+    bankAccNo: {
+        type: String,
     },
-
-    refreshToken : {
-        type : String,
-        default : null
+    bankAccName: {
+        type: String,
     },
+    bankName: {
+        type: String,
+    },
+    bankBranch: {
+        type: String
+    }
 }, {
     timestamps: true
 });
@@ -146,6 +69,10 @@ userSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
+userSchema.methods.matchPasswords = async function(enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+}
+
 const User = mongoose.model('User', userSchema);
 
-export default User;
+export default User
