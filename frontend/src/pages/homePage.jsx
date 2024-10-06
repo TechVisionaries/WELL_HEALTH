@@ -7,6 +7,7 @@ import CountUp from "react-countup";
 import homeStyles from '../styles/homePageStyles.module.css'
 import { Card, CardContent, IconButton } from '@mui/material';
 import { BsChevronDoubleDown } from 'react-icons/bs';
+import HealthCard from '../components/HealthCard';
 
 
 const HomePage = () => {
@@ -60,6 +61,7 @@ const HomePage = () => {
         <>
             <div style={{ width: '100%' }} id='top'>
                 <Header />
+                <HealthCard/>
                 <div style={{ minHeight: '100vh', height: '200vh' }}>
                     <div className={homeStyles.homeBackDiv}>
                         <img src={'images/homeBackground2.png'} width={"100%"} />
