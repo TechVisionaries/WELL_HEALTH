@@ -51,7 +51,6 @@ const router = createBrowserRouter(
 
       {/* Admin Routes */}
       <Route path='' element={ <AdminRoute /> }>
-
       
       </Route>
     </Route>
