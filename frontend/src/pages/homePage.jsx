@@ -67,7 +67,7 @@ const HomePage = () => {
                     </div>
                     <div style={{ height: '600px', width: "100%", position: 'absolute' }}>
                         <Col className={homeStyles.homeWelcText} style={{transition:'all 0.5s ease-in', ...(show? {opacity:1} : {opacity:0})}}>
-                            <h1>Discover the Perfect Boarding<br />Tailored to Your Preferences<br /><span style={{ fontFamily: 'Papyrus', display:'block', marginTop:'25px' }}>CampusBodima.LK</span></h1>
+                            <h1>Discover the Perfect Boarding<br />Tailored to Your Preferences<br /><span style={{ fontFamily: 'Papyrus', display:'block', marginTop:'25px' }}>Well Health</span></h1>
                             <Button onClick={() => navigate('/owner/boardings/add')} variant='contained' color='info' className={homeStyles.welcBtns} style={{clipPath:'polygon(95% 0%, 80% 100%, 0% 100%, 0% 0%)', padding:'15px'}}>List Boardings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button>
                             <Button onClick={() => navigate('/search')} variant='contained' color='warning' className={homeStyles.welcBtns} style={{clipPath:'polygon(100% 0%, 100% 100%, 5% 100%, 20% 0%)', marginLeft:'-45px', padding:'15px'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find Boardings</Button>
                         </Col>
