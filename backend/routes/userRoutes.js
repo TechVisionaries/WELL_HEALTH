@@ -7,7 +7,7 @@ import { protect } from '../middleware/authMiddleware.js'
 // - **GET /api/users/profile** - Get user profile
 // - **PUT /api/users/profile** - Update profile
 
-const router = express.Router();
+// const router = express.Router();
 
 router.post('/', sendRegisterMail);
 router.get('/', registerUser);
@@ -22,4 +22,4 @@ router.post('/resetPassword', resetPassword);
 router.get('/profile', protect, getUserProfile);
 router.put('/profile', protect, updateUserProfile);
 
-export default router;
+// export default router;
