@@ -25,8 +25,14 @@ import AdminRoute from './components/adminRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Loading from './components/loadingComponent.jsx';
+
 import ScheduleAppointmentPage from './pages/appointment/scheduleAppointmentPage.jsx';
 import PaymentPage from './pages/appointment/PaymentPage.jsx';
+
+import HealthCardPage from './pages/HealthCardPage.jsx';
+import PatientProfile from './pages/PatientProfile.jsx';
+import AddPrescription from './components/AddPrescription.jsx';
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,6 +45,9 @@ const router = createBrowserRouter(
       <Route path='/register/:tokenHeader/:tokenPayload/:tokenSecret' element={ <VerifyEmailPage /> } />
       <Route path='/generateotp' element={ <GenerateOtpPage /> } />
       <Route path='/resetpassword' element={ <ResetPasswordPage /> } />
+      <Route path='/health-card' element={ <HealthCardPage /> } />
+      <Route path='/patient-profile' element={ <PatientProfile /> } />
+      <Route path='/add-prescription' element={ <AddPrescription /> } />
 
       {/* Private Routes */}
       <Route path='' element={ <PrivateRoute /> }>
@@ -49,6 +58,7 @@ const router = createBrowserRouter(
 
       {/* Admin Routes */}
       <Route path='' element={ <AdminRoute /> }>
+
       
       </Route>
     </Route>
