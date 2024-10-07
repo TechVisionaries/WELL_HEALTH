@@ -1,81 +1,70 @@
 import PropTypes from 'prop-types';
 import {useMemo, useReducer, useCallback, useEffect} from 'react';
 
-
 import {MainContext} from './main-context';
 import axios, { endpoints } from '../../utils/axios';
 
 const initialState = {
   loading: false,
-  user:null,
-  health_card_state:null,
-  
+  user: null,
+  health_card_state: null,
 };
 
 const reducer = (state, action) => {
-
   if (action.type === 'INITIAL') {
     return {
-      loading: action.payload.loading, 
-      health_card_state: action.payload.health_card_state
-      
+      loading: action.payload.loading,
+      health_card_state: action.payload.health_card_state,
     };
   }
   if (action.type === 'CREATE_HEALTH_CARD') {
     return {
       ...state,
-      health_card_state: action.payload.health_card_state, 
-      
+      health_card_state: action.payload.health_card_state,
     };
-  }  
+  }
   return state;
-
 };
 
 // ----------------------------------------------------------------------
 
 export function MainContextProvider({children}) {
-
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const initialize = useCallback(async () => {
-
     dispatch({
       type: 'INITIAL',
       payload: {
-        loading:false,
-        user:null,
-        health_card_state:null
+        loading: false,
+        user: null,
+        health_card_state: null,
       },
-    },[]);
-
-  },[]);
+    });
+  }, []);
 
   useEffect(() => {
     initialize();
   }, [initialize]);
 
-
   const create_health_card = useCallback(async (newHealthCard) => {
+    try {
+      const response = await axios.post(endpoints.health_card.create, newHealthCard);
 
-    const response = await axios.post(endpoints.quatation.create, newHealthCard, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+      const { success, message, data } = response.data;
 
-    const { success, message,data } = response.data;
-    
-    dispatch({
-      type: 'CREATE_HEALTH_CARD',
-      payload: {
-        health_card_state: {
-          success,
-          message,
-          data
+      dispatch({
+        type: 'CREATE_HEALTH_CARD',
+        payload: {
+          health_card_state: {
+            success,
+            message,
+            data,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.error("Error creating health card:", error);
+    }
   }, []);
   
   // const getQuatationByUserId = useCallback(async () => {

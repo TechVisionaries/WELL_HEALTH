@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-
 // ----------------------------------------------------------------------
 
 const axiosInstance = axios.create({ baseURL: 'http://localhost:5000' });
@@ -32,13 +31,13 @@ export const endpoints = {
     me: '/api/auth/me',
     login: '/api/auth/login',
     register: '/api/auth/register',
-    refresh_token: '/api/auth/refresh_token'
+    refresh_token: '/api/auth/refresh_token',
   },
   quatation: {
     create: '/api/quatation/create',
-    get_by_user_id:'/api/quatation/get-quatation-by-user-id',
-    get_by_admin_id:'/api/quatation/get-quatation-by-admin-id',
-    get_by_staff_id:'/api/quatation/get-quatation-by-staff-id',
+    get_by_user_id: '/api/quatation/get-quatation-by-user-id',
+    get_by_admin_id: '/api/quatation/get-quatation-by-admin-id',
+    get_by_staff_id: '/api/quatation/get-quatation-by-staff-id',
     reply: '/api/quatation/reply',
   },
   document: {
@@ -53,9 +52,9 @@ export const endpoints = {
   user: {
     update_account: '/api/user/update_account',
     update_password: '/api/user/update_password',
-    get_users_for_admin: "api/user/get-all-users-to-admin",
+    get_users_for_admin: '/api/user/get-all-users-to-admin',
     update_user: '/api/user/update_user',
-    get_staff_for_admin: "api/user/get-all-staff-for-admin",
+    get_staff_for_admin: '/api/user/get-all-staff-for-admin',
   },
   mail: {
     list: '/api/mail/list',
@@ -72,5 +71,8 @@ export const endpoints = {
     list: '/api/product/list',
     details: '/api/product/details',
     search: '/api/product/search',
+  },
+  health_card: {
+    create: '/api/health_card/create',
   },
 };

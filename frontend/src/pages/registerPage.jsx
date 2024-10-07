@@ -393,7 +393,7 @@ const RegisterPage = () => {
                 <Container className={`${styles.loginContainer}`} style={{height:"90vh", display: "none"}} id="emailSentMsg">
                     <div className={`${styles.verificationMsg}`}>
                         <Link to='/' style={{textDecoration:"none", position: "absolute", top: "15px", left: "15px"}} className={styles.logo}><Image src="./logo2.png" width={150} style={{cursor: 'pointer', marginTop:'20px'}}/></Link>
-                        <h3>A Verification mail has being sent to {email}. Please verify to register to CampusBodima as an {userType}.</h3>
+                        <h3>A Verification mail has being sent to {email}. Please verify to register to Well health as an {userType}.</h3>
                     </div>
                 </Container>
                 {/*<Button onClick={getToken}>Send SMS</Button>*/}

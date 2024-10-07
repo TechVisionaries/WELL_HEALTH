@@ -6,7 +6,7 @@ import Modal from '@mui/material/Modal';
 import { FormControl, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useMainContext } from '../context/hooks';
-import Swal from 'sweetalert2' 
+import Swal from 'sweetalert2';
 
 const style = {
   position: 'absolute',
@@ -19,10 +19,9 @@ const style = {
   p: 4,
 };
 
-
 function HealthCard() {
 
-    const {user, create_health_card} = useMainContext()
+    const {user, create_health_card} = useMainContext();
 
     const [open, setOpen] = useState(!user?.is_health_card);
     const handleClose = () => setOpen(false);
@@ -32,23 +31,25 @@ function HealthCard() {
     const [contact, setContact] = useState('');
     const [nic, setNic] = useState('');
     const [emergency, setEmergency] = useState('');
-    const [inssurance, setInssurance] = useState(null)
+    const [inssurance, setInssurance] = useState(null);
 
     const [bloodGroup, setBloodGroup] = useState(null);
     const [inssuranceId, setInssuranceId] = useState('');
-    const [diabetes, setDiabetes] = useState(false)
+    const [diabetes, setDiabetes] = useState(false);
 
     const [bloodPressure, setBloodPressure] = useState(false);
     const [allergyDrugs, setAllergyDrugs] = useState('');
-    const [diseases, setDiseases] = useState(null)
+    const [diseases, setDiseases] = useState(null);
 
-    const [eyePressure, setEyePressure] = useState(false)
-    const [doctorName, setdoctorName] = useState(null)
+    const [eyePressure, setEyePressure] = useState(false);
+    const [doctorName, setdoctorName] = useState(null);
 
-    const handle_submit_health_card = (async () => {
+    const handle_submit_health_card = async () => {
         try {
+            const userId = user?._id; 
 
             const newHealthCard = {
+                userId,
                 fullName,
                 hospital,
                 contact,
@@ -63,25 +64,26 @@ function HealthCard() {
                 diseases,
                 eyePressure,
                 doctorName
-            }
+            };
 
-          console.info('DATA', newHealthCard);
-          await create_health_card?.(newHealthCard)
-          Swal.fire({
-            title: "Success",
-            text: "Health card created",
-            icon: "success"
-          });
-          
+            console.info('DATA', newHealthCard);
+            await create_health_card?.(newHealthCard);
+
+            Swal.fire({
+                title: "Success",
+                text: "Health card created",
+                icon: "success"
+            });
+
         } catch (error) {
-          console.error(error);
-          Swal.fire({
-            title: "Failed",
-            text: "Failed to create health card",
-            icon: "error"
-          });
+            console.error(error);
+            Swal.fire({
+                title: "Failed",
+                text: "Failed to create health card",
+                icon: "error"
+            });
         }
-      });
+    };
     
   
     return (
