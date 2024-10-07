@@ -25,9 +25,14 @@ import AdminRoute from './components/adminRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Loading from './components/loadingComponent.jsx';
+
+import ScheduleAppointmentPage from './pages/appointment/scheduleAppointmentPage.jsx';
+import PaymentPage from './pages/appointment/PaymentPage.jsx';
+
 import HealthCardPage from './pages/HealthCardPage.jsx';
 import PatientProfile from './pages/PatientProfile.jsx';
 import AddPrescription from './components/AddPrescription.jsx';
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -47,6 +52,8 @@ const router = createBrowserRouter(
       {/* Private Routes */}
       <Route path='' element={ <PrivateRoute /> }>
         <Route path='/profile' element={ <ProfilePage /> } />
+        <Route path= '/appointment' element={ <ScheduleAppointmentPage /> } />
+        <Route path= '/appointment/payment' element={ <PaymentPage/> } />
       </Route>
 
       {/* Admin Routes */}
