@@ -15,18 +15,17 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
         image, 
         firstName, 
         lastName, 
-        password,
         userType,
+        password,
         gender 
     } = req.body;
 
-    var userExists = await User.findOne({ email, userType });
+    var userExists = await User.findOne({ email });
 
     if(userExists){
         res.status(400);
         throw new Error('User Already Exists');
     }
-
     const user = ({
         email, 
         image, 
@@ -45,22 +44,19 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
 
     if(token){
         const message = `<p><b>Hello ${user.firstName},</b><br><br> 
-                            Welcome to CampusBodima! Start setting up your account by verifying your email address. Click this secure link:<br><br>
+                            Welcome to WellHealth! Start setting up your account by verifying your email address. Click this secure link:<br><br>
                             <a href="http://${process.env.DOMAIN}/register/${token}">Verify your email</a><br><br>
-                            Thank you for choosing CampusBodima!<br><br>
+                            Thank you for choosing WellHealth!<br><br>
                             Best wishes,<br>
-                            The CampusBodima Team</p>`
+                            The WellHealth Hospitals</p>`
         
         sendMail(email,message,"Activate Your Account");
-        res.status(201).json({ message: "Email Verification Sent!"});
+        res.status(201).json({ message: "Email Verification Sent! ", user, email, message});
     }
     else{
         res.status(400);
         throw new Error('Email not found');
     }
-
-    
-
 });
 
 // @desc    Register a new user
@@ -69,7 +65,6 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
 
     try {
-
         const {
             email, 
             image, 
@@ -79,7 +74,6 @@ const registerUser = asyncHandler(async (req, res) => {
             userType,
             gender 
         } = jwt.decode(req.query.token).user;
-
         var userExists = await User.findOne({ email, userType });
 
         if(userExists){
@@ -88,7 +82,7 @@ const registerUser = asyncHandler(async (req, res) => {
         }
     
         var user;
-        if(userType == "occupant"){
+        if(userType == "patient"){
             user = await User.create({
                 email, 
                 image, 
@@ -98,7 +92,14 @@ const registerUser = asyncHandler(async (req, res) => {
                 userType,
                 gender,
                 phoneNo: "",
-                totalPayable: '0' 
+                healthCard : false, 
+                nic : "",
+                occupation: "",
+                birthday: null,
+                age: null,
+                address: "",
+                workPlace: "",
+                martialState: ""
             });
         }
         else{
@@ -110,28 +111,20 @@ const registerUser = asyncHandler(async (req, res) => {
                 password,
                 userType,
                 gender,
-                phoneNo: "" 
+                phoneNo: "",
+                nic : "",
+                department: "",
+                occupation: "",
+                birthday: null,
+                age: null,
+                address: "",
+                workPlace: "",
+                martialState: ""
             });
         }
     
         if(user){
-            res.status(201).json({
-                _id: user._id,
-                email: user.email,  
-                image: user.image, 
-                firstName: user.firstName, 
-                lastName: user.lastName, 
-                userType: user.userType,
-                gender: user.gender,
-                accType: user.accType,
-                totalPayable: user.totalPayable,
-                bankAccNo: user.bankAccNo,
-                bankAccName: user.bankAccName,
-                bankName: user.bankName,
-                bankBranch: user.bankBranch,
-                createdAt: user.createdAt,
-                updatedAt: user.updatedAt
-            });
+            res.status(201).json({user});
         }else{
             res.status(400);
             throw new Error('Invalid User Data');
@@ -151,13 +144,13 @@ const registerUser = asyncHandler(async (req, res) => {
 // route    POST /api/users/auth
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-    const { userType, email, password } = req.body;
+    const {email, password } = req.body;
 
-    const user = await User.findOne({ email, userType });
+    const user = await User.findOne({ email});
 
     if(user && user.accType == 'google'){
-        res.status(401);
-        throw new Error('User Not Found!');
+        res.status(302, 'you already have a google account please log using sigin with google');
+        throw new Error('User Found!');
     }
     if(user && (await user.matchPasswords(password))){
 
@@ -177,14 +170,17 @@ const authUser = asyncHandler(async (req, res) => {
             phoneNo: user.phoneNo,
             gender: user.gender,
             accType: user.accType,
-            totalPayable: user.totalPayable,
-            bankAccNo: user.bankAccNo,
-            bankAccName: user.bankAccName,
-            bankName: user.bankName,
-            bankBranch: user.bankBranch,
+            nic: user.nic,
+            department: user.department,
+            occupation: user.occupation,
+            birthday: user.birthday,
+            age: user.age,
+            address: user.address,
+            workPlace: user.workPlace,
+            martialState: user.martialState,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
-        });
+});
     }else{
         res.status(401);
         throw new Error('User Not Found!');
@@ -200,7 +196,7 @@ const authUser = asyncHandler(async (req, res) => {
 const googleAuthUser = asyncHandler(async (req, res) => {
     const profile = req.body;
 
-    let user = await User.findOne({ email: profile.email, userType: profile.userType });
+    let user = await User.findOne({ email: profile.email });
 
     if(user){
         if(user.accType == 'normal'){
@@ -218,41 +214,37 @@ const googleAuthUser = asyncHandler(async (req, res) => {
             phoneNo: user.phoneNo,
             gender: user.gender,
             accType: user.accType,
-            totalPayable: user.totalPayable,
-            bankAccNo: user.bankAccNo,
-            bankAccName: user.bankAccName,
-            bankName: user.bankName,
-            bankBranch: user.bankBranch,
+            nic: user.nic,
+            department: user.department,
+            occupation: user.occupation,
+            birthday: user.birthday,
+            age: user.age,
+            address: user.address,
+            workPlace: user.workPlace,
+            martialState: user.martialState,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
         });
     }
     else{
-        if(profile.userType == 'occupant'){
             user = await User.create({
-                email: profile.email,  
+                email: profile.email, 
                 image: profile.image, 
                 firstName: profile.firstName, 
                 lastName: profile.lastName, 
-                userType: profile.userType,
-                phoneNo: profile.phoneNo,
-                gender: profile.gender,
+                userType: "patient",
+                gender: "",
+                phoneNo: null,
                 accType: 'google',
-                totalPayable: '0'
+                nic : "",
+                departmet: "",
+                occupation: "",
+                birthday: null,
+                age: null,
+                address: "",
+                workPlace: "",
+                martialState: "" 
             })
-        }
-        else{
-            user = await User.create({
-                email: profile.email,  
-                image: profile.image, 
-                firstName: profile.firstName, 
-                lastName: profile.lastName, 
-                userType: profile.userType,
-                phoneNo: profile.phoneNo,
-                gender: profile.gender,
-                accType: 'google'
-            })
-        }
         
         if(user){
             generateToken(res, user.email);
@@ -266,11 +258,14 @@ const googleAuthUser = asyncHandler(async (req, res) => {
                 phoneNo: user.phoneNo,
                 gender: user.gender,
                 accType: user.accType,
-                totalPayable: user.totalPayable,
-                bankAccNo: user.bankAccNo,
-                bankAccName: user.bankAccName,
-                bankName: user.bankName,
-                bankBranch: user.bankBranch,
+                nic: user.nic,
+                department: user.department,
+                occupation: user.occupation,
+                birthday: user.birthday,
+                age: user.age,
+                address: user.address,
+                workPlace: user.workPlace,
+                martialState: user.martialState,
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt
             });
@@ -379,105 +374,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 
-// @desc    Generate OTP
-// route    POST /api/users/generateOTP
-// @access  Public
-const generateOTP = asyncHandler(async (req, res) => {
-    const { email, userType } = req.body;
-
-    const user = await User.findOne({ email, accType:"normal", userType });
-    if(user){
-        req.app.locals.OTP = await otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
-        
-        const message = `<p>Hello ${user.firstName},<br> Your OTP is: <b>${req.app.locals.OTP}</b></p>`
-
-        sendMail(email, message,"Your OTP");
-        res.status(201).json({ message: "OTP Sent"});
-    }
-    else{
-        res.status(400);
-        throw new Error('Email not found');
-    }
-
-});
-
-
-// @desc    Verify OTP
-// route    POST /api/users/verifyOTP
-// @access  Public
-const verifyOTP = asyncHandler(async (req, res) => {
-    const { otp } = req.body;
-    if(parseInt(req.app.locals.OTP) === parseInt(otp)){
-        
-        res.status(201).json({ code: req.app.locals.OTP })
-    }
-    else{
-        req.app.locals.OTP = null;
-        res.status(400);
-        throw new Error("Invalid OTP");
-    }
-
-});
-
-
-// @desc    Generate SMS OTP
-// route    POST /api/users/sms/generateOTP
-// @access  public
-const generateSMSOTP = asyncHandler(async (req, res) => {
-    const { _id, phoneNo } = req.body;
-
-    const user = await User.findOne({ _id });
-
-    req.app.locals.SMSOTP = await otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
-    
-    const message = `Hello ${user.firstName}, Your OTP is: ${req.app.locals.SMSOTP}. Lets verify your phone number!`
-    var number = {mobile: parseInt(phoneNo)};
-    sendSMS(number, message);
-    res.status(201).json({ message: "OTP Sent"});
-
-});
-
-
-// @desc    Verify OTP
-// route    POST /api/users/sms/verifyOTP
-//@access   public
-const verifySMSOTP = asyncHandler(async (req, res) => {
-    const { _id, otp, phoneNo } = req.body;
-    if(parseInt(req.app.locals.SMSOTP) === parseInt(otp)){
-        
-        const user = await User.findOne({ _id });
-
-        user.phoneNo = phoneNo;
-
-        const updatedUser = await user.save();
-
-        res.status(201).json({ 
-            _id: updatedUser._id,
-            email: updatedUser.email, 
-            image: updatedUser.image, 
-            firstName: updatedUser.firstName, 
-            lastName: updatedUser.lastName, 
-            accType: updatedUser.accType, 
-            userType: updatedUser.userType,
-            phoneNo: updatedUser.phoneNo,
-            gender: updatedUser.gender,
-            totalPayable: updatedUser.totalPayable,
-            bankAccNo: updatedUser.bankAccNo,
-            bankAccName: updatedUser.bankAccName,
-            bankName: updatedUser.bankName,
-            bankBranch: updatedUser.bankBranch,
-            createdAt: updatedUser.createdAt,
-            updatedAt: updatedUser.updatedAt
-        })
-    }
-    else{
-        req.app.locals.SMSOTP = null;
-        res.status(400);
-        throw new Error("Invalid OTP");
-    }
-
-});
-
 
 // @desc    Reset Password
 // route    POST /api/users/resetPassword
@@ -512,9 +408,5 @@ export {
     logoutUser,
     getUserProfile,
     updateUserProfile,
-    generateOTP,
-    verifyOTP,
-    generateSMSOTP,
-    verifySMSOTP,
     resetPassword 
 };
