@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 
-const authMiddleware = asyncHandler(async (req, res, next) => {
+const protect = asyncHandler(async (req, res, next) => {
   let token;
   if (
     req.headers.authorization &&
@@ -74,4 +74,4 @@ const isAdmin = asyncHandler(async (req, res, next) => {
 });
 
 //expotation
-export { authMiddleware, isAdmin, isManager, isDoctor, isPatient};
+export { protect, isAdmin, isManager, isDoctor, isPatient};
