@@ -412,6 +412,149 @@ const resetPassword = asyncHandler(async (req, res) => {
 
 
 
+// @desc    Get All User Details
+// route    get /api/users/all-users
+// @access  admin
+const getAllUsers = asyncHandler(async (req, res) => {
+    await User.find()
+        .then((users) => {
+            res.status(200).json(users);
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(500).send({ status: "Error with getting data" });
+        });
+});
+
+
+
+// @desc    Remove user profile
+// route    delete /api/users/:id
+// @access  admin
+const deleteUser = asyncHandler(async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send({ status: "User not found" });
+        }
+
+        await User.findByIdAndDelete(userId)
+
+        res.status(200).send({ status: "User removed" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ status: "Error with deleting data" });
+    }
+});
+
+
+
+
+// @desc    Generate OTP
+// route    POST /api/users/generateOTP
+// @access  Public
+const generateOTP = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email, accType:"normal" });
+        if(user){
+            req.app.locals.OTP = await otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
+        
+            const message = `<p>Hello ${user.firstName},<br> Your OTP is: <b>${req.app.locals.OTP}</b></p>`
+
+            sendMail(email, message,"Your OTP");
+            res.status(201).json({ message: "OTP Sent"});
+        }
+        else{
+            res.status(400);
+            throw new Error('Email not found');
+        }
+
+});
+
+
+// @desc    Verify OTP
+// route    POST /api/users/verifyOTP
+// @access  Public
+const verifyOTP = asyncHandler(async (req, res) => {
+    const { otp } = req.body;
+        if(parseInt(req.app.locals.OTP) === parseInt(otp)){
+        
+        res.status(201).json({ code: req.app.locals.OTP })
+        }
+        else{
+            req.app.locals.OTP = null;
+            res.status(400);
+            throw new Error("Invalid OTP");
+        }
+
+    });
+
+
+// @desc    Generate SMS OTP
+// route    POST /api/users/sms/generateOTP
+// @access  public
+const generateSMSOTP = asyncHandler(async (req, res) => {
+    const { _id, phoneNo } = req.body;
+
+    const user = await User.findOne({ _id });
+
+    req.app.locals.SMSOTP = await otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
+    
+    const message = `Hello ${user.firstName}, Your OTP is: ${req.app.locals.SMSOTP}. Lets verify your phone number!`
+    var number = {mobile: parseInt(phoneNo)};
+    sendSMS(number, message);
+    res.status(201).json({ message: "OTP Sent"});
+
+});
+
+
+// @desc    Verify OTP
+// route    POST /api/users/sms/verifyOTP
+//@access   public
+const verifySMSOTP = asyncHandler(async (req, res) => {
+    const { _id, otp, phoneNo } = req.body;
+    if(parseInt(req.app.locals.SMSOTP) === parseInt(otp)){
+        
+       const user = await User.findOne({ _id });
+
+       user.phoneNo = phoneNo;
+
+       const updatedUser = await user.save();
+
+       res.status(201).json({ 
+        _id: updatedUser._id,
+        email: updatedUser.email, 
+        image: updatedUser.image, 
+        firstName: updatedUser.firstName, 
+        lastName: updatedUser.lastName, 
+        accType: updatedUser.accType, 
+        password: updatedUser.password, 
+        userType: updatedUser.userType,
+        phoneNo: updatedUser.phoneNo,
+        gender: updatedUser.gender,
+        healthCard: updatedUser.healthCard,
+        nic: updatedUser.nic,
+        department: updatedUser.department,
+        occupation: updatedUser.occupation,
+        birthday: updatedUser.birthday,
+        age: updatedUser.age,
+        address: updatedUser.address,
+        workPlace: updatedUser.workPlace,
+        martialState: updatedUser.martialState,
+        createdAt: updatedUser.createdAt,
+        updatedAt: updatedUser.updatedAt
+       })
+   }
+   else{
+       req.app.locals.SMSOTP = null;
+       res.status(400);
+       throw new Error("Invalid OTP");
+   }
+
+});
+
 export { 
     authUser,
     googleAuthUser,
@@ -420,5 +563,11 @@ export {
     logoutUser,
     getUserProfile,
     updateUserProfile,
-    resetPassword 
+    resetPassword,
+    getAllUsers,
+    deleteUser,
+    generateOTP,
+    verifyOTP,
+    generateSMSOTP,
+    verifySMSOTP
 };
