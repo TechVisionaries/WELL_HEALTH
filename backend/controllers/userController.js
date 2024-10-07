@@ -159,7 +159,7 @@ const authUser = asyncHandler(async (req, res) => {
             throw new Error('Invalid Credentials');
         }
 
-        generateToken(res, user.email);
+        generateToken(res, user._id);
         res.status(200).json({
             _id: user._id,
             email: user.email,  
@@ -168,6 +168,7 @@ const authUser = asyncHandler(async (req, res) => {
             lastName: user.lastName, 
             userType: user.userType,
             phoneNo: user.phoneNo,
+            healthCard: user.healthCard,
             gender: user.gender,
             accType: user.accType,
             nic: user.nic,
@@ -212,6 +213,7 @@ const googleAuthUser = asyncHandler(async (req, res) => {
             lastName: user.lastName, 
             userType: user.userType,
             phoneNo: user.phoneNo,
+            healthCard: user.healthCard,
             gender: user.gender,
             accType: user.accType,
             nic: user.nic,
@@ -256,6 +258,7 @@ const googleAuthUser = asyncHandler(async (req, res) => {
                 lastName: user.lastName, 
                 userType: user.userType,
                 phoneNo: user.phoneNo,
+                healthCard: user.healthCard,
                 gender: user.gender,
                 accType: user.accType,
                 nic: user.nic,
@@ -307,14 +310,19 @@ const getUserProfile = asyncHandler(async (req, res) => {
         userType: req.user.userType,
         phoneNo: req.user.phoneNo,
         gender: req.user.gender,
-        totalPayable: req.user.totalPayable,
-        bankAccNo: req.user.bankAccNo,
-        bankAccName: req.user.bankAccName,
-        bankName: req.user.bankName,
-        bankBranch: req.user.bankBranch,
+        healthCard: req.user.healthCard,
+        nic: req.user.nic,
+        department: req.user.department,
+        occupation: req.user.occupation,
+        birthday: req.user.birthday,
+        age: req.user.age,
+        address: req.user.address,
+        workPlace: req.user.workPlace,
+        martialState: req.user.martialState,
         createdAt: req.user.createdAt,
         updatedAt: req.user.updatedAt
-    };  
+    };
+    console.log(user);
     res.status(200).json(user);
 });
 
@@ -323,7 +331,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // route    PUT /api/users/profile
 // @access  Private
 const updateUserProfile = asyncHandler(async (req, res) => {
-    const user = await User.findOne({ email: req.body.email, userType: req.body.userType});
+    const user = await User.findOne({ email: req.body.email });
 
     if(user){
         user.image = req.body.image;
@@ -331,16 +339,18 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         user.lastName = req.body.lastName || user.lastName;
         user.phoneNo = req.body.phoneNo || user.phoneNo;
         user.gender = req.body.gender || user.gender;
-        
-        if(user.userType == 'occupant'){
-            user.totalPayable = req.body.totalPayable || user.totalPayable;
-        }
-        
-        if(user.userType == 'owner'){
-            user.bankAccNo = req.body.bankAccNo || user.bankAccNo;
-            user.bankAccName = req.body.bankAccName || user.bankAccName;
-            user.bankName = req.body.bankName || user.bankName;
-            user.bankBranch = req.body.bankBranch || user.bankBranch;
+        user.nic = req.body.nic || user.nic;
+        user.occupation = req.body.occupation || user.occupation;
+        user.birthday = req.body.birthday || user.birthday;
+        user.age = req.body.age || user.age;
+        user.address = req.body.address || user.address;
+        user.workPlace = req.body.workPlace || user.workPlace;
+        user.martialState = req.body.martialState || user.martialState;
+
+        if(user.userType == 'patient'){
+            user.healthCard = req.body.healthCard || user.healthCard;
+        }else{
+            user.department = req.body.department || user.department;
         }
 
         if(req.body.password && req.body.accType == 'normal'){
@@ -350,22 +360,27 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         const updatedUser = await user.save();
 
         res.status(200).json({
-            _id: updatedUser._id,
-            email: updatedUser.email, 
-            image: updatedUser.image, 
-            firstName: updatedUser.firstName, 
-            lastName: updatedUser.lastName, 
-            accType: updatedUser.accType, 
-            userType: updatedUser.userType,
-            phoneNo: updatedUser.phoneNo,
-            gender: updatedUser.gender,
-            totalPayable: updatedUser.totalPayable,
-            bankAccNo: updatedUser.bankAccNo,
-            bankAccName: updatedUser.bankAccName,
-            bankName: updatedUser.bankName,
-            bankBranch: updatedUser.bankBranch,
-            createdAt: updatedUser.createdAt,
-            updatedAt: updatedUser.updatedAt
+            _id: req.user._id,
+            email: req.user.email, 
+            image: req.user.image, 
+            firstName: req.user.firstName, 
+            lastName: req.user.lastName, 
+            accType: req.user.accType, 
+            password: req.user.password, 
+            userType: req.user.userType,
+            phoneNo: req.user.phoneNo,
+            gender: req.user.gender,
+            healthCard: req.user.healthCard,
+            nic: req.user.nic,
+            department: req.user.department,
+            occupation: req.user.occupation,
+            birthday: req.user.birthday,
+            age: req.user.age,
+            address: req.user.address,
+            workPlace: req.user.workPlace,
+            martialState: req.user.martialState,
+            createdAt: req.user.createdAt,
+            updatedAt: req.user.updatedAt
         });
     }else{
         res.status(404);
@@ -379,9 +394,9 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // route    POST /api/users/resetPassword
 // @access  Public
 const resetPassword = asyncHandler(async (req, res) => {
-    const { email, userType, newPassword } = req.body;
+    const { email, newPassword } = req.body;
 
-    const user = await User.findOne({ email: email, userType: userType });
+    const user = await User.findOne({ email: email });
 
     if(user){
         user.password = newPassword;
@@ -393,9 +408,6 @@ const resetPassword = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Opps...Something went wrong!');
     }
-
-    
-
 });
 
 
