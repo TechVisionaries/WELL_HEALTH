@@ -48,7 +48,10 @@ function HealthCard() {
     const handle_submit_health_card = (async () => {
         try {
 
+            const userId = user?._id
+
             const newHealthCard = {
+                userId,
                 fullName,
                 hospital,
                 contact,
