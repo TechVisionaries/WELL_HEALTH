@@ -14,7 +14,7 @@ export const sendMail = (email, text, subject) => {
     });
     
     let mailDetails = {
-    from: 'info.campusbodima@gmail.com',
+    from: 'visionariestech4@gmail.com',
     to: email,
     subject: subject,
     html: text
