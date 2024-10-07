@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "../../styles/scheduleAppointmentPage.css";
+import "../../styles/scheduleAppointment.css";
 import { Modal, Button } from "react-bootstrap"; // Importing Modal and Button from react-bootstrap
 
-const ScheduleAppointmentPage = () => {
+const ScheduleAppointment = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,6 +16,7 @@ const ScheduleAppointmentPage = () => {
     appointmentDate: null,
     appointmentTime: "",
     comments: "",
+    serviceType: "", // Add serviceType to state
   });
 
   const navigate = useNavigate();
@@ -23,9 +24,20 @@ const ScheduleAppointmentPage = () => {
   const [showSummary, setShowSummary] = useState(false); // For handling dialog display
 
   const sectors = ["Public", "Private"];
-  const hospitals = ["City Hospital", "Greenwood Clinic", "Downtown Medical Center"];
+  const hospitals = [
+    "City Hospital",
+    "Greenwood Clinic",
+    "Downtown Medical Center",
+  ];
   const specializations = ["Cardiology", "Dermatology", "Pediatrics"];
   
+  // Add service types options
+  const serviceTypes = [
+    "General Checkup",
+    "Surgery",
+    "Consultation",
+  ];
+
   // Consultants categorized by specialization
   const consultantsBySpecialization = {
     Cardiology: ["Dr. Smith", "Dr. Adams", "Dr. Patel"],
@@ -33,7 +45,13 @@ const ScheduleAppointmentPage = () => {
     Pediatrics: ["Dr. Brown", "Dr. Johnson", "Dr. Martinez"],
   };
 
-  const appointmentTimes = ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM"];
+  const appointmentTimes = [
+    "09:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "02:00 PM",
+    "03:00 PM",
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,8 +77,9 @@ const ScheduleAppointmentPage = () => {
       consultant: formData.consultant,
       appointmentDate: formData.appointmentDate,
       appointmentTime: formData.appointmentTime,
+      serviceType: formData.serviceType, // Include serviceType in appointment details
     };
-  
+
     setShowSummary(false);
     navigate("/appointment/payment", { state: { appointmentDetails } });
   };
@@ -182,18 +201,24 @@ const ScheduleAppointmentPage = () => {
               required
             >
               <option value="">Choose a consultant...</option>
-              {consultantsBySpecialization[formData.specialization]?.map((consultant, index) => (
-                <option key={index} value={consultant}>
-                  {consultant}
-                </option>
-              ))}
+              {consultantsBySpecialization[formData.specialization]?.map(
+                (consultant, index) => (
+                  <option key={index} value={consultant}>
+                    {consultant}
+                  </option>
+                )
+              )}
             </select>
           </div>
         )}
 
         {/* Appointment Date */}
         <div className="mb-3">
-          <label htmlFor="appointmentDate" className="form-label" style={{ marginRight: "10px" }}>
+          <label
+            htmlFor="appointmentDate"
+            className="form-label"
+            style={{ marginRight: "10px" }}
+          >
             Appointment Date
           </label>
           <DatePicker
@@ -228,19 +253,28 @@ const ScheduleAppointmentPage = () => {
           </select>
         </div>
 
-        {/* Comments */}
+        {/* Service Type Dropdown */}
         <div className="mb-3">
-          <label htmlFor="comments" className="form-label">
-            Comments
+          <label htmlFor="serviceType" className="form-label">
+            Select Service Type
           </label>
-          <textarea
-            className="form-control"
-            id="comments"
-            name="comments"
-            value={formData.comments}
+          <select
+            className="form-select"
+            id="serviceType"
+            name="serviceType"
+            value={formData.serviceType}
             onChange={handleChange}
-          />
+            required
+          >
+            <option value="">Choose a service type...</option>
+            {serviceTypes.map((service, index) => (
+              <option key={index} value={service}>
+                {service}
+              </option>
+            ))}
+          </select>
         </div>
+
 
         <button type="submit" className="btn btn-primary">
           Proceed
@@ -253,26 +287,50 @@ const ScheduleAppointmentPage = () => {
           <Modal.Title>Appointment Summary</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="appointment-summary">
-            <p><strong>Patient Name:</strong> {formData.name}</p>
-            <p><strong>Email:</strong> {formData.email}</p>
-            <p><strong>Sector:</strong> {formData.sector}</p>
-            <p><strong>Hospital:</strong> {formData.hospital}</p>
-            <p><strong>Specialization:</strong> {formData.specialization}</p>
-            <p><strong>Consultant:</strong> {formData.consultant}</p>
-            <p><strong>Date:</strong> {formData.appointmentDate ? formData.appointmentDate.toLocaleDateString() : ''}</p>
-            <p><strong>Time:</strong> {formData.appointmentTime}</p>
+          <div className="appointment-summary p-4">
+            <ul className="list-group">
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Name:</strong> {formData.name}
+              </li>
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Email:</strong> {formData.email}
+              </li>
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Hospital:</strong> {formData.hospital}
+              </li>
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Specialization:</strong> {formData.specialization}
+              </li>
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Consultant:</strong> {formData.consultant}
+              </li>
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Appointment Date:</strong>{" "}
+                {formData.appointmentDate?.toLocaleDateString()}
+              </li>
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Appointment Time:</strong> {formData.appointmentTime}
+              </li>
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Service Type:</strong> {formData.serviceType}
+              </li>
+            </ul>
             {formData.comments && (
-              <p><strong>Comments:</strong> {formData.comments}</p>
+              <div className="mt-3">
+                <strong>Comments:</strong>
+                <p>{formData.comments}</p>
+              </div>
             )}
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleProceedToPayment}>Proceed to Payment</Button>
+          <Button variant="primary" onClick={handleProceedToPayment}>
+            Proceed to Payment
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>
   );
 };
 
-export default ScheduleAppointmentPage;
+export default ScheduleAppointment;
