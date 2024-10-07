@@ -164,6 +164,14 @@ const Header = () => {
                             >
                                 Contact Us
                             </Button>
+                            <Button
+                                onClick={() => {navigate('/appointment');scrollToElement('contactUs')}}
+                                sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
+                                className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
+                            >
+                                Appointment
+                            </Button>
+                            
                     </Box>
                     {userInfo ? 
                     <Box sx={{ flexGrow: 0 }}>
