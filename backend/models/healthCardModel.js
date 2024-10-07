@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-import bcrypt from 'bcryptjs';
+import mongoose from "mongoose";
 
 
 const healthCardSchema = new mongoose.Schema({
@@ -71,4 +70,4 @@ const healthCardSchema = new mongoose.Schema({
 
 const HealthCard = mongoose.model('HealthCard', healthCardSchema);
 
-module.exports = HealthCard;
+export default HealthCard;

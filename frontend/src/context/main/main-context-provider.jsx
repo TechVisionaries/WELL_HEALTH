@@ -58,11 +58,7 @@ export function MainContextProvider({children}) {
 
   const create_health_card = useCallback(async (newHealthCard) => {
 
-    const response = await axios.post(endpoints.quatation.create, newHealthCard, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await axios.post(endpoints.health_card.create, newHealthCard);
 
     const { success, message,data } = response.data;
     
