@@ -1,4 +1,4 @@
-import Header from '../components/header';
+import ManagerHeader from '../components/managerHeader';
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Toast } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
@@ -13,9 +13,9 @@ import HealthCard from '../components/HealthCard';
 const ManagerHomePage = () => {
 
     const [show, setShow] = useState(false);
-    const [hopitalcount, setHospitalCount] = useState(0);
+    const [staffcount, setStaffCount] = useState(0);
     const [doctorcount, setDoctorCount] = useState(0);
-    const [userCount, setUserCount] = useState(0);
+    const [traineeCount, setTraineeCount] = useState(0);
 
     const navigate = useNavigate();
 
@@ -36,13 +36,13 @@ const ManagerHomePage = () => {
             if (document.getElementById("main").scrollTop > 500) {
                 setShow(false);
                 setDoctorCount(0)
-                setHospitalCount(0)
-                setUserCount(0)
+                setStaffCount(0)
+                setTraineeCount(0)
             } else {
                 setShow(true);
                 setDoctorCount(347)
-                setHospitalCount(26)
-                setUserCount(1987)
+                setStaffCount(812)
+                setTraineeCount(987)
             }
         }, 10);
     };
@@ -52,43 +52,41 @@ const ManagerHomePage = () => {
         setTimeout(() => {
             setShow(true)
             setDoctorCount(347)
-            setHospitalCount(26)
-            setUserCount(1987)
+            setStaffCount(812)
+            setTraineeCount(987)
         }, 1);
     }, []);
 
     return (
         <>
             <div style={{ width: '100%' }} id='top'>
-                <Header />
+                <ManagerHeader />
                 <HealthCard/>
                 <div style={{ minHeight: '100vh', height: '200vh' }}>
                     <div className={homeStyles.homeBackDiv}>
                         <img src={'images/homeBackground2.png'} width={"100%"} />
-                        <img src={'images/hospital_staff_bg.png'} width={"50%"} style={{position: 'absolute', right: 0, top: '110px'}} />
+                        <img src={'images/manager_home_bg.png'} width={"50%"} style={{position: 'absolute', right: 0, top: '10px'}} />
                     </div>
                     <div style={{ height: '600px', width: "100%", position: 'absolute' }}>
                     <Col className={homeStyles.homeWelcText} style={{transition:'all 0.5s ease-in', ...(show? {opacity:1} : {opacity:0})}}>
                     <center>
-                            <h2>A safe and secure place to keep<br />your key health information, available to you<br />and your healthcare providers anytime,<br />including in an emergency<br /><span style={{ fontFamily: 'Papyrus', display:'block', marginTop:'25px', color:"#f5427e" }}>WellHealth.LK.Manager</span></h2>
-                            <Button onClick={() => navigate('/login')} variant='contained' color='info' className={homeStyles.welcBtns} style={{clipPath:'polygon(95% 0%, 80% 100%, 0% 100%, 0% 0%)', padding:'15px'}}>&nbsp;&nbsp;&nbsp;&nbsp;LOGIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button>
-                            <Button onClick={() => navigate('/register')} variant='contained' color='warning' className={homeStyles.welcBtns} style={{clipPath:'polygon(100% 0%, 100% 100%, 5% 100%, 20% 0%)', marginLeft:'-45px', padding:'15px'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REGISTER</Button>
+                            <h2><span style={{ fontFamily: 'Papyrus', display:'block', marginTop:'25px', color:"#f5427e" }}>...Welcome Back Manager...</span>A safe and secure place to keep and<br />Manage Appoinments and medical data<br />  available to you and <br />your system users anytime,<br />including in an emergency<br /></h2>
                     </center>
                     </Col>
                         <Card style={{position:'absolute', top: '450px', marginLeft:'7.5%', width:'500px', background:'#e3f2ff'}}>
                             <CardContent style={{display:'flex', padding:'16px'}}>
                                 <Row style={{width:'100%'}}>
-                                    <Col style={{textAlign:'center'}}>
-                                        <h1><CountUp duration={1} className="counter" end={hopitalcount} /></h1>
-                                        Hopitals
-                                    </Col>
-                                    <Col style={{textAlign:'center'}}>
+                                <Col style={{textAlign:'center'}}>
                                         <h1><CountUp duration={1} className="counter" end={doctorcount} /></h1>
                                         Doctors
                                     </Col>
                                     <Col style={{textAlign:'center'}}>
-                                        <h1><CountUp duration={1} className="counter" end={userCount} /></h1>
-                                        Users
+                                        <h1><CountUp duration={1} className="counter" end={staffcount} /></h1>
+                                        Staff
+                                    </Col>
+                                    <Col style={{textAlign:'center'}}>
+                                        <h1><CountUp duration={1} className="counter" end={traineeCount} /></h1>
+                                        Trainee
                                     </Col>
                                 </Row>
                             </CardContent>

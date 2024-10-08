@@ -16,7 +16,7 @@ import headerStyles from "../styles/headerStyles.module.css";
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-const DoctorHeader = () => {
+const ManagerHeader = () => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [isSticky, setIsSticky] = useState(false);
@@ -162,21 +162,21 @@ const DoctorHeader = () => {
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
-                                Patient Profile
+                                Appoinments
                             </Button>
                             <Button
                                 onClick={() => {navigate('/doctor-home');scrollToElement('contactUs')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
-                                Chanelling
+                                Manage Staff
                             </Button>
                             <Button
                                 onClick={() => {navigate('/appointment');scrollToElement('contactUs')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
-                                Schedules
+                                Analytics
                             </Button>
                             
                     </Box>
@@ -233,4 +233,4 @@ const DoctorHeader = () => {
     );
 };
 
-export default DoctorHeader;
+export default ManagerHeader;
