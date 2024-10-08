@@ -6,8 +6,10 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import cookieParser from 'cookie-parser';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-import healthCardRoutes from './routes/healthCardRoutes.js';
-// import userRoutes from './routes/userRoutes.js'; 
+
+import userRoutes from './routes/userRoutes.js';  
+import paymentRoute from './routes/paymentRoute.js';  
+import healthCardRoutes from './routes/healthCardRoutes.js';  
 
 dotenv.config();
 
@@ -21,7 +23,9 @@ app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-// app.use('/api/users', userRoutes);
+// Use routes as needed
+app.use('/api/users', userRoutes);
+app.use('/api/payment', paymentRoute);
 app.use('/api/health_card', healthCardRoutes);
 
 if (process.env.NODE_ENV === 'production') {

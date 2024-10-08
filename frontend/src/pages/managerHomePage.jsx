@@ -10,11 +10,11 @@ import { BsChevronDoubleDown } from 'react-icons/bs';
 import HealthCard from '../components/HealthCard';
 
 
-const HomePage = () => {
+const ManagerHomePage = () => {
 
     const [show, setShow] = useState(false);
-    const [hostelCount, setHostelCount] = useState(0);
-    const [annexCount, setAnnexCount] = useState(0);
+    const [hopitalcount, setHospitalCount] = useState(0);
+    const [doctorcount, setDoctorCount] = useState(0);
     const [userCount, setUserCount] = useState(0);
 
     const navigate = useNavigate();
@@ -35,13 +35,13 @@ const HomePage = () => {
         timeout = setTimeout(() => {
             if (document.getElementById("main").scrollTop > 500) {
                 setShow(false);
-                setAnnexCount(0)
-                setHostelCount(0)
+                setDoctorCount(0)
+                setHospitalCount(0)
                 setUserCount(0)
             } else {
                 setShow(true);
-                setAnnexCount(538)
-                setHostelCount(329)
+                setDoctorCount(347)
+                setHospitalCount(26)
                 setUserCount(1987)
             }
         }, 10);
@@ -51,8 +51,8 @@ const HomePage = () => {
         document.getElementById("main").addEventListener("scroll", handleScroll);
         setTimeout(() => {
             setShow(true)
-            setAnnexCount(538)
-            setHostelCount(329)
+            setDoctorCount(347)
+            setHospitalCount(26)
             setUserCount(1987)
         }, 1);
     }, []);
@@ -65,24 +65,26 @@ const HomePage = () => {
                 <div style={{ minHeight: '100vh', height: '200vh' }}>
                     <div className={homeStyles.homeBackDiv}>
                         <img src={'images/homeBackground2.png'} width={"100%"} />
-                        <img src={'images/hostel.png'} width={"50%"} style={{position: 'absolute', right: 0, top: '110px'}} />
+                        <img src={'images/hospital_staff_bg.png'} width={"50%"} style={{position: 'absolute', right: 0, top: '110px'}} />
                     </div>
                     <div style={{ height: '600px', width: "100%", position: 'absolute' }}>
-                        <Col className={homeStyles.homeWelcText} style={{transition:'all 0.5s ease-in', ...(show? {opacity:1} : {opacity:0})}}>
-                            <h1>Discover the Perfect Boarding<br />Tailored to Your Preferences<br /><span style={{ fontFamily: 'Papyrus', display:'block', marginTop:'25px' }}>CampusBodima.LK</span></h1>
-                            <Button onClick={() => navigate('/owner/boardings/add')} variant='contained' color='info' className={homeStyles.welcBtns} style={{clipPath:'polygon(95% 0%, 80% 100%, 0% 100%, 0% 0%)', padding:'15px'}}>List Boardings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button>
-                            <Button onClick={() => navigate('/search')} variant='contained' color='warning' className={homeStyles.welcBtns} style={{clipPath:'polygon(100% 0%, 100% 100%, 5% 100%, 20% 0%)', marginLeft:'-45px', padding:'15px'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find Boardings</Button>
-                        </Col>
-                        <Card style={{position:'absolute', top: '450px', marginLeft:'5%', width:'500px', background:'#e3f2ff'}}>
+                    <Col className={homeStyles.homeWelcText} style={{transition:'all 0.5s ease-in', ...(show? {opacity:1} : {opacity:0})}}>
+                    <center>
+                            <h2>A safe and secure place to keep<br />your key health information, available to you<br />and your healthcare providers anytime,<br />including in an emergency<br /><span style={{ fontFamily: 'Papyrus', display:'block', marginTop:'25px', color:"#f5427e" }}>WellHealth.LK.Manager</span></h2>
+                            <Button onClick={() => navigate('/login')} variant='contained' color='info' className={homeStyles.welcBtns} style={{clipPath:'polygon(95% 0%, 80% 100%, 0% 100%, 0% 0%)', padding:'15px'}}>&nbsp;&nbsp;&nbsp;&nbsp;LOGIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button>
+                            <Button onClick={() => navigate('/register')} variant='contained' color='warning' className={homeStyles.welcBtns} style={{clipPath:'polygon(100% 0%, 100% 100%, 5% 100%, 20% 0%)', marginLeft:'-45px', padding:'15px'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REGISTER</Button>
+                    </center>
+                    </Col>
+                        <Card style={{position:'absolute', top: '450px', marginLeft:'7.5%', width:'500px', background:'#e3f2ff'}}>
                             <CardContent style={{display:'flex', padding:'16px'}}>
                                 <Row style={{width:'100%'}}>
                                     <Col style={{textAlign:'center'}}>
-                                        <h1><CountUp duration={1} className="counter" end={hostelCount} /></h1>
-                                        Hostels
+                                        <h1><CountUp duration={1} className="counter" end={hopitalcount} /></h1>
+                                        Hopitals
                                     </Col>
                                     <Col style={{textAlign:'center'}}>
-                                        <h1><CountUp duration={1} className="counter" end={annexCount} /></h1>
-                                        Annexes
+                                        <h1><CountUp duration={1} className="counter" end={doctorcount} /></h1>
+                                        Doctors
                                     </Col>
                                     <Col style={{textAlign:'center'}}>
                                         <h1><CountUp duration={1} className="counter" end={userCount} /></h1>
@@ -111,28 +113,26 @@ const HomePage = () => {
                                     </div>
                                 </Col>
                                 <Col>
-                                    <Link to={'/owner/boardings/add'} style={{textDecoration:'none'}}>
                                         <div className={homeStyles.doDivs}>
                                             <div className={homeStyles.doDivsimgDiv}>
-                                                <img src={'images/postAds.webp'} width={'100%'} height={'150px'} style={{objectFit:'cover'}} />
+                                                <img src={'images/digitlHealthCard.jpg'} width={'100%'} height={'150px'} style={{objectFit:'cover'}} />
                                             </div>
                                             <div>
-                                                <p className={homeStyles.doDivP}>Post boardings</p>
-                                                <p style={{textAlign:'left', lineHeight:'28px', color:'black'}}>Effortlessly connect with prospective tenants by posting your available boarding spaces on our platform. We simplify the process, making it convenient for both landlords and tenants to find the perfect match. List your space, showcase its unique features, and welcome new occupants hassle-free.</p>
+                                                <p className={homeStyles.doDivP}>Digital Health Card</p>
+                                                <p style={{textAlign:'left', lineHeight:'28px', color:'black'}}>A Digital Health Card stores a person's medical records, insurance details, and health history. It enables easy access to healthcare services, secure sharing of health data with medical providers, and streamlines processes like appointments.</p>
                                             </div>
                                         </div>
-                                    </Link>
                                 </Col>
 
                                 <Col>
                                     <Link to={'/search'} style={{textDecoration:'none'}}>
                                         <div className={homeStyles.doDivs}>
                                             <div className={homeStyles.doDivsimgDiv}>
-                                                <img src={'images/search.jpg'} width={'100%'} height={'150px'} style={{objectFit:'cover'}} />
+                                                <img src={'images/onlineAppoinments.jpg'} width={'100%'} height={'150px'} style={{objectFit:'cover'}} />
                                             </div>
                                             <div>
-                                                <p className={homeStyles.doDivP}>Find boardings</p>
-                                                <p style={{textAlign:'left', lineHeight:'28px', color:'black'}}>Discover comfortable and serene boarding options, designed to feel like your second home. Experience tranquility and convenience, all in one place. Your peaceful sanctuary awaits, making your boarding search effortless and your stay truly comforting.</p>
+                                                <p className={homeStyles.doDivP}>Onine Appoinment Scheduling</p>
+                                                <p style={{textAlign:'left', lineHeight:'28px', color:'black'}}>Online doctor appointment service allow patients to schedule, reschedule, or cancel medical appointments with Well Health providers. It provides convenience, reduces waiting times, and offers features like video consultations, reminders, and secure patient data management.</p>
                                             </div>
                                         </div>
                                     </Link>
@@ -142,11 +142,11 @@ const HomePage = () => {
                                     <Link to={'/owner/boardings'} style={{textDecoration:'none'}}>
                                         <div className={homeStyles.doDivs}>
                                             <div className={homeStyles.doDivsimgDiv}>
-                                                <img src={'images/manage.png'} width={'100%'} height={'150px'} style={{objectFit:'cover'}} />
+                                                <img src={'images/digitalHealthResords.jpg'} width={'100%'} height={'150px'} style={{objectFit:'cover'}} />
                                             </div>
                                             <div>
-                                                <p className={homeStyles.doDivP}>Manage Boarding</p>
-                                                <p style={{textAlign:'left', lineHeight:'28px', color:'black'}}>Effortlessly oversee your boarding arrangements with our seamless system functionalities. Managing your accommodations has never been easier – our intuitive features ensure a smooth experience.</p>
+                                                <p className={homeStyles.doDivP}>Digital Health Records</p>
+                                                <p style={{textAlign:'left', lineHeight:'28px', color:'black'}}>A Digital Health Record as a service allows users to securely store, manage, and access their medical history and health data online. It facilitates easy sharing of records with healthcare providers, tracks medical appointments, and supports integration with other health services for better care management.</p>
                                             </div>
                                         </div>
                                     </Link>
@@ -161,4 +161,4 @@ const HomePage = () => {
     );
 }
 
-export default HomePage;
+export default ManagerHomePage;

@@ -10,7 +10,10 @@ import { Provider } from 'react-redux';
 import App from './App.jsx';
 
 
-import HomePage from './pages/homePage.jsx';
+import PatientHomePage from './pages/patientHomePage.jsx';
+import DoctorHomePage from './pages/doctorHomePage.jsx';
+import AdminHomePage from './pages/adminHomePage.jsx'
+import ManagerHomePage from './pages/managerHomePage.jsx';
 
 import LoginPage from './pages/loginPage.jsx';
 import RegisterPage from './pages/registerPage.jsx';
@@ -25,16 +28,26 @@ import AdminRoute from './components/adminRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Loading from './components/loadingComponent.jsx';
+
+import PaymentPage from './pages/appointment/PaymentPage.jsx';
+
 import HealthCardPage from './pages/HealthCardPage.jsx';
 import PatientProfile from './pages/PatientProfile.jsx';
 import AddPrescription from './components/AddPrescription.jsx';
+import AppointmentDashboard from './pages/appointment/appointmentDashboard.jsx';
+import PaymentSuccess from './pages/appointment/paymentSuccess.jsx';
+import PaymentFailure from './pages/appointment/paymentFailure.jsx';
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={ <App /> }>
       
       {/* Public Routes */}
-      <Route index={ true } path='/' element={ <HomePage /> } />
+      <Route index={ true } path='/' element={ <PatientHomePage /> } />
+      <Route index={ true } path='/doctor-home' element={ <DoctorHomePage /> } />
+      <Route index={ true } path='/admin-home' element={<AdminHomePage />} /> 
+      <Route index={ true } path='/manager-home' element={<ManagerHomePage />} /> 
       <Route path='/login' element={ <LoginPage /> } />
       <Route path='/register' element={ <RegisterPage /> } />
       <Route path='/register/:tokenHeader/:tokenPayload/:tokenSecret' element={ <VerifyEmailPage /> } />
@@ -47,6 +60,11 @@ const router = createBrowserRouter(
       {/* Private Routes */}
       <Route path='' element={ <PrivateRoute /> }>
         <Route path='/profile' element={ <ProfilePage /> } />
+        <Route path= '/appointment' element={ <AppointmentDashboard/>} />
+        <Route path= '/appointment/payment' element={ <PaymentPage/> } />
+        <Route path= '/appointment/payment/success' element={ <PaymentSuccess/> } />
+        <Route path= '/appointment/payment/cancel' element={ <PaymentFailure/> } />
+
       </Route>
 
       {/* Admin Routes */}

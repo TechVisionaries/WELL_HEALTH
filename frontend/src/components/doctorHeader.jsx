@@ -16,7 +16,7 @@ import headerStyles from "../styles/headerStyles.module.css";
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-const Header = () => {
+const DoctorHeader = () => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [isSticky, setIsSticky] = useState(false);
@@ -112,21 +112,21 @@ const Header = () => {
                         <Offcanvas show={showDrawer} onHide={() => setShowDrawer(false)} style={{width:'200px'}}>
                             <Offcanvas.Body>
                             <Button
-                                onClick={() => {navigate('/');scrollToElement('top')}}
+                                onClick={() => {navigate('/doctor-home');scrollToElement('top')}}
                                 sx={{ my: 2, px: 1, mx: 1, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
                                 Home
                             </Button>
                             <Button
-                                onClick={() => {navigate('/');scrollToElement('animHeader')}}
+                                onClick={() => {navigate('/doctor-home');scrollToElement('animHeader')}}
                                 sx={{ my: 2, px: 1, mx: 1, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
                                 Our Services
                             </Button>
                             <Button
-                                onClick={() => {navigate('/');scrollToElement('contactUs')}}
+                                onClick={() => {navigate('/doctor-home');scrollToElement('contactUs')}}
                                 sx={{ my: 2, px: 1, mx: 1, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
@@ -144,32 +144,32 @@ const Header = () => {
                     </Box>
                     <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent:'center' }}>
                             <Button
-                                onClick={() => {navigate('/');scrollToElement('top')}}
+                                onClick={() => {navigate('/doctor-home');scrollToElement('top')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
                                 Home
                             </Button>
                             <Button
-                                onClick={() => {navigate('/');scrollToElement('animHeader')}}
+                                onClick={() => {navigate('/doctor-home');scrollToElement('animHeader')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
-                                Our Services
+                                Patient Profile
                             </Button>
                             <Button
-                                onClick={() => {navigate('/');scrollToElement('contactUs')}}
+                                onClick={() => {navigate('/doctor-home');scrollToElement('contactUs')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
-                                Contact Us
+                                Chanelling
                             </Button>
                             <Button
                                 onClick={() => {navigate('/appointment');scrollToElement('contactUs')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
-                                Appointment
+                                Schedules
                             </Button>
                             
                     </Box>
@@ -226,4 +226,4 @@ const Header = () => {
     );
 };
 
-export default Header;
+export default DoctorHeader;
