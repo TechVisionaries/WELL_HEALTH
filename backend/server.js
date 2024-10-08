@@ -10,6 +10,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';  
 import paymentRoute from './routes/paymentRoute.js';  
 import healthCardRoutes from './routes/healthCardRoutes.js';  
+import appointmentRoutes from './routes/appointmentRoutes.js';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(bodyParser.json());
 app.use('/api/users', userRoutes);
 app.use('/api/payment', paymentRoute);
 app.use('/api/health_card', healthCardRoutes);
+app.use('/api/appointments', appointmentRoutes);
 
 if (process.env.NODE_ENV === 'production') {
     const __dirname = path.resolve();
