@@ -13,6 +13,8 @@ import LogoBig from '/logoBig2.png';
 import Logo from '/logo.png';
 import { RiWaterFlashFill } from 'react-icons/ri';
 import { GiMeal } from 'react-icons/gi';
+import { LocalHospital } from '@mui/icons-material';
+import { FolderShared } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -124,6 +126,36 @@ export default function Sidebar() {
               </ListItemButton>
             </Tooltip>
           </ListItem></Link>
+          <Link to='/health-card' style={{textDecoration:'none', color:'white'}}>
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <Tooltip title={!open ? "health-card" : ''} placement="right" arrow>  
+              <ListItemButton 
+                sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'initial', px: 2.5 }} 
+                className={`${sideBarStyles.itmBtn} ${activeRoute === '/health-card' ? sideBarStyles.active : ''}`}
+              >
+                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'white' }}>
+                  <LocalHospital />
+                </ListItemIcon>
+                <ListItemText primary={"health-card"} sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </Tooltip>
+          </ListItem>
+        </Link>
+        <Link to='/medical-records' style={{textDecoration:'none', color:'white'}}>
+        <ListItem disablePadding sx={{ display: 'block' }}>
+          <Tooltip title={!open ? "medical-records" : ''} placement="right" arrow>  
+            <ListItemButton 
+              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'initial', px: 2.5 }} 
+              className={`${sideBarStyles.itmBtn} ${activeRoute === '/medical-records' ? sideBarStyles.active : ''}`}
+            >
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'white' }}>
+                <FolderShared />
+              </ListItemIcon>
+              <ListItemText primary={"medical-records"} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
+      </Link>
 
           {userInfo.userType == 'admin' ? //Navigations for Admin
 
