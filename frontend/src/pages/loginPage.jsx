@@ -14,7 +14,6 @@ import styles from '../styles/loginStyles.module.css';
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [userType, setUserType] = useState('patient');
     const [showPassword, setShowPassword] = useState(false);
     const [isGoogleLoadingPatient, setIsGoogleLoadingPatient] = useState(false);
 
@@ -35,10 +34,18 @@ const LoginPage = () => {
 
     useEffect(() => {
         dispatch(destroyResetSession());
-        if(userInfo){
-            navigate('/');
+        if (userInfo) {
+            if (userInfo.userType === "doctor") {
+                navigate('/doctor-home');
+            } else if (userInfo.userType === "admin") {
+                navigate('/admin-home');
+            } else if (userInfo.userType === "manager") {
+                navigate('/manager-home');
+            } else {
+                navigate('/'); // Default to home page if no userType
+            }
         }
-    }, [navigate, userInfo]);
+    }, [navigate, userInfo, dispatch]);
 
     const patientGoogleLoginSuccess = async (res) => {
 
@@ -90,15 +97,14 @@ const LoginPage = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
-            const res = await login({ userType, email, password }).unwrap();
-            dispatch(setUserInfo({...res}));    
-            console.log(res)        
+            const res = await login({ email, password }).unwrap();
+            dispatch(setUserInfo({ ...res }));
             toast.success('Login Successful');
-            navigate('/');
+            // No need for navigation logic here, it's handled by useEffect
         } catch (err) {
             toast.error(err.data?.message || err.error);
         }
-    }
+    };
 
     return (
         <>        

@@ -10,7 +10,10 @@ import { Provider } from 'react-redux';
 import App from './App.jsx';
 
 
-import HomePage from './pages/homePage.jsx';
+import PatientHomePage from './pages/patientHomePage.jsx';
+import DoctorHomePage from './pages/doctorHomePage.jsx';
+import AdminHomePage from './pages/adminHomePage.jsx'
+import ManagerHomePage from './pages/managerHomePage.jsx';
 
 import LoginPage from './pages/loginPage.jsx';
 import RegisterPage from './pages/registerPage.jsx';
@@ -39,7 +42,10 @@ const router = createBrowserRouter(
     <Route path='/' element={ <App /> }>
       
       {/* Public Routes */}
-      <Route index={ true } path='/' element={ <HomePage /> } />
+      <Route index={ true } path='/' element={ <PatientHomePage /> } />
+      <Route index={ true } path='/doctor-home' element={ <DoctorHomePage /> } />
+      <Route index={ true } path='/admin-home' element={<AdminHomePage />} /> 
+      <Route index={ true } path='/manager-home' element={<ManagerHomePage />} /> 
       <Route path='/login' element={ <LoginPage /> } />
       <Route path='/register' element={ <RegisterPage /> } />
       <Route path='/register/:tokenHeader/:tokenPayload/:tokenSecret' element={ <VerifyEmailPage /> } />

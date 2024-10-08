@@ -10,7 +10,7 @@ import { BsChevronDoubleDown } from 'react-icons/bs';
 import HealthCard from '../components/HealthCard';
 
 
-const HomePage = () => {
+const ManagerHomePage = () => {
 
     const [show, setShow] = useState(false);
     const [hopitalcount, setHospitalCount] = useState(0);
@@ -70,7 +70,7 @@ const HomePage = () => {
                     <div style={{ height: '600px', width: "100%", position: 'absolute' }}>
                     <Col className={homeStyles.homeWelcText} style={{transition:'all 0.5s ease-in', ...(show? {opacity:1} : {opacity:0})}}>
                     <center>
-                            <h2>A safe and secure place to keep<br />your key health information, available to you<br />and your healthcare providers anytime,<br />including in an emergency<br /><span style={{ fontFamily: 'Papyrus', display:'block', marginTop:'25px', color:"#f5427e" }}>WellHealth.LK</span></h2>
+                            <h2>A safe and secure place to keep<br />your key health information, available to you<br />and your healthcare providers anytime,<br />including in an emergency<br /><span style={{ fontFamily: 'Papyrus', display:'block', marginTop:'25px', color:"#f5427e" }}>WellHealth.LK.Manager</span></h2>
                             <Button onClick={() => navigate('/login')} variant='contained' color='info' className={homeStyles.welcBtns} style={{clipPath:'polygon(95% 0%, 80% 100%, 0% 100%, 0% 0%)', padding:'15px'}}>&nbsp;&nbsp;&nbsp;&nbsp;LOGIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button>
                             <Button onClick={() => navigate('/register')} variant='contained' color='warning' className={homeStyles.welcBtns} style={{clipPath:'polygon(100% 0%, 100% 100%, 5% 100%, 20% 0%)', marginLeft:'-45px', padding:'15px'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REGISTER</Button>
                     </center>
@@ -161,4 +161,4 @@ const HomePage = () => {
     );
 }
 
-export default HomePage;
+export default ManagerHomePage;
