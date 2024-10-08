@@ -15,6 +15,8 @@ import { RiWaterFlashFill } from 'react-icons/ri';
 import { GiMeal } from 'react-icons/gi';
 import { LocalHospital } from '@mui/icons-material';
 import { FolderShared } from '@mui/icons-material';
+import EventAvailableRounded from '@mui/icons-material/EventAvailableRounded';
+
 
 const drawerWidth = 240;
 
@@ -185,6 +187,39 @@ export default function Sidebar() {
             </>
 
           : <></>}
+          {/* doctor navigation */}
+          <Link to='/doctor/appointments' style={{ textDecoration: 'none', color: 'white' }}>
+            <ListItem disablePadding sx={{ display: 'block' }}>
+              <Tooltip title={!open ? "Doctor Appointments" : ''} placement="right" arrow>
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'initial',
+                    px: 2.5,
+                  }}
+                  className={`${sideBarStyles.itmBtn} ${
+                    activeRoute.startsWith('/doctor/appointments') ? sideBarStyles.active : ''
+                  }`}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                      color: 'white',
+                    }}
+                  >
+                    <EventAvailableRounded /> {/* Replace with an appropriate icon for appointments */}
+                  </ListItemIcon>
+                  <ListItemText primary={"Doctor Appointments"} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </Tooltip>
+            </ListItem>
+          </Link>
+
+          
+
+
           
           {userInfo.userType == 'owner' ?  //Navigations for Owner
 
