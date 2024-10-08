@@ -14,13 +14,9 @@ import styles from '../styles/loginStyles.module.css';
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [userType, setUserType] = useState('occupant');
+    const [userType, setUserType] = useState('patient');
     const [showPassword, setShowPassword] = useState(false);
-    const [isGoogleLoadingOccupant, setIsGoogleLoadingOccupant] = useState(false);
-    const [isGoogleLoadingOwner, setIsGoogleLoadingOwner] = useState(false);
-    const [ownerType, setOwnerType] = useState('owner');
-    const [anchorEl, setAnchorEl] = useState(null);
-    const openMenu = Boolean(anchorEl);
+    const [isGoogleLoadingPatient, setIsGoogleLoadingPatient] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -44,7 +40,7 @@ const LoginPage = () => {
         }
     }, [navigate, userInfo]);
 
-    const ownerGoogleLoginSuccess = async (res) => {
+    const patientGoogleLoginSuccess = async (res) => {
 
         fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
             method: "GET",
@@ -60,54 +56,17 @@ const LoginPage = () => {
                 image: data.picture, 
                 firstName: data.given_name, 
                 lastName: data.family_name,
-                userType: "owner"
+                userType: "patient"
             }
 
             try {
-                setIsGoogleLoadingOwner(true);
+                setIsGoogleLoadingPatient(true);
                 const googleRes = await googleLogin({...userInfo}).unwrap();
                 dispatch(setUserInfo({...googleRes}));            
                 toast.success('Login Successful');
                 navigate('/');
             } catch (err) {
-                setIsGoogleLoadingOwner(false);
-                toast.error(err.data?.message || err.error);
-            }
-
-        })
-        .catch(error => {
-            toast.error("Error fetching user profile:", error);
-        });
-        
-    }
-
-    const occupantGoogleLoginSuccess = async (res) => {
-
-        fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${res.access_token}`,
-            },
-        })
-        .then(response => response.json())
-        .then(async(data) => {
-
-            const userInfo = {
-                email: data.email, 
-                image: data.picture, 
-                firstName: data.given_name, 
-                lastName: data.family_name,
-                userType: "occupant"
-            }
-
-            try {
-                setIsGoogleLoadingOccupant(true);
-                const googleRes = await googleLogin({...userInfo}).unwrap();
-                dispatch(setUserInfo({...googleRes}));            
-                toast.success('Login Successful');
-                navigate('/');
-            } catch (err) {
-                setIsGoogleLoadingOccupant(false);
+                setIsGoogleLoadingPatient(false);
                 toast.error(err.data?.message || err.error);
             }
 
@@ -122,21 +81,10 @@ const LoginPage = () => {
         toast.error('Login Failed');
     }
     
-    const ownerLogin = useGoogleLogin({
-      onSuccess: ownerGoogleLoginSuccess,
+    const patientLogin = useGoogleLogin({
+      onSuccess: patientGoogleLoginSuccess,
       onFailure: googleLoginFail
     });
-    
-    const occupantLogin = useGoogleLogin({
-      onSuccess: occupantGoogleLoginSuccess,
-      onFailure: googleLoginFail
-    });
-
-    const handleOwnerTypeChange = (value) => {
-        setOwnerType(value);
-        setUserType(value);
-        setAnchorEl(null)
-    }
 
 
     const submitHandler = async (e) => {
@@ -164,42 +112,17 @@ const LoginPage = () => {
                             </Row> 
                             <Row style={{height:'100%'}}>   
                                 <div className={styles.loginImage}>
-                                    <Image src="./images/hostel.png" style={{width:'100%'}}/>
+                                    <Image src="./images/hospital_management_bg2.png" style={{width:'100%'}}/>
                                 </div>
                             </Row>
                         </Col>
                         <Col xs={12} md={6} className='p-5'>
+                        <center>
                             <h1>Sign In</h1>
                             <h6>or <Link to='/register' style={{textDecoration:"none"}}>create an account</Link></h6>
-
+                        </center>
+                        <br />
                             <Form onSubmit={ submitHandler }>
-
-                                <Row className="mt-4">
-                                    <ToggleButtonGroup
-                                        value={userType}
-                                        exclusive
-                                        aria-label="User Type"
-                                        fullWidth
-                                    >
-                                        <ToggleButton value="occupant" aria-label="User Type Occupant" onClick={ () => setUserType("occupant") }>
-                                            Occupant
-                                        </ToggleButton>
-                                        <ToggleButton value={ownerType} aria-label="User Type Boarding Owner" onClick={(e) => setAnchorEl(e.currentTarget)}>
-                                            {ownerType == "owner" ? "Boarding Owner" : "Kitchen User"}
-                                        </ToggleButton>
-                                        <Menu
-                                            anchorEl={anchorEl}
-                                            open={openMenu}
-                                            onClose={() => setAnchorEl(null)}
-                                        >
-                                            <MenuItem value="owner" onClick={() => handleOwnerTypeChange("owner")}>Boarding Owner</MenuItem>
-                                            <MenuItem value="kitchen" onClick={() => handleOwnerTypeChange("kitchen")}>Kitchen User</MenuItem>
-                                        </Menu>
-                                        <ToggleButton value="admin" aria-label="User Type Admin" onClick={ () => setUserType("admin") }>
-                                            Admin
-                                        </ToggleButton>
-                                    </ToggleButtonGroup>
-                                </Row>
                                 <Box sx={{ display: 'flex', alignItems: 'flex-end' }} className="my-3">
                                     <Person sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                                     <TextField 
@@ -239,38 +162,28 @@ const LoginPage = () => {
                                         required
                                     />
                                 </Box>
-
-                                <LoadingButton type="submit" loading={isLoading} color="primary" variant="contained" className="mt-3">Sign In</LoadingButton>
+                                <center>
+                                <LoadingButton type="submit" loading={isLoading} color="primary" variant="contained" className="mt-3" style={{backgroundColor:"green"}}>Sign In</LoadingButton>
                                 
                                 <Row className='py-3'>
                                     <Col>
                                         <Link to='/generateotp' style={{textDecoration:"none"}}>Forgot Password?</Link>
                                     </Col>
                                 </Row>
-                                <Divider>OR</Divider>  
-                                <p className="text-center mt-2">Login With Google</p>  
+                                </center>
+                                <br /><br />
+                                <Divider>OR</Divider>
 
                                 <Row>
-                                    <Col className="d-flex justify-content-center">
+                                    <Col className="d-flex justify-content-center" >
                                         <LoadingButton 
-                                            loading={isGoogleLoadingOwner} 
+                                            loading={isGoogleLoadingPatient} 
                                             className={styles.googleButton} 
-                                            onClick={() => ownerLogin()} 
-                                            startIcon={ isGoogleLoadingOwner ? <></> : <Image src="./images/Google_Logo.svg" width={20} style={{marginRight:"10px"}}/> }
-                                            sx={{color:"black"}}
+                                            onClick={() => patientLogin()} 
+                                            startIcon={ isGoogleLoadingPatient ? <></> : <Image src="./images/Google_Logo.svg" width={20} style={{marginRight:"10px"}}/> }
+                                            sx={{color:"white"}}
                                         >
-                                            Boading Owner
-                                        </LoadingButton>
-                                    </Col>
-                                    <Col className="d-flex justify-content-center">
-                                        <LoadingButton 
-                                            loading={isGoogleLoadingOccupant} 
-                                            className={styles.googleButton} 
-                                            onClick={() => occupantLogin()}
-                                            startIcon={ isGoogleLoadingOccupant ? <></> : <Image src="./images/Google_Logo.svg" width={20} style={{marginRight:"10px"}}/> }
-                                            sx={{color:"black"}}
-                                        >
-                                            Occupant
+                                            LOGIN WITH GOOGLE
                                         </LoadingButton>
                                     </Col>
                                 </Row>

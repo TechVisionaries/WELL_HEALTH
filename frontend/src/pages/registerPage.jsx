@@ -22,14 +22,9 @@ const RegisterPage = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [userType, setUserType] = useState('occupant');
+    const [userType, setUserType] = useState('patient');
     const [gender, setGender] = useState('Male');
-    const [isGoogleLoadingOccupant, setIsGoogleLoadingOccupant] = useState(false);
-    const [isGoogleLoadingOwner, setIsGoogleLoadingOwner] = useState(false);
-    const [ownerType, setOwnerType] = useState('owner');
-    const [anchorEl, setAnchorEl] = useState(null);
-    const openMenu = Boolean(anchorEl);
-    
+    const [isGoogleLoadingPatient, setIsGoogleLoadingPatient] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (event) => {
@@ -70,50 +65,13 @@ const RegisterPage = () => {
             }
 
             try {
-                setIsGoogleLoadingOwner(true);
+                setIsGoogleLoadingPatient(true);
                 const googleRes = await googleLogin({...userInfo}).unwrap();
                 dispatch(setUserInfo({...googleRes}));            
                 toast.success('Login Successful');
                 navigate('/');
             } catch (err) {
-                setIsGoogleLoadingOwner(false);
-                toast.error(err.data?.message || err.error);
-            }
-
-        })
-        .catch(error => {
-            toast.error("Error fetching user profile:", error);
-        });
-        
-    }
-
-    const occupantGoogleLoginSuccess = async (res) => {
-
-        fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${res.access_token}`,
-            },
-        })
-        .then(response => response.json())
-        .then(async(data) => {
-
-            const userInfo = {
-                email: data.email,
-                image: data.picture, 
-                firstName: data.given_name, 
-                lastName: data.family_name,
-                userType: "occupant"
-            }
-
-            try {
-                setIsGoogleLoadingOccupant(true);
-                const googleRes = await googleLogin({...userInfo}).unwrap();
-                dispatch(setUserInfo({...googleRes}));            
-                toast.success('Login Successful');
-                navigate('/');
-            } catch (err) {
-                setIsGoogleLoadingOccupant(false);
+                setIsGoogleLoadingPatient(false);
                 toast.error(err.data?.message || err.error);
             }
 
@@ -130,11 +88,6 @@ const RegisterPage = () => {
     
     const ownerLogin = useGoogleLogin({
       onSuccess: ownerGoogleLoginSuccess,
-      onFailure: googleLoginFail
-    });
-    
-    const occupantLogin = useGoogleLogin({
-      onSuccess: occupantGoogleLoginSuccess,
       onFailure: googleLoginFail
     });
 
@@ -167,12 +120,6 @@ const RegisterPage = () => {
         setImage(data);
     }
 
-    const handleOwnerTypeChange = (value) => {
-        setOwnerType(value);
-        setUserType(value);
-        setAnchorEl(null)
-    }
-
     return (
         <>        
             <div className={styles.trapezoid}></div>
@@ -185,12 +132,12 @@ const RegisterPage = () => {
                             </Row> 
                             <Row style={{height:'100%'}}>   
                                 <div className={styles.loginImage}>
-                                    <Image src="./images/hostel.png" style={{width:'100%'}}/>
+                                    <Image src="./images/hospital_management_bg2.png" style={{width:'100%'}}/>
                                 </div>
                             </Row>
                         </Col>
                         <Col xs={12} md={6} className='p-5'>
-                            <h1>Sign Up</h1>
+                        <center><h1>Sign Up</h1></center>
 
                             <form encType="multipart/form-data" onSubmit={ submitHandler } >
 
@@ -198,30 +145,6 @@ const RegisterPage = () => {
                                     <Form.Label className="mb-0"><Image src={imagePath} width={200} height={200} roundedCircle style={{cursor: 'pointer'}} /></Form.Label>
                                     <Form.Control type="file" accept="image/*" onChange={previewImage} hidden/>
                                 </Form.Group>
-
-                                <Row className="mt-3">
-                                    <ToggleButtonGroup
-                                        value={userType}
-                                        exclusive
-                                        aria-label="User Type"
-                                        fullWidth
-                                    >
-                                        <ToggleButton value="occupant" aria-label="User Type Occupant" onClick={ () => setUserType("occupant") }>
-                                            Occupant
-                                        </ToggleButton>
-                                        <ToggleButton value={ownerType} aria-label="User Type Boarding Owner" onClick={(e) => setAnchorEl(e.currentTarget)}>
-                                            {ownerType == "owner" ? "Boarding Owner" : "Kitchen User"}
-                                        </ToggleButton>
-                                        <Menu
-                                            anchorEl={anchorEl}
-                                            open={openMenu}
-                                            onClose={() => setAnchorEl(null)}
-                                        >
-                                            <MenuItem value="owner" onClick={() => handleOwnerTypeChange("owner")}>Boarding Owner</MenuItem>
-                                            <MenuItem value="kitchen" onClick={() => handleOwnerTypeChange("kitchen")}>Kitchen User</MenuItem>
-                                        </Menu>
-                                    </ToggleButtonGroup>
-                                </Row>
                                 <Row>
                                     <Col xs={12} md={6}>
                                         <Box sx={{ display: 'flex', alignItems: 'flex-end' }} className="my-2">
@@ -268,12 +191,15 @@ const RegisterPage = () => {
                                 </Row>
 
                                 <Row className="ms-1">
+                                <center>
                                     <FormControl className="mt-3">
                                         <RadioGroup row aria-labelledby="user-type" name="user-type" value={gender} onChange={ (e) => setGender(e.target.value) } >
                                             <FormControlLabel value="Male" control={<Radio />} label="Male" />
                                             <FormControlLabel value="Female" control={<Radio />} label="Female" />
                                         </RadioGroup>
                                     </FormControl>
+                                </center>
+                                    
                                 </Row>
 
                                 <Row>
@@ -349,40 +275,29 @@ const RegisterPage = () => {
                                         </Box>
                                     </Col>
                                 </Row>
-
+                                <center>
                                 <LoadingButton type="submit" loading={isLoading} color="primary" variant="contained" className="mt-3">Sign Up</LoadingButton>
+                                
                                 
                                 <Row className='py-3'>
                                     <Col>
                                         Already have an account? <Link to='/login' style={{textDecoration:"none"}}>Login</Link>
                                     </Col>
                                 </Row>
-
-                                <Divider>OR</Divider>  
-
-                                <p className="text-center mt-2">Login With Google</p>   
+                                </center>
+                                <br />
+                                <Divider>OR</Divider>
 
                                 <Row>
                                     <Col className="d-flex justify-content-center">
                                         <LoadingButton 
-                                            loading={isGoogleLoadingOwner} 
+                                            loading={isGoogleLoadingPatient} 
                                             className={styles.googleButton} 
                                             onClick={() => ownerLogin()} 
-                                            startIcon={ isGoogleLoadingOwner ? <></> : <Image src="./images/Google_Logo.svg" width={20} style={{marginRight:"10px"}}/> }
+                                            startIcon={ isGoogleLoadingPatient ? <></> : <Image src="./images/Google_Logo.svg" width={20} style={{marginRight:"10px"}}/> }
                                             sx={{color:"black"}}
                                         >
-                                            Boading Owner
-                                        </LoadingButton>
-                                    </Col>
-                                    <Col className="d-flex justify-content-center">
-                                        <LoadingButton 
-                                            loading={isGoogleLoadingOccupant} 
-                                            className={styles.googleButton} 
-                                            onClick={() => occupantLogin()}
-                                            startIcon={ isGoogleLoadingOccupant ? <></> : <Image src="./images/Google_Logo.svg" width={20} style={{marginRight:"10px"}}/> }
-                                            sx={{color:"black"}}
-                                        >
-                                            Occupant
+                                            LOGIN WITH GOOGLE
                                         </LoadingButton>
                                     </Col>
                                 </Row>
