@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 import userRoutes from './routes/userRoutes.js';
+import paymentRoute from './routes/paymentRoute.js';
 
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use('/api/users', userRoutes);
+app.use('/api/payment', paymentRoute);
 
 
 if(process.env.NODE_ENV === 'production'){

@@ -32,6 +32,8 @@ import HealthCardPage from './pages/HealthCardPage.jsx';
 import PatientProfile from './pages/PatientProfile.jsx';
 import AddPrescription from './components/AddPrescription.jsx';
 import AppointmentDashboard from './pages/appointment/appointmentDashboard.jsx';
+import PaymentSuccess from './pages/appointment/paymentSuccess.jsx';
+import PaymentFailure from './pages/appointment/paymentFailure.jsx';
 
 
 const router = createBrowserRouter(
@@ -54,6 +56,8 @@ const router = createBrowserRouter(
         <Route path='/profile' element={ <ProfilePage /> } />
         <Route path= '/appointment' element={ <AppointmentDashboard/>} />
         <Route path= '/appointment/payment' element={ <PaymentPage/> } />
+        <Route path= '/appointment/payment/success' element={ <PaymentSuccess/> } />
+        <Route path= '/appointment/payment/cancel' element={ <PaymentFailure/> } />
 
       </Route>
 

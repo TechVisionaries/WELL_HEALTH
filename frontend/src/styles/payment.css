@@ -1,47 +1,36 @@
-/* src/pages/PaymentPage.css */
-
 .payment-page {
-    background-color: #f8f9fa; /* Light background color */
-    border-radius: 10px; /* Rounded corners */
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  }
-  
-  .billing-details {
-    background-color: #ffffff; /* White background for details */
-    border-radius: 8px;
-    padding: 20px;
-    margin: 20px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .info-title {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    color: #343a40; /* Dark color for title */
-  }
-  
-  .charges-summary {
-    margin-top: 20px;
-  }
-  
-  .total-charges {
-    color: #28a745; /* Green color for total charges */
-    font-weight: bold;
-  }
-  
-  .proceed-btn {
-    background-color: #28a745; /* Green button */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .proceed-btn:hover {
-    background-color: #218838; /* Darker green on hover */
-  }
-  
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.charges-summary,
+.payment-method {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.info-title {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.form-check {
+  margin-bottom: 10px;
+}
+
+.total-charges {
+  font-weight: bold;
+  color: #333;
+}
+
+.proceed-btn {
+  background-color: #28a745;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  font-size: 1.2rem;
+}
+
+.proceed-btn:hover {
+  background-color: #218838;
+}
