@@ -1,4 +1,4 @@
-import Header from '../components/header';
+import DoctorHeader from '../components/doctorHeader';
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Toast } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
@@ -60,7 +60,7 @@ const DoctorHomePage = () => {
     return (
         <>
             <div style={{ width: '100%' }} id='top'>
-                <Header />
+                <DoctorHeader />
                 <HealthCard/>
                 <div style={{ minHeight: '100vh', height: '200vh' }}>
                     <div className={homeStyles.homeBackDiv}>
