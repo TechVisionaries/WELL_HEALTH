@@ -1,8 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import sendResponse from '../utils/sendResponse.js';
 import HealthCard from '../models/healthCardModel.js';
-import User from '../models/userModel.js';
-import bcrypt from 'bcryptjs';
 
 // @desc    Create Health Card
 // route    POST /api/health_card/add

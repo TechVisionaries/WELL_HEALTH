@@ -187,13 +187,13 @@ const ProfilePage = () => {
     return (
         <>
             <Sidebar />
-            <div className={dashboardStyles.mainDiv}>
-                <Container className={dashboardStyles.container}>
+            <div className={dashboardStyles.mainDiv} style={{width:"100%"}}>
+                <Container className={dashboardStyles.container} >
                     <Row>
                         <Col>
                             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb" className="py-2 ps-3 mt-4 bg-primary-subtle">
                                 <Link underline="hover" key="1" color="inherit" href="/">Home</Link>,
-                                <Link underline="hover" key="2" color="inherit" href="/profile">{userType == 'owner' ? 'Owner' : (userType == 'occupant' ? 'Occupant' : userType == 'admin' ? 'Admin' : userType == 'kitchen' ? 'Kitchen' : <></>)}</Link>,
+                                <Link underline="hover" key="2" color="inherit" href="/profile">{userType == 'patient' ? 'Patient' : (userType == 'doctor' ? 'Doctor' : userType == 'admin' ? 'Admin' : userType == 'manager' ? 'Manager' : <></>)}</Link>,
                                 <Typography key="3" color="text.primary">Profile</Typography>
                             </Breadcrumbs>
                         </Col>
@@ -202,7 +202,7 @@ const ProfilePage = () => {
                     <Row>
                         <Col>
                             <Card className={`mt-3 py-3 text-center ${dashboardStyles.cardHeading}`}>
-                                {userType == 'owner' ? <h2>Owner Dashboard</h2> : (userType == 'occupant' ? <h2>Occupant Dashboard</h2> : userType == 'admin' ? <h2>Admin Dashboard</h2> : userType == 'kitchen' ? <h2>Inventory Manager Dashboard</h2> : <></>)}
+                                {userType == 'patient' ? <h2 style={{color:"white"}}>Patient Profile</h2> : (userType == 'doctor' ? <h2 style={{color:"white"}}>Doctor Profile</h2> : userType == 'admin' ? <h2 style={{color:"white"}}>Admin Profile</h2> : userType == 'manager' ? <h2 style={{color:"white"}}>Manager Profile</h2> : <></>)}
                             </Card>
                         </Col>
                     </Row>

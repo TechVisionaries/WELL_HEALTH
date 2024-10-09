@@ -5,8 +5,6 @@ import "../../styles/appointmentDashboard.css"; // Import custom styles
 import ScheduleAppointment from "../../components/appointmnt/scheduleAppointment";
 
 const AppointmentDashboard = () => {
- 
-
   const upcomingAppointments = [
     {
       id: 1,
@@ -41,19 +39,14 @@ const AppointmentDashboard = () => {
     },
   ];
 
-
-
-
-
-
   return (
     <div className="main-container">
-    <h1 className="mt-2">Appointment Dashboard</h1>
+      <h1 className="mt-2">Appointment Dashboard</h1>
       <div className="appointment-dashboard-container">
-      <ScheduleAppointment />
+        <ScheduleAppointment />
         <div className="div-row">
           {/* Upcoming Appointments */}
-          <Col md={12} className="mb-5">
+          <Col md={12} className="mb-5 box">
             <Card>
               <Card.Header as="h3">Upcoming Appointments</Card.Header>
               <Card.Body>
@@ -73,12 +66,34 @@ const AppointmentDashboard = () => {
                         <td>{appointment.time}</td>
                         <td>{appointment.doctor}</td>
                         <td>
-                          <Button
-                            variant="primary"
-                        
+                          <button
+                            style={{
+                              padding: "0.25rem 0.5rem",
+                              fontSize: "0.8rem",
+                              backgroundColor: "#007bff",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "0.2rem",
+                              cursor: "pointer",
+                            }}
                           >
-                            Modify/Cancel
-                          </Button>
+                            Modify
+                          </button>
+                          <button
+                            className="ml-2"
+                            style={{
+                              padding: "0.25rem 0.5rem",
+                              fontSize: "0.8rem",
+                              backgroundColor: "#dc3545", // Danger color (Bootstrap)
+                              color: "#fff",
+                              border: "none",
+                              marginLeft: "1em",
+                              borderRadius: "0.2rem",
+                              cursor: "pointer",
+                            }}
+                          >
+                            Cancel
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -89,7 +104,7 @@ const AppointmentDashboard = () => {
           </Col>
 
           {/* Past Appointments */}
-          <Col md={12} className="mb-0">
+          <Col md={12} className="mb-0 box">
             <Card>
               <Card.Header as="h3">Past Appointments</Card.Header>
               <Card.Body>
