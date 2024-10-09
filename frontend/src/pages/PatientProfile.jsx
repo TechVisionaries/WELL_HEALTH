@@ -312,12 +312,6 @@ function PatientProfile() {
                         </Item>
                     </Grid>
 
-                    <Grid item xs={12} sx={{display:'flex', justifyContent:'flex-end'}}>
-                        <Button variant="contained" color="success">
-                            Add Prescription
-                        </Button>
-                    </Grid>
-
                     <Grid item xs={12}>
 
                         <Grid container spacing={2}>
