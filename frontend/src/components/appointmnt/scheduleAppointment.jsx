@@ -16,34 +16,36 @@ const ScheduleAppointment = () => {
     appointmentDate: null,
     appointmentTime: "",
     comments: "",
-    serviceType: "", // Add serviceType to state
+    serviceType: "", 
   });
 
   const navigate = useNavigate();
 
   const [showSummary, setShowSummary] = useState(false); // For handling dialog display
 
-  const sectors = ["Public", "Private"];
-  const hospitals = [
-    "City Hospital",
-    "Greenwood Clinic",
-    "Downtown Medical Center",
-  ];
-  const specializations = ["Cardiology", "Dermatology", "Pediatrics"];
+  const sectors = ["Government", "Private"];
+  const hospitalsBySector = {
+    Government: ["National Hospital of Sri Lanka", "Teaching Hospital Karapitiya", "Lady Ridgeway Hospital"],
+    Private: ["Asiri Central Hospital", "Nawaloka Hospital", "Durdans Hospital", "Lanka Hospitals"],
+  };
+  const specializations = ["Cardiology", "Dermatology", "Pediatrics", "Oncology"];
   
-  // Add service types options
+  // Service types relevant to Sri Lankan healthcare system
   const serviceTypes = [
     "General Checkup",
     "Surgery",
     "Consultation",
+    "Emergency",
   ];
 
-  // Consultants categorized by specialization
+  // Consultants categorized by specialization, specific to Sri Lanka
   const consultantsBySpecialization = {
-    Cardiology: ["Dr. Smith", "Dr. Adams", "Dr. Patel"],
-    Dermatology: ["Dr. Lee", "Dr. Walker", "Dr. Taylor"],
-    Pediatrics: ["Dr. Brown", "Dr. Johnson", "Dr. Martinez"],
+    Cardiology: ["Dr. Ranjith Perera", "Dr. Saman Abeysekera", "Dr. Anura Fernando"],
+    Dermatology: ["Dr. Chathura Senanayake", "Dr. Kumudu Gamage", "Dr. Dilhan Samarasinghe"],
+    Pediatrics: ["Dr. Nuwan Jayasooriya", "Dr. Shehan Senevirathne", "Dr. Nirmal Cooray"],
+    Oncology: ["Dr. Hasitha Peiris", "Dr. Sudesh Rathnayake", "Dr. Udara Chandradasa"],
   };
+
 
   const appointmentTimes = [
     "09:00 AM",
@@ -56,7 +58,13 @@ const ScheduleAppointment = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  
+    // Clear hospital when sector changes
+    if (name === "sector") {
+      setFormData({ ...formData, hospital: "", [name]: value });
+    }
   };
+  
 
   const handleDateChange = (date) => {
     setFormData({ ...formData, appointmentDate: date });
@@ -142,27 +150,29 @@ const ScheduleAppointment = () => {
           </select>
         </div>
 
-        {/* Select Hospital */}
-        <div className="mb-3">
-          <label htmlFor="hospital" className="form-label">
-            Select Hospital
-          </label>
-          <select
-            className="form-select"
-            id="hospital"
-            name="hospital"
-            value={formData.hospital}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Choose a hospital...</option>
-            {hospitals.map((hospital, index) => (
-              <option key={index} value={hospital}>
-                {hospital}
-              </option>
-            ))}
-          </select>
-        </div>
+        {formData.sector && (
+          <div className="mb-3">
+            <label htmlFor="hospital" className="form-label">
+              Select Hospital
+            </label>
+            <select
+              className="form-select"
+              id="hospital"
+              name="hospital"
+              value={formData.hospital}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Choose a hospital...</option>
+              {hospitalsBySector[formData.sector]?.map((hospital, index) => (
+                <option key={index} value={hospital}>
+                  {hospital}
+                </option>
+              ))}
+            </select>
+          </div>
+)}
+
 
         {/* Select Specialization */}
         <div className="mb-3">
