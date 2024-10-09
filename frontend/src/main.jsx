@@ -38,6 +38,7 @@ import AppointmentDashboard from './pages/appointment/appointmentDashboard.jsx';
 import PaymentSuccess from './pages/appointment/paymentSuccess.jsx';
 import PaymentFailure from './pages/appointment/paymentFailure.jsx';
 import DoctorAppointmentsDashboard from './pages/appointment/doctorAppointmentsDashboard.jsx';
+import AvailableStaffPage from './pages/manage staff/availableStaffPage.jsx';
 
 
 const router = createBrowserRouter(
@@ -68,6 +69,7 @@ const router = createBrowserRouter(
         <Route path= '/doctor/appointments' element={ <DoctorAppointmentsDashboard/>} />
 
 
+        <Route path= '/available/staff/all' element={ <AvailableStaffPage/> } />
       </Route>
 
       {/* Admin Routes */}
