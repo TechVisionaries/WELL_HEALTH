@@ -155,13 +155,6 @@ const DoctorHeader = () => {
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
-                                Our Services
-                            </Button>
-                            <Button
-                                onClick={() => {navigate('/doctor-home');scrollToElement('animHeader')}}
-                                sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
-                                className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
-                            >
                                 Patient Profile
                             </Button>
                             <Button

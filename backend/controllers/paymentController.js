@@ -18,7 +18,7 @@ export const createCheckoutSession = async (req, res) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: 'Total Fee', // Replace with your product/service name
+              name: 'Consultation Fee', // Replace with your product/service name
             },
             unit_amount: amount * 100, // Amount in cents
           },

@@ -26,12 +26,6 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('User Already Exists');
     }
-
-    var specialization = '';
-
-    if(userType == "doctor"){
-        specialization = req.body.specialization;
-    }
     const user = ({
         email, 
         image, 
@@ -39,7 +33,6 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
         lastName, 
         password,
         userType,
-        specialization,
         gender 
     });
 
@@ -56,6 +49,7 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
                             Thank you for choosing WellHealth!<br><br>
                             Best wishes,<br>
                             The WellHealth Hospitals</p>`
+        
         sendMail(email,message,"Activate Your Account");
         res.status(201).json({ message: "Email Verification Sent! ", user, email, message});
     }
@@ -78,7 +72,6 @@ const registerUser = asyncHandler(async (req, res) => {
             lastName, 
             password,
             userType,
-            specialization,
             gender 
         } = jwt.decode(req.query.token).user;
         var userExists = await User.findOne({ email, userType });
@@ -101,26 +94,6 @@ const registerUser = asyncHandler(async (req, res) => {
                 phoneNo: "",
                 healthCard : false, 
                 nic : "",
-                occupation: "",
-                birthday: null,
-                age: null,
-                address: "",
-                workPlace: "",
-                martialState: ""
-            });
-        }else if(userType == "doctor"){
-            user = await User.create({
-                email, 
-                image, 
-                firstName, 
-                lastName, 
-                password,
-                userType,
-                specialization,
-                gender,
-                phoneNo: "",
-                nic : "",
-                department: "",
                 occupation: "",
                 birthday: null,
                 age: null,
@@ -197,7 +170,6 @@ const authUser = asyncHandler(async (req, res) => {
             phoneNo: user.phoneNo,
             healthCard: user.healthCard,
             gender: user.gender,
-            specialization: user.specialization,
             accType: user.accType,
             nic: user.nic,
             department: user.department,
@@ -338,7 +310,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
         userType: req.user.userType,
         phoneNo: req.user.phoneNo,
         gender: req.user.gender,
-        specialization: req.user.specialization,
         healthCard: req.user.healthCard,
         nic: req.user.nic,
         department: req.user.department,
@@ -378,9 +349,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
         if(user.userType == 'patient'){
             user.healthCard = req.body.healthCard || user.healthCard;
-        }else if(user.userType == 'doctor'){
-            user.specialization = req.body.specialization || user.specialization
-            user.department = req.body.department || user.department;
         }else{
             user.department = req.body.department || user.department;
         }

@@ -52,9 +52,6 @@ const userSchema = mongoose.Schema({
     occupation: {
         type: String,
     },
-    specialization:{
-        type: String,
-    },
     birthday: {
         type: Date
     },
