@@ -1,0 +1,42 @@
+.mainContainer {
+  display: grid;
+  align-items: center;
+  width: 75%;
+  margin: auto;
+}
+
+.divRow {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+.box {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 20px;
+  width: 100%;
+}
+
+.appointmentDashboardContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 20px;
+  gap: 15px;
+  width: 100%;
+  background-color: #f8f9fa; 
+}
+
+@media (max-width: 768px) {
+  .mainContainer {
+      margin: auto;
+      width: 100%;
+  }
+  
+  .appointmentDashboardContainer {
+      grid-template-columns: 1fr;
+      width: 100%;
+  }
+}
+

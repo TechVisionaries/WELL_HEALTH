@@ -1,30 +1,29 @@
-.wider-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 75%;
-    height: fit-content;
-    margin: 0 auto;
-    padding: 20px 20px;
-    
-  }
+/* appointmentDashboard.module.css */
 
-.calander ,.tables{
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    border-radius: 10px; 
-    background-color: #fff; 
-    padding: 20px 20px;
-    width: 100%;
-
+.widerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 75%;
+  height: fit-content;
+  margin: 0 auto;
+  padding: 20px 20px;
 }
 
+.calendar,
+.tables {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 20px 20px;
+  width: 100%;
+}
 
-  @media (max-width: 576px) {
-    .wider-container {
-      padding: 0 10px;
-    }
-    .table-responsive {
-      font-size: 0.9rem; /* Adjust font size for mobile */
-    }
+@media (max-width: 576px) {
+  .widerContainer {
+    padding: 0 10px;
   }
-  
+  .tableResponsive {
+    font-size: 0.9rem; /* Adjust font size for mobile */
+  }
+}

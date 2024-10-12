@@ -75,10 +75,10 @@ const DoctorAppointmentsDashboard = () => {
   };
 
   return (
-    <div className="container-fluid mt-4 wider-container">
+    <div className={`container-fluid mt-4 ${style.widerContainer}`}>
       <h1 className="text-center mb-4">Appointment Dashboard</h1>
 
-      <div className="row mb-4 calander">
+      <div className={`row mb-4 ${style.calendar}`}>
         <div className="col-12 col-md-6">
           <h5>Select Date</h5>
           <Calendar onChange={handleDateChange} value={selectedDate} />
@@ -96,7 +96,7 @@ const DoctorAppointmentsDashboard = () => {
         </div>
       </div>
 
-      <div className='tables'>
+      <div className={style.tables}>
         <h5>Appointments for {selectedDate.toDateString()}</h5>
         <div className="table-responsive"> {/* Makes the table scrollable on smaller screens */}
           <Table striped bordered hover>
@@ -122,8 +122,8 @@ const DoctorAppointmentsDashboard = () => {
                     <td>{appointment.patientName}</td>
                     <td>{appointment.reason}</td>
                     <td>{getStatusBadge(appointment.status)}</td>
-                    <td>
-                      <Button variant="outline-primary" size="sm" onClick={() => handleModify(appointment)}>
+                    <td style={{display:'flex', justifyContent:"space-evenly"}}>
+                      <Button variant="outline-primary" size="sm" onClick={() => handleModify(appointment)} >
                         <FaEdit /> Modify
                       </Button>
                       <Button variant="outline-danger" size="sm" className="ml-2" onClick={() => handleCancel(appointment.id)}>
