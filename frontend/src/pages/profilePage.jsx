@@ -36,7 +36,6 @@ const ProfilePage = () => {
     const [updateUserInfo, setUpdateUserInfo] = useState();
     const [userType, setUserType] = useState('');
     const [gender, setGender] = useState('');
-    const [totalPayable, setTotalPayable] = useState('');
     const [phoneNo, setPhoneNo] = useState(userInfo.phoneNo ? userInfo.phoneNo : '');
     const [bankAccNo, setBankAccNo] = useState(userInfo.bankAccNo ? userInfo.bankAccNo : '');
     const [bankAccName, setBankAccName] = useState(userInfo.bankAccName ? userInfo.bankAccName : '');
@@ -44,6 +43,17 @@ const ProfilePage = () => {
     const [bankBranch, setBankBranch] = useState(userInfo.bankBranch ? userInfo.bankBranch : '');    
     const [modalOpen, setModalOpen] = useState(false);        
     const [otp, setOTP] = useState('');    
+    //new ones
+    const [department, setDepartment] = useState('');
+    const [occupation, setOccupation] = useState('');
+    const [specialization, setSpecialization] = useState('');
+    const [birthday, setBirthday] = useState('');
+    const [age, setAge] = useState('');
+    const [address, setAddress] = useState('');
+    const [nic, setNic] = useState('');
+    const [workPlace, setWorkPlace] = useState('');
+    const [martialState, setMartialState] = useState('');
+
     
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -66,7 +76,18 @@ const ProfilePage = () => {
         textAlign:'center'
     };
 
+    const cardHeadingStyle = {
+        background: 'linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)',
+        borderRadius: '10px',
+        color: 'white',
+        textAlign: 'center',
+        marginTop: '20px',
+        marginBottom: '20px',
+        padding: '15px'  // Add padding as per your requirement
+      };
+
     useEffect(() => {
+        console.log(userInfo);
         setEmail(userInfo.email);
         setAccType(userInfo.accType);
         setImage(userInfo.image);
@@ -76,7 +97,15 @@ const ProfilePage = () => {
         setUserType(userInfo.userType);
         setPhoneNo(userInfo.phoneNo);
         setGender(userInfo.gender);
-        setTotalPayable(userInfo.totalPayable);
+        setNic(userInfo.nic);
+        setDepartment(userInfo.department);
+        setOccupation(userInfo.occupation);
+        setSpecialization(userInfo.specialization);
+        setBirthday(userInfo.birthday);
+        setAge(userInfo.age);
+        setAddress(userInfo.address);
+        setWorkPlace(userInfo.workPlace);
+        setMartialState(userInfo.martialState);
         setViewUserInfo(true);
         setUpdateUserInfo(false);
         document.getElementById('updateUser').style.display = 'none';
@@ -112,7 +141,7 @@ const ProfilePage = () => {
         setUserType(userInfo.userType);
         setPhoneNo(userInfo.phoneNo);
         setGender(userInfo.gender);
-        setTotalPayable(userInfo.totalPayable);
+        setNic(userInfo.nic);
         setPhoneNo(userInfo.phoneNo ? userInfo.phoneNo : '');
         setBankAccNo(userInfo.bankAccNo ? userInfo.bankAccNo : '');
         setBankAccName(userInfo.bankAccName ? userInfo.bankAccName : '');
@@ -164,8 +193,6 @@ const ProfilePage = () => {
     
     const submitHandler = async (e) => {
         e.preventDefault();
-        console.log(password);
-        console.log(confirmPassword);
         if(password != confirmPassword && password != null){
             toast.error('Passwords do not match');
         }
@@ -174,7 +201,7 @@ const ProfilePage = () => {
                 setPassword(userInfo.password);
             }
             try {
-                const res = await update({ email, image, firstName, lastName, password, userType, phoneNo, gender, bankAccNo, bankAccName, bankName, bankBranch }).unwrap();
+    const res = await update({ email, image, firstName, lastName, password, userType, phoneNo, gender, bankAccNo, bankAccName, bankName, bankBranch, department, occupation, specialization, birthday, age, address, nic, workPlace, martialState }).unwrap();
                 dispatch(setUserInfo({...res}));
                 toast.success('Profile Updated');
                 navigate('/profile');
@@ -187,8 +214,8 @@ const ProfilePage = () => {
     return (
         <>
             <Sidebar />
-            <div className={dashboardStyles.mainDiv} style={{width:"100%"}}>
-                <Container className={dashboardStyles.container} >
+            <div className={dashboardStyles.mainDiv}>
+                <Container className={dashboardStyles.container}>
                     <Row>
                         <Col>
                             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb" className="py-2 ps-3 mt-4 bg-primary-subtle">
@@ -201,8 +228,8 @@ const ProfilePage = () => {
                     
                     <Row>
                         <Col>
-                            <Card className={`mt-3 py-3 text-center ${dashboardStyles.cardHeading}`}>
-                                {userType == 'patient' ? <h2 style={{color:"white"}}>Patient Profile</h2> : (userType == 'doctor' ? <h2 style={{color:"white"}}>Doctor Profile</h2> : userType == 'admin' ? <h2 style={{color:"white"}}>Admin Profile</h2> : userType == 'manager' ? <h2 style={{color:"white"}}>Manager Profile</h2> : <></>)}
+                            <Card className={`mt-3 py-3 text-center`} style={cardHeadingStyle}>
+                                {userType == 'patient' ? <h2>Patient Dashboard</h2> : (userType == 'Doctor' ? <h2>Doctor Dashboard</h2> : userType == 'admin' ? <h2>Admin Dashboard</h2> : userType == 'kitchen' ? <h2>Inventory Manager Dashboard</h2> : <></>)}
                             </Card>
                         </Col>
                     </Row>
@@ -222,8 +249,32 @@ const ProfilePage = () => {
                                                     </Typography> 
                                                 }
                                                 
-                                                <Typography sx={{ fontWeight: 'bold' }} className='mt-4 text-center'>{firstName+" "+lastName}</Typography>
-                                                <Stack direction="row" spacing={2} className='mt-5'>
+                                                <Typography sx={{ fontWeight: 'bold', textDecoration: 'underline', color: '#ea3367df' }} className='mt-4 text-center'>{firstName+" "+lastName}</Typography>
+                                            <Row className='py-1'>
+                                                <Col>
+                                                    <b>Occupation: </b>
+                                                </Col>
+                                                <Col>
+                                                    {occupation}
+                                                </Col>
+                                            </Row>
+                                            <Row className='py-1'>
+                                                <Col>
+                                                    <b>Marital_Status: </b>
+                                                </Col>
+                                                <Col>
+                                                    {martialState}
+                                                </Col>
+                                            </Row>
+                                            <Row className='py-1'>
+                                                <Col>
+                                                    <b>Work_Place: </b>
+                                                </Col>
+                                                <Col>
+                                                    {workPlace}
+                                                </Col>
+                                            </Row>
+                                                <Stack direction="row" spacing={2} className='mt-3'>
                                                     <Button variant="contained" color="primary" onClick={editProfile} startIcon={<EditIcon />}>Edit</Button>
                                                     <Button variant="outlined" color="error" onClick={ logoutHandler }>Logout</Button>
                                                 </Stack>
@@ -250,37 +301,28 @@ const ProfilePage = () => {
                                         <List sx={{width:'100%'}} component="nav">
                                             <Row className='py-3'>
                                                 <Col>
-                                                    <b>First Name</b>
+                                                    <b>Full Name</b>
                                                 </Col>
                                                 <Col>
-                                                    {firstName}
-                                                </Col>
-                                            </Row>
-                                            <Divider sx={{borderColor:'initial'}}/>
-                                            <Row className='py-3'>
-                                                <Col>
-                                                    <b>Last Name</b>
-                                                </Col>
-                                                <Col>
-                                                    {lastName}
+                                                {firstName+" "+lastName}
                                                 </Col>
                                             </Row>
                                             <Divider sx={{borderColor:'initial'}}/>
                                             <Row className='py-3'>
                                                 <Col>
-                                                    <b>Username</b>
+                                                    <b>NIC</b>
                                                 </Col>
                                                 <Col>
-                                                    {firstName+" "+lastName}
+                                                    {nic}
                                                 </Col>
                                             </Row>
                                             <Divider sx={{borderColor:'initial'}}/>
                                             <Row className='py-3'>
                                                 <Col>
-                                                    <b>Email</b>
+                                                    <b>Birthday</b>
                                                 </Col>
                                                 <Col>
-                                                    {email}
+                                                    {birthday}
                                                 </Col>
                                             </Row>
                                             <Divider sx={{borderColor:'initial'}}/>
@@ -292,8 +334,16 @@ const ProfilePage = () => {
                                                     {gender}
                                                 </Col>
                                             </Row>
+                                            <Row className='py-3'>
+                                                <Col>
+                                                    <b>Address</b>
+                                                </Col>
+                                                <Col>
+                                                    {address}
+                                                </Col>
+                                            </Row>
                                             <Divider sx={{borderColor:'initial'}}/>
-                                            { userType != "owner"?
+                                            { userType != "admin"?
                                             <>
                                             <Row className='my-2'>
                                                 <Col>
@@ -338,7 +388,7 @@ const ProfilePage = () => {
                                     </CardContent>
                                 </Card>
                             </Col>
-                            { userType == "owner"?
+                            { userType == "patient"?
                             <Col className="mb-3" xs={12} md={12}>
                                 <Card>
                                     <CardContent className={`${dashboardStyles.cardContent} ${dashboardStyles.compact}`}>                                        
@@ -467,8 +517,32 @@ const ProfilePage = () => {
                                                 <Form.Control type="file" accept="image/*" onChange={previewImage} hidden/>
                                             </Form.Group>
                                             <br/>
-                                            <Typography sx={{ fontWeight: 'bold' }}>{firstName+" "+lastName}</Typography>
-                                            <Stack direction="row" spacing={2} className='mt-5'>
+                                            <Typography sx={{ fontWeight: 'bold', textDecoration: 'underline', color: '#ea3367df' }}>{firstName+" "+lastName}</Typography>
+                                            <Row className='py-1'>
+                                                <Col>
+                                                    <b>Occupation: </b>
+                                                </Col>
+                                                <Col>
+                                                    {occupation}
+                                                </Col>
+                                            </Row>
+                                            <Row className='py-1'>
+                                                <Col>
+                                                    <b>Marital_Status: </b>
+                                                </Col>
+                                                <Col>
+                                                    {martialState}
+                                                </Col>
+                                            </Row>
+                                            <Row className='py-1'>
+                                                <Col>
+                                                    <b>Work_Place: </b>
+                                                </Col>
+                                                <Col>
+                                                    {workPlace}
+                                                </Col>
+                                            </Row>
+                                            <Stack direction="row" spacing={2} className='mt-2'>
                                                 <LoadingButton type="submit" loading={isLoading} color="warning" variant="contained" startIcon={<UpdateIcon />}>Update</LoadingButton>
                                                 <Button variant="outlined" color="error" onClick={viewProfile}>Cancel</Button>
                                             </Stack>
@@ -654,7 +728,7 @@ const ProfilePage = () => {
                                         </CardContent>
                                     </Card>
                                 </Grid>
-                                { userType == "owner"?
+                                { userType == "patient"?
                                 <Grid item xs={12}>
                                     <Card>
                                         <CardContent style={{display:"flex", alignItems:"center", flexDirection:"column", padding:"10px 50px 30px 50px"}}>
