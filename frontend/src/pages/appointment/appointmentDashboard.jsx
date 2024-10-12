@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Table, Button, Modal, Card, Row, Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../../styles/appointmentDashboard.css"; // Import custom styles
+import style from "../../styles/appointmentDashboard.module.css"; // Import custom styles
 import ScheduleAppointment from "../../components/appointmnt/scheduleAppointment";
 
 const AppointmentDashboard = () => {
@@ -40,13 +40,13 @@ const AppointmentDashboard = () => {
   ];
 
   return (
-    <div className="main-container">
-      <h1 className="mt-2">Appointment Dashboard</h1>
-      <div className="appointment-dashboard-container">
+    <div className={style.mainContainer}>
+      <h1 className="mt-2" style={{display:"flex",justifyContent:"center"}}>Appointment Dashboard</h1>
+      <div className={style.appointmentDashboardContainer}>
         <ScheduleAppointment />
-        <div className="div-row">
+        <div className={style.divRow}>
           {/* Upcoming Appointments */}
-          <Col md={12} className="mb-5 box">
+          <Col md={12} className={`mb-5 ${style.box}`}>
             <Card>
               <Card.Header as="h3">Upcoming Appointments</Card.Header>
               <Card.Body>
