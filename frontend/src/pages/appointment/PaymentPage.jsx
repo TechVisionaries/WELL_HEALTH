@@ -1,7 +1,7 @@
 // src/pages/PaymentPage.jsx
 import { useState } from 'react';
 import axios from 'axios';
-import '../../styles/payment.css';
+import style from  '../../styles/payment.module.css';
 
 const PaymentPage = () => {
     const [isLoading, setIsLoading] = useState(false);

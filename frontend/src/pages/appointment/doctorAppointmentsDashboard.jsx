@@ -3,7 +3,7 @@ import { Button, InputGroup, FormControl, Table, Modal, Badge } from 'react-boot
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import '../../styles/doctorAppointmentsDashboard.css'; // Assuming you'll add custom CSS here
+import style from '../../styles/doctorAppointmentsDashboard.module.css'; // Assuming you'll add custom CSS here
 
 const AppointmentStatus = {
   SCHEDULED: 'Scheduled',
