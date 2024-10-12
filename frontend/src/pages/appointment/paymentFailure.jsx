@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaTimesCircle } from 'react-icons/fa'; // Importing icon
-import '../../styles/paymentStatus.css';
+import style from '../../styles/paymentStatus.module.css';
 
 const PaymentFailure = () => {
   return (

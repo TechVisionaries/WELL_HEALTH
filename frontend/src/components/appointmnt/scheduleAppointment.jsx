@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "../../styles/scheduleAppointment.css";
-import { Modal, Button } from "react-bootstrap"; // Importing Modal and Button from react-bootstrap
+import style from '../../styles/scheduleAppointment.module.css'; // Using module CSS
+import { Modal, Button } from "react-bootstrap"; 
 
 const ScheduleAppointment = () => {
   const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ const ScheduleAppointment = () => {
 
   const navigate = useNavigate();
 
-  const [showSummary, setShowSummary] = useState(false); // For handling dialog display
+  const [showSummary, setShowSummary] = useState(false); 
 
   const sectors = ["Government", "Private"];
   const hospitalsBySector = {
@@ -30,7 +30,6 @@ const ScheduleAppointment = () => {
   };
   const specializations = ["Cardiology", "Dermatology", "Pediatrics", "Oncology"];
   
-  // Service types relevant to Sri Lankan healthcare system
   const serviceTypes = [
     "General Checkup",
     "Surgery",
@@ -38,14 +37,12 @@ const ScheduleAppointment = () => {
     "Emergency",
   ];
 
-  // Consultants categorized by specialization, specific to Sri Lanka
   const consultantsBySpecialization = {
     Cardiology: ["Dr. Ranjith Perera", "Dr. Saman Abeysekera", "Dr. Anura Fernando"],
     Dermatology: ["Dr. Chathura Senanayake", "Dr. Kumudu Gamage", "Dr. Dilhan Samarasinghe"],
     Pediatrics: ["Dr. Nuwan Jayasooriya", "Dr. Shehan Senevirathne", "Dr. Nirmal Cooray"],
     Oncology: ["Dr. Hasitha Peiris", "Dr. Sudesh Rathnayake", "Dr. Udara Chandradasa"],
   };
-
 
   const appointmentTimes = [
     "09:00 AM",
@@ -59,20 +56,18 @@ const ScheduleAppointment = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   
-    // Clear hospital when sector changes
     if (name === "sector") {
       setFormData({ ...formData, hospital: "", [name]: value });
     }
   };
   
-
   const handleDateChange = (date) => {
     setFormData({ ...formData, appointmentDate: date });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setShowSummary(true); // Open summary dialog when form is submitted
+    setShowSummary(true); 
   };
 
   const handleClose = () => setShowSummary(false);
@@ -85,7 +80,7 @@ const ScheduleAppointment = () => {
       consultant: formData.consultant,
       appointmentDate: formData.appointmentDate,
       appointmentTime: formData.appointmentTime,
-      serviceType: formData.serviceType, // Include serviceType in appointment details
+      serviceType: formData.serviceType, 
     };
 
     setShowSummary(false);
@@ -93,17 +88,17 @@ const ScheduleAppointment = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center">Book Doctor Appointment</h2>
-      <form onSubmit={handleSubmit} className="appointment-form">
+    <div className={`container mt-5 ${style.container}`}>
+      <h2 className={`text-center ${style.title}`}>Book Doctor Appointment</h2>
+      <form onSubmit={handleSubmit} className={style.appointmentForm}>
         {/* Patient Name */}
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">
+        <div className={`mb-3 ${style.formGroup}`}>
+          <label htmlFor="name" className={`form-label ${style.label}`}>
             Patient Name
           </label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${style.input}`}
             id="name"
             name="name"
             value={formData.name}
@@ -113,13 +108,13 @@ const ScheduleAppointment = () => {
         </div>
 
         {/* Email */}
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
+        <div className={`mb-3 ${style.formGroup}`}>
+          <label htmlFor="email" className={`form-label ${style.label}`}>
             Email address
           </label>
           <input
             type="email"
-            className="form-control"
+            className={`form-control ${style.input}`}
             id="email"
             name="email"
             value={formData.email}
@@ -129,12 +124,12 @@ const ScheduleAppointment = () => {
         </div>
 
         {/* Select Sector */}
-        <div className="mb-3">
-          <label htmlFor="sector" className="form-label">
+        <div className={`mb-3 ${style.formGroup}`}>
+          <label htmlFor="sector" className={`form-label ${style.label}`}>
             Select Sector
           </label>
           <select
-            className="form-select"
+            className={`form-select ${style.select}`}
             id="sector"
             name="sector"
             value={formData.sector}
@@ -151,12 +146,12 @@ const ScheduleAppointment = () => {
         </div>
 
         {formData.sector && (
-          <div className="mb-3">
-            <label htmlFor="hospital" className="form-label">
+          <div className={`mb-3 ${style.formGroup}`}>
+            <label htmlFor="hospital" className={`form-label ${style.label}`}>
               Select Hospital
             </label>
             <select
-              className="form-select"
+              className={`form-select ${style.select}`}
               id="hospital"
               name="hospital"
               value={formData.hospital}
@@ -171,16 +166,15 @@ const ScheduleAppointment = () => {
               ))}
             </select>
           </div>
-)}
-
+        )}
 
         {/* Select Specialization */}
-        <div className="mb-3">
-          <label htmlFor="specialization" className="form-label">
+        <div className={`mb-3 ${style.formGroup}`}>
+          <label htmlFor="specialization" className={`form-label ${style.label}`}>
             Select Specialization
           </label>
           <select
-            className="form-select"
+            className={`form-select ${style.select}`}
             id="specialization"
             name="specialization"
             value={formData.specialization}
@@ -196,14 +190,14 @@ const ScheduleAppointment = () => {
           </select>
         </div>
 
-        {/* Select Consultant (conditionally displayed based on specialization) */}
+        {/* Select Consultant */}
         {formData.specialization && (
-          <div className="mb-3">
-            <label htmlFor="consultant" className="form-label">
+          <div className={`mb-3 ${style.formGroup}`}>
+            <label htmlFor="consultant" className={`form-label ${style.label}`}>
               Select Consultant
             </label>
             <select
-              className="form-select"
+              className={`form-select ${style.select}`}
               id="consultant"
               name="consultant"
               value={formData.consultant}
@@ -223,10 +217,10 @@ const ScheduleAppointment = () => {
         )}
 
         {/* Appointment Date */}
-        <div className="mb-3">
+        <div className={`mb-3 ${style.formGroup}`}>
           <label
             htmlFor="appointmentDate"
-            className="form-label"
+            className={`form-label ${style.label}`}
             style={{ marginRight: "10px" }}
           >
             Appointment Date
@@ -234,7 +228,7 @@ const ScheduleAppointment = () => {
           <DatePicker
             selected={formData.appointmentDate}
             onChange={handleDateChange}
-            className="form-control"
+            className={`form-control ${style.input}`}
             dateFormat="yyyy/MM/dd"
             required
             placeholderText="Select a date"
@@ -242,12 +236,12 @@ const ScheduleAppointment = () => {
         </div>
 
         {/* Appointment Time */}
-        <div className="mb-3">
-          <label htmlFor="appointmentTime" className="form-label">
+        <div className={`mb-3 ${style.formGroup}`}>
+          <label htmlFor="appointmentTime" className={`form-label ${style.label}`}>
             Select Appointment Time
           </label>
           <select
-            className="form-select"
+            className={`form-select ${style.select}`}
             id="appointmentTime"
             name="appointmentTime"
             value={formData.appointmentTime}
@@ -264,12 +258,12 @@ const ScheduleAppointment = () => {
         </div>
 
         {/* Service Type Dropdown */}
-        <div className="mb-3">
-          <label htmlFor="serviceType" className="form-label">
+        <div className={`mb-3 ${style.formGroup}`}>
+          <label htmlFor="serviceType" className={`form-label ${style.label}`}>
             Select Service Type
           </label>
           <select
-            className="form-select"
+            className={`form-select ${style.select}`}
             id="serviceType"
             name="serviceType"
             value={formData.serviceType}
@@ -285,55 +279,31 @@ const ScheduleAppointment = () => {
           </select>
         </div>
 
-
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className={`btn btn-primary ${style.submitButton}`}>
           Proceed
         </button>
       </form>
 
       {/* Appointment Summary Modal */}
-      <Modal show={showSummary} onHide={handleClose} centered>
+      <Modal show={showSummary} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Appointment Summary</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="appointment-summary p-4">
-            <ul className="list-group">
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Name:</strong> {formData.name}
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Email:</strong> {formData.email}
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Hospital:</strong> {formData.hospital}
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Specialization:</strong> {formData.specialization}
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Consultant:</strong> {formData.consultant}
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Appointment Date:</strong>{" "}
-                {formData.appointmentDate?.toLocaleDateString()}
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Appointment Time:</strong> {formData.appointmentTime}
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Service Type:</strong> {formData.serviceType}
-              </li>
-            </ul>
-            {formData.comments && (
-              <div className="mt-3">
-                <strong>Comments:</strong>
-                <p>{formData.comments}</p>
-              </div>
-            )}
-          </div>
+          <p><strong>Name:</strong> {formData.name}</p>
+          <p><strong>Email:</strong> {formData.email}</p>
+          <p><strong>Sector:</strong> {formData.sector}</p>
+          <p><strong>Hospital:</strong> {formData.hospital}</p>
+          <p><strong>Specialization:</strong> {formData.specialization}</p>
+          <p><strong>Consultant:</strong> {formData.consultant}</p>
+          <p><strong>Appointment Date:</strong> {formData.appointmentDate?.toLocaleDateString()}</p>
+          <p><strong>Appointment Time:</strong> {formData.appointmentTime}</p>
+          <p><strong>Service Type:</strong> {formData.serviceType}</p>
         </Modal.Body>
         <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
           <Button variant="primary" onClick={handleProceedToPayment}>
             Proceed to Payment
           </Button>

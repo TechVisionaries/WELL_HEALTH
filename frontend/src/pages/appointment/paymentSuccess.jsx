@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaCheckCircle } from 'react-icons/fa'; // Importing icon
-import '../../styles/paymentStatus.css';
+import style from '../../styles/paymentStatus.module.css';
 
 const PaymentSuccess = () => {
   return (
