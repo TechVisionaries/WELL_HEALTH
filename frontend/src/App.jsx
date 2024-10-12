@@ -10,7 +10,7 @@ const App = () => {
     <>
     <MainContextProvider>
       <ToastContainer />
-      <Container className='mw-100 py-0 px-0' id="main" style={{position:'fixed', minHeight:'100vh', height:'100%', overflow:'auto', display:'flex', background:'#f8f7fa'}}>
+      <Container className='mw-100 py-0 px-0' id="main" style={{position:'fixed', minHeight:'100vh', height:'100%', overflow:'auto', display:'flex', background:'#c9e7fd'}}>
         <Outlet />
       </Container>
     </MainContextProvider>

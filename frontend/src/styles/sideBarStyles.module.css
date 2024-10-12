@@ -6,24 +6,24 @@
 }
 
 .itmBtn:hover{
-    background: #2d3253 !important;
+    background: #f9dfdf !important;
 }
 
 .active{
-    background: linear-gradient(72.47deg, #7367f0 22.16%, rgba(115, 103, 240, 0.7) 76.47%);
+    background: linear-gradient(72.47deg, #ea3367df 22.16%, rgb(234, 51, 104, 0.7) 76.47%);
     box-shadow: 0px 2px 6px 0px rgb(115 103 240 / 48%);
 }
 
 .active:hover{
-    background: linear-gradient(72.47deg, #7367f0 22.16%, rgba(115, 103, 240, 0.7) 76.47%) !important;
+    background: linear-gradient(72.47deg, #ea3367df 22.16%, #ea3367df 76.47%) !important;
 }
 
 .openMenuBtn{
     position: fixed;
     z-index: 1;
     cursor: pointer;
-    background: #242745;
-    color: white;
+    background: #ff8eaedf;
+    color: rgb(255, 249, 249);
     padding-right: 2px;
     padding-bottom: 2px;
     border-bottom-right-radius: 5px;
@@ -33,7 +33,7 @@
     position: absolute;
     right: 10px;
     padding: 4px;
-    background: #3b4167;
+    background: #ff8eaedf;
     border-radius: 5px;
     cursor: pointer;
 }
