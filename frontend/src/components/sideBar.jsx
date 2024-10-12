@@ -4,7 +4,7 @@ import { Link, useLocation  } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import { Box, List, CssBaseline, Divider, ListItem, ListItemButton, ListItemIcon, ListItemText, useMediaQuery, Tooltip } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
-import { HomeRounded, Person, HomeWorkRounded, MenuRounded, MenuOpenRounded, ContactSupportRounded, Kitchen,RateReviewRounded, MonetizationOn, HowToReg, MenuBook  } from '@mui/icons-material';
+import { HomeRounded, Person, HomeWorkRounded, MenuRounded, MenuOpenRounded, ContactSupportRounded, Kitchen,RateReviewRounded, MonetizationOn, HowToReg, MenuBook, Groups2  } from '@mui/icons-material';
 import { Button, Image } from 'react-bootstrap';
 import {setSideBarStatus} from '../slices/customizeSlice';
 
@@ -176,21 +176,21 @@ export default function Sidebar() {
           : <></>}
 
           {/* Manager Navigations */}
-          {userInfo.userType == 'manager' ?
+          {/* {userInfo.userType == 'manager' ? */}
           <>
-            <Link to='/admin/boardings/' style={{textDecoration:'none', color:'black'}}><ListItem disablePadding sx={{ display: 'block' }}>
-              <Tooltip title={!open ? "Boardings" : ''} placement="right" arrow>
-                <ListItemButton sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'initial', px: 2.5, }} className={`${sideBarStyles.itmBtn} ${(activeRoute.startsWith('/admin/boardings')) ? sideBarStyles.active : ''}`}>
+            <Link to='/staff' style={{textDecoration:'none', color:'black'}}><ListItem disablePadding sx={{ display: 'block' }}>
+              <Tooltip title={!open ? "Staff" : ''} placement="right" arrow>
+                <ListItemButton sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'initial', px: 2.5, }} className={`${sideBarStyles.itmBtn} ${(activeRoute.startsWith('/staff')) ? sideBarStyles.active : ''}`}>
                   <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'black' }}>
-                    <HomeWorkRounded />
+                    <Groups2 />
                   </ListItemIcon>
-                  <ListItemText primary={"Boardings"} sx={{ opacity: open ? 1 : 0 }} />
+                  <ListItemText primary={"Staff"} sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
               </Tooltip>
             </ListItem></Link>
 
           </>
-          : <></>}
+          {/* : <></>} */}
 
           {/* doctor navigation */}
           <Link to='/doctor/appointments' style={{ textDecoration: 'none', color: 'black' }}>
