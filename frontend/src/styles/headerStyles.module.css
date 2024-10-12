@@ -10,17 +10,19 @@
 }
 
 .header.sticky {
-  background-color: #1976d2 !important;
-  color: #fff !important; 
+  background-color: #fff !important;
+  color: #ff608d !important; 
   padding-top: 0.2em;
   padding-bottom: 0.2em;
   box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12) !important;
 }
 
 .navBtns:hover{
-  color: #000000;
+  color: #fff;
+  background-color: #ff608d !important;
 }
 
 .navBtns2:hover{
-  color: #1976d2;
+  color: #fff;
+  background-color: #ff608d !important;
 }
