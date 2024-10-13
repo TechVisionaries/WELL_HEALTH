@@ -1,47 +1,46 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const medicinesSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      required: false,
-    },
-    dosage: {
-      type: String,
-      required: false,
-    },
-    frequency:{
-      type: String,
-      required: false,
-    },
-    duration:{
-      type: String,
-      required: false,
-    },
-    instructions:{
-        type: String,
-        required: false,
-      },
-  });
+  name: {
+    type: String,
+    required: false,
+  },
+  dosage: {
+    type: String,
+    required: false,
+  },
+  frequency: {
+    type: String,
+    required: false,
+  },
+  duration: {
+    type: String,
+    required: false,
+  },
+  instructions: {
+    type: String,
+    required: false,
+  },
+});
 
-const prescriptionSchema = new mongoose.Schema({
-
+const prescriptionSchema = new mongoose.Schema(
+  {
     userId: {
-        type: mongoose.Schema.Types.ObjectId, 
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
     },
     medicines: [medicinesSchema],
 
     doctorId: {
-        type: mongoose.Schema.Types.ObjectId, 
-        ref:'User'
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-    
-    
-}, {
-    timestamps: true
-});
+const Prescription = mongoose.model("Prescription", prescriptionSchema);
 
-const Prescription = mongoose.model('Prescription', prescriptionSchema);
-
-module.exports = Prescription;
+export default Prescription;
