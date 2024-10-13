@@ -16,6 +16,7 @@ import { GiMeal } from 'react-icons/gi';
 import { LocalHospital } from '@mui/icons-material';
 import { FolderShared } from '@mui/icons-material';
 import EventAvailableRounded from '@mui/icons-material/EventAvailableRounded';
+import ReorderIcon from "@mui/icons-material/Reorder";
 
 
 const drawerWidth = 240;
@@ -128,14 +129,14 @@ export default function Sidebar() {
               </ListItemButton>
             </Tooltip>
           </ListItem></Link>
-          <Link to='/health-card' style={{textDecoration:'none', color:'black'}}>
+           <Link to='/health-card' style={{textDecoration:'none', color:'white'}}>
           <ListItem disablePadding sx={{ display: 'block' }}>
             <Tooltip title={!open ? "health-card" : ''} placement="right" arrow>  
               <ListItemButton 
                 sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'initial', px: 2.5 }} 
                 className={`${sideBarStyles.itmBtn} ${activeRoute === '/health-card' ? sideBarStyles.active : ''}`}
               >
-                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'black' }}>
+                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'white' }}>
                   <LocalHospital />
                 </ListItemIcon>
                 <ListItemText primary={"health-card"} sx={{ opacity: open ? 1 : 0 }} />
@@ -154,6 +155,21 @@ export default function Sidebar() {
                 <FolderShared />
               </ListItemIcon>
               <ListItemText primary={"medical-records"} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
+      </Link>
+      <Link to='/prescriptions' style={{textDecoration:'none', color:'white'}}>
+        <ListItem disablePadding sx={{ display: 'block' }}>
+          <Tooltip title={!open ? "Prescriptions" : ''} placement="right" arrow>  
+            <ListItemButton 
+              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'initial', px: 2.5 }} 
+              className={`${sideBarStyles.itmBtn} ${activeRoute === '/prescriptions' ? sideBarStyles.active : ''}`}
+            >
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'white' }}>
+                <ReorderIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Prescriptions"} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </Tooltip>
         </ListItem>
