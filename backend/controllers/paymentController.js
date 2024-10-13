@@ -1,14 +1,17 @@
 // backend/controllers/paymentController.js
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
+import Appointment from '../models/appointmentModel.js';
 
 dotenv.config();
+
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Function to create a Checkout Session
 export const createCheckoutSession = async (req, res) => {
-  const { amount } = req.body; // Get the amount from the request body
+  const { amount,appointmentId  } = req.body; // Get the amount from the request body
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -28,11 +31,16 @@ export const createCheckoutSession = async (req, res) => {
       mode: 'payment',
       success_url: `${process.env.SUCCESS_URL}`, // Redirect URL after successful payment
       cancel_url: `${process.env.CANCEL_URL}`, // Redirect URL if the user cancels
+      metadata: {
+        appointmentId, // Include the appointmentId in the metadata
+      },
     });
 
     res.json({ url: session.url });
   } catch (error) {
     console.error('Error creating checkout session:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.row.message });
   }
 };
+
+
