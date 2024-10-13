@@ -13,50 +13,79 @@ import { useMainContext } from "../context/hooks";
 import { useSelector } from "react-redux";
 
 const renderCard = (prescription) => {
-  console.log(new Date(prescription.createdAt));
-
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
   const formattedDate = new Date(prescription.createdAt).toLocaleDateString(
     "en-GB",
     options
   );
+
   return (
     <CardContent>
       <Typography gutterBottom sx={{ color: "text.secondary", fontSize: 14 }}>
         {`Date: ${formattedDate}`}
       </Typography>
-      <Grid container spacing={2} sx={{ fontWeight: "bold" }}>
+
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          fontWeight: "bold",
+          borderBottom: "2px solid #ccc",
+          pb: 1,
+          mb: 2,
+        }}
+      >
         <Grid item xs={3}>
           <Typography
-            sx={{ color: "text.primary", fontSize: { xs: 10, sm: 16 } }}
+            sx={{
+              color: "text.primary",
+              fontSize: { xs: 12, sm: 16 },
+              fontWeight: "bold",
+            }}
           >
             Medicine Name
           </Typography>
         </Grid>
         <Grid item xs={2}>
           <Typography
-            sx={{ color: "text.primary", fontSize: { xs: 10, sm: 16 } }}
+            sx={{
+              color: "text.primary",
+              fontSize: { xs: 12, sm: 16 },
+              fontWeight: "bold",
+            }}
           >
             Dosage
           </Typography>
         </Grid>
         <Grid item xs={2}>
           <Typography
-            sx={{ color: "text.primary", fontSize: { xs: 10, sm: 16 } }}
+            sx={{
+              color: "text.primary",
+              fontSize: { xs: 12, sm: 16 },
+              fontWeight: "bold",
+            }}
           >
             Frequency
           </Typography>
         </Grid>
         <Grid item xs={2}>
           <Typography
-            sx={{ color: "text.primary", fontSize: { xs: 10, sm: 16 } }}
+            sx={{
+              color: "text.primary",
+              fontSize: { xs: 12, sm: 16 },
+              fontWeight: "bold",
+            }}
           >
             Duration
           </Typography>
         </Grid>
         <Grid item xs={3}>
           <Typography
-            sx={{ color: "text.primary", fontSize: { xs: 10, sm: 16 } }}
+            sx={{
+              color: "text.primary",
+              fontSize: { xs: 12, sm: 16 },
+              fontWeight: "bold",
+            }}
           >
             Instructions
           </Typography>
@@ -66,25 +95,66 @@ const renderCard = (prescription) => {
       {prescription.medicines.map((medicine, index) => (
         <Grid container spacing={2} key={index} sx={{ mt: 2 }}>
           <Grid item xs={3}>
-            <Typography>{medicine.name}</Typography>
+            <Typography
+              sx={{
+                color: "text.primary",
+                fontSize: { xs: 12, sm: 16 },
+                fontWeight: "normal",
+              }}
+            >
+              {medicine.name}
+            </Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography>{medicine.dosage}</Typography>
+            <Typography
+              sx={{
+                color: "text.primary",
+                fontSize: { xs: 12, sm: 16 },
+                fontWeight: "normal",
+              }}
+            >
+              {medicine.dosage}
+            </Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography>{medicine.frequency}</Typography>
+            <Typography
+              sx={{
+                color: "text.primary",
+                fontSize: { xs: 12, sm: 16 },
+                fontWeight: "normal",
+              }}
+            >
+              {medicine.frequency}
+            </Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography>{medicine.duration}</Typography>
+            <Typography
+              sx={{
+                color: "text.primary",
+                fontSize: { xs: 12, sm: 16 },
+                fontWeight: "normal",
+              }}
+            >
+              {medicine.duration}
+            </Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography>{medicine.instructions}</Typography>
+            <Typography
+              sx={{
+                color: "text.primary",
+                fontSize: { xs: 12, sm: 16 },
+                fontWeight: "normal",
+              }}
+            >
+              {medicine.instructions}
+            </Typography>
           </Grid>
         </Grid>
       ))}
     </CardContent>
   );
 };
+
 
 function PrescriptionsPage() {
   const { userInfo } = useSelector((state) => state.auth);

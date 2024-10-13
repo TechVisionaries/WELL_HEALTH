@@ -62,7 +62,7 @@ const router = createBrowserRouter(
       <Route path="/health-card" element={<HealthCardPage />} />
       <Route path="/patient-profile" element={<PatientProfile />} />
       <Route path="/add-prescription" element={<AddPrescription />} />
-      <Route path="/prescriptions" element={PrescriptionsPage} />
+      <Route path="/prescriptions" element={<PrescriptionsPage />} />
 
       {/* Private Routes */}
       <Route path="" element={<PrivateRoute />}>
