@@ -40,6 +40,7 @@ import PaymentFailure from './pages/appointment/paymentFailure.jsx';
 import DoctorAppointmentsDashboard from './pages/appointment/doctorAppointmentsDashboard.jsx';
 import StaffPage from './pages/manage staff/staffPage.jsx';
 import PrescriptionsPage from './pages/PrescriptionsPage.jsx';
+import ManageUsersPage from './pages/manageUsersPage.jsx';
 
 
 
@@ -53,6 +54,7 @@ const router = createBrowserRouter(
       <Route index={true} path="/manager-home" element={<ManagerHomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/manage_users" element={<ManageUsersPage />} />
       <Route
         path="/register/:tokenHeader/:tokenPayload/:tokenSecret"
         element={<VerifyEmailPage />}
