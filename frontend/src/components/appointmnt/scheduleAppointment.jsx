@@ -4,8 +4,13 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import style from '../../styles/scheduleAppointment.module.css'; // Using module CSS
 import { Modal, Button } from "react-bootstrap"; 
+import axios from "axios";
 
 const ScheduleAppointment = () => {
+
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -65,6 +70,16 @@ const ScheduleAppointment = () => {
     setFormData({ ...formData, appointmentDate: date });
   };
 
+const dataSubmit = async () => {
+  try{
+    const response = await axios.post(`${baseUrl}/appointments`, formData,{ withCredentials: true });
+    console.log(response.data);
+  }catch(error){
+    console.error(`Error: ${error}`);
+  }
+};
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowSummary(true); 
@@ -83,8 +98,10 @@ const ScheduleAppointment = () => {
       serviceType: formData.serviceType, 
     };
 
+    dataSubmit();
+
     setShowSummary(false);
-    navigate("/appointment/payment", { state: { appointmentDetails } });
+    // navigate("/appointment/payment", { state: { appointmentDetails } });
   };
 
   return (
@@ -304,7 +321,7 @@ const ScheduleAppointment = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleProceedToPayment}>
+          <Button variant="primary" onClick={handleProceedToPayment} >
             Proceed to Payment
           </Button>
         </Modal.Footer>

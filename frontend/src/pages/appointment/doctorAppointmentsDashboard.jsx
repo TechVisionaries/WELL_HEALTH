@@ -4,6 +4,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import style from '../../styles/doctorAppointmentsDashboard.module.css'; // Assuming you'll add custom CSS here
+import Sidebar from '../../components/sideBar';
 
 const AppointmentStatus = {
   SCHEDULED: 'Scheduled',
@@ -75,6 +76,9 @@ const DoctorAppointmentsDashboard = () => {
   };
 
   return (
+    <>
+      <Sidebar />
+
     <div className={`container-fluid mt-4 ${style.widerContainer}`}>
       <h1 className="text-center mb-4">Appointment Dashboard</h1>
 
@@ -158,6 +162,7 @@ const DoctorAppointmentsDashboard = () => {
         </Modal.Footer>
       </Modal>
     </div>
+    </>
   );
 };
 
