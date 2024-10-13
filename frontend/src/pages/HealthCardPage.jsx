@@ -150,84 +150,135 @@ function HealthCardPage() {
 
   function render_profile_card() {
     return (
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2} sx={{ p: 4 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          backgroundColor: "#f9f9f9",
+          borderRadius: 2,
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          p: 4,
+          maxWidth: "800px",
+          margin: "auto",
+        }}
+      >
+        <Grid container spacing={3}>
           <Grid item xs={12}>
-            {/* <Item> */}
-            <Typography variant="h6">
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                color: "#333",
+                textAlign: "center",
+                mb: 3,
+              }}
+            >
               {`Hello ${
                 userInfo ? userInfo.firstName : "User"
-              } here is your health card..`}
+              }, here is your health card`}
             </Typography>
-            {/* </Item> */}
           </Grid>
-          <Grid item xs={12}>
-            <Item sx={{ p: 6 }}>
+
+          <Grid
+            item
+            xs={12}
+            sx={{ display: "flex", justifyContent: "center", mb: 3 }}
+          >
+            <Box
+              sx={{
+                p: 2,
+                backgroundColor: "#fff",
+                borderRadius: 2,
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <QRCode
                 size={256}
                 style={{ height: "20vh", maxWidth: "100%", width: "100%" }}
                 value={"https://www.google.com"}
                 viewBox={`0 0 256 256`}
               />
-            </Item>
+            </Box>
           </Grid>
+
           <Grid item xs={12}>
             <TextField
-              id="standard-size-normal"
-              defaultValue="Name : "
-              label="Name"
-              variant="standard"
+              id="name-field"
+              label="Full Name"
+              variant="outlined"
               value={fullName}
-              sx={{ width: "100%", p: 2 }}
               onChange={(e) => setFullName(e.target.value)}
+              sx={{
+                width: "100%",
+                backgroundColor: "#fff",
+                borderRadius: 1,
+                mb: 2,
+              }}
             />
           </Grid>
-          <Grid item xs={12}>
-            {/* <TextField
-              id="standard-size-normal"
-              defaultValue="NIC : "
-              variant="standard"
-              sx={{width:'100%', p:2}}
-            /> */}
-          </Grid>
+
           <Grid item xs={12}>
             <TextField
-              id="standard-size-normal"
-              defaultValue="Hospital : "
-              variant="standard"
+              id="hospital-field"
               label="Hospital"
+              variant="outlined"
               value={hospital}
               onChange={(e) => setHospital(e.target.value)}
-              sx={{ width: "100%", p: 2 }}
+              sx={{
+                width: "100%",
+                backgroundColor: "#fff",
+                borderRadius: 1,
+                mb: 2,
+              }}
             />
           </Grid>
+
           <Grid item xs={12}>
             <TextField
-              id="standard-size-normal"
-              defaultValue="Contact : "
-              variant="standard"
+              id="contact-field"
               label="Contact"
+              variant="outlined"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
-              sx={{ width: "100%", p: 2 }}
+              sx={{
+                width: "100%",
+                backgroundColor: "#fff",
+                borderRadius: 1,
+                mb: 2,
+              }}
             />
           </Grid>
+
           <Grid item xs={12}>
             <TextField
-              id="standard-size-normal"
-              defaultValue="Emergency : "
-              label="Emergency"
-              variant="standard"
+              id="emergency-field"
+              label="Emergency Contact"
+              variant="outlined"
               value={emergency}
               onChange={(e) => setEmergency(e.target.value)}
-              sx={{ width: "100%", p: 2 }}
+              sx={{
+                width: "100%",
+                backgroundColor: "#fff",
+                borderRadius: 1,
+                mb: 3,
+              }}
             />
           </Grid>
-          <Grid item xs={12}>
+
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
             <Button
               color="success"
               variant="contained"
               onClick={update_health_card_data}
+              sx={{
+                backgroundColor: "#4caf50",
+                "&:hover": { backgroundColor: "#45a049" },
+                borderRadius: 2,
+                textTransform: "none",
+                padding: "10px 20px",
+              }}
             >
               Save Changes
             </Button>
@@ -237,10 +288,21 @@ function HealthCardPage() {
     );
   }
 
+
   function render_medical_card() {
     return (
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2} sx={{ p: 4 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          backgroundColor: "#f9f9f9",
+          borderRadius: 2,
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          p: 4,
+          maxWidth: "800px",
+          margin: "auto",
+        }}
+      >
+        <Grid container spacing={2}>
           <Grid
             item
             xs={12}
@@ -248,29 +310,14 @@ function HealthCardPage() {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+              borderBottom: "1px solid #ddd",
+              pb: 1,
             }}
           >
-            <Typography variant="h7" xs={6} sx={{ fontWeight: "bold" }}>
-              Hospital :
-            </Typography>
-            <Typography variant="h7" xs={6}>
-              {health_card?.hospital}
-            </Typography>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Typography variant="h7" xs={6} sx={{ fontWeight: "bold" }}>
-              Blood Group :
-            </Typography>
-            <Typography variant="h7" xs={6}>
-              {health_card?.bloodGroup}
+            <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333" }}>
+              Medical Card Details
             </Typography>
           </Grid>
 
@@ -282,20 +329,66 @@ function HealthCardPage() {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              mb: 2,
             }}
           >
-            <Typography variant="h7" xs={6} sx={{ fontWeight: "bold" }}>
-              Diabetes :
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: "bold", color: "#555" }}
+            >
+              Hospital:
+            </Typography>
+            <Typography variant="subtitle1" sx={{ color: "#666" }}>
+              {health_card?.hospital || "N/A"}
+            </Typography>
+          </Grid>
+
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: "bold", color: "#555" }}
+            >
+              Blood Group:
+            </Typography>
+            <Typography variant="subtitle1" sx={{ color: "#666" }}>
+              {health_card?.bloodGroup || "N/A"}
+            </Typography>
+          </Grid>
+
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: "bold", color: "#555" }}
+            >
+              Diabetes:
             </Typography>
             <RadioGroup
               row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
               onChange={(e) => setDiabetes(e.target.value === "true")}
-              value={diabetes === true ? "true" : "false"}
+              value={diabetes ? "true" : "false"}
             >
-              <FormControlLabel value={true} control={<Radio />} label="Yes" />
-              <FormControlLabel value={false} control={<Radio />} label="No" />
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
 
@@ -307,20 +400,22 @@ function HealthCardPage() {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              mb: 2,
             }}
           >
-            <Typography variant="h7" xs={6} sx={{ fontWeight: "bold" }}>
-              B. Pressure :
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: "bold", color: "#555" }}
+            >
+              Blood Pressure:
             </Typography>
             <RadioGroup
               row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
               onChange={(e) => setBloodPressure(e.target.value === "true")}
               value={bloodPressure ? "true" : "false"}
             >
-              <FormControlLabel value={true} control={<Radio />} label="Yes" />
-              <FormControlLabel value={false} control={<Radio />} label="No" />
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
 
@@ -332,201 +427,186 @@ function HealthCardPage() {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              mb: 4,
             }}
           >
-            <Typography variant="h7" xs={6} sx={{ fontWeight: "bold" }}>
-              Eye Pressure :
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: "bold", color: "#555" }}
+            >
+              Eye Pressure:
             </Typography>
             <RadioGroup
               row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
               onChange={(e) => setEyePressure(e.target.value === "true")}
-              value={eyePressure === true ? "true" : "false"}
+              value={eyePressure ? "true" : "false"}
             >
-              <FormControlLabel value={true} control={<Radio />} label="Yes" />
-              <FormControlLabel value={false} control={<Radio />} label="No" />
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
 
-          {/* <Grid item xs={12} sx={{display:'flex',flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-            <Typography variant='h7'xs={6} sx={{fontWeight:'bold'}}>
-                Disorders : 
-              </Typography>
-                <RadioGroup
-                  row
-                  aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
-                  // onChange={(e)=>setDiabetes(e.target.value)}
-                  value={true}
-              >
-                  <FormControlLabel disabled value={true} control={<Radio />} label="Yes" />
-                  <FormControlLabel disabled value={false} control={<Radio />} label="No" />
-                </RadioGroup>
-          </Grid> */}
-
-          {/* <Grid item xs={12} sx={{display:'flex',flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-            <Typography variant='h7'xs={6} sx={{fontWeight:'bold'}}>
-                Stroke : 
-              </Typography>
-                <RadioGroup
-                  row
-                  aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
-                  // onChange={(e)=>setDiabetes(e.target.value)}
-                  value={true}
-              >
-                  <FormControlLabel disabled value={true} control={<Radio />} label="Yes" />
-                  <FormControlLabel disabled value={false} control={<Radio />} label="No" />
-                </RadioGroup>
-          </Grid>
-
-          <Grid item xs={12} sx={{display:'flex',flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-            <Typography variant='h7'xs={6} sx={{fontWeight:'bold'}}>
-                Allergies : 
-              </Typography>
-                <RadioGroup
-                  row
-                  aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
-                  // onChange={(e)=>setDiabetes(e.target.value)}
-                  value={true}
-              >
-                  <FormControlLabel disabled value={true} control={<Radio />} label="Yes" />
-                  <FormControlLabel disabled value={false} control={<Radio />} label="No" />
-                </RadioGroup>
-          </Grid> */}
-
-          <Grid container spacing={2} sx={{ p: 4 }}>
-            <Grid
-              item
-              xs={12}
+          <Grid item xs={12}>
+            <Typography
+              variant="h6"
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
+                fontWeight: "bold",
+                color: "#333",
+                textAlign: "center",
+                mb: 2,
               }}
             >
-              <Typography variant="h6" xs={6} sx={{ fontWeight: "bold" }}>
-                Allergy Drugs
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                id="standard-size-normal"
-                variant="standard"
-                multiline
-                maxRows={4}
-                value={allergyDrugs}
-                sx={{ width: "100%", p: 2 }}
-                onChange={(e) => setAllergyDrugs(e.target.value)}
-              />
-              <Divider />
-              {/* <Typography variant='h7' sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                Ammoxiline
-              </Typography>
-              <Divider/>
-              <Typography variant='h7' sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                Rapidisol
-              </Typography>
-              <Divider/>
-              <Typography variant='h7' sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                Ammoxiline
-              </Typography>
-              <Divider/> */}
-              <Grid item xs={12}>
-                <Button
-                  color="success"
-                  variant="contained"
-                  onClick={update_health_card_data}
-                >
-                  Save Changes
-                </Button>
-              </Grid>
-            </Grid>
+              Allergy Drugs
+            </Typography>
+            <TextField
+              id="standard-size-normal"
+              variant="outlined"
+              multiline
+              maxRows={4}
+              value={allergyDrugs}
+              sx={{
+                width: "100%",
+                backgroundColor: "#fff",
+                borderRadius: 1,
+                mb: 2,
+              }}
+              onChange={(e) => setAllergyDrugs(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              color="success"
+              variant="contained"
+              onClick={update_health_card_data}
+              sx={{
+                mt: 2,
+                backgroundColor: "#4caf50",
+                "&:hover": { backgroundColor: "#45a049" },
+                borderRadius: 2,
+                textTransform: "none",
+              }}
+            >
+              Save Changes
+            </Button>
           </Grid>
         </Grid>
       </Box>
     );
   }
 
+
   function most_recent_medical_records() {
     return (
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sx={{ p: 2 }}>
-            {/* <Item> */}
-            <Typography variant="h6">Most Recent Medical Records</Typography>
-            {/* </Item> */}
-          </Grid>
-
-          <Grid
-            item
-            xs={12}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
-          >
-            <Typography variant="h7" xs={6} sx={{ fontWeight: "bold" }}>
-              Date :
-            </Typography>
-            <Typography variant="h7" xs={6}>
-              {`${
-                lastMedical
-                  ? new Date(lastMedical.createdAt).toISOString().split("T")[0]
-                  : "--/--/----"
-              }`}
+      <Box
+        sx={{
+          flexGrow: 1,
+          backgroundColor: "#f9f9f9",
+          borderRadius: 2,
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          p: 4,
+          maxWidth: "900px",
+          margin: "auto",
+        }}
+      >
+        <Grid container spacing={3}>
+          {/* Header */}
+          <Grid item xs={12} sx={{ textAlign: "center", mb: 3 }}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", color: "#333", fontSize: "1.75rem" }}
+            >
+              Most Recent Medical Records
             </Typography>
           </Grid>
 
+          {/* Date */}
           <Grid
             item
             xs={12}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
+            sx={{ display: "flex", alignItems: "center", mb: 2 }}
           >
-            <Typography variant="h7" xs={6} sx={{ fontWeight: "bold" }}>
-              Consultant :
+            <Typography
+              variant="body1"
+              sx={{
+                fontWeight: "bold",
+                fontSize: "1rem",
+                color: "#333",
+                mr: 1,
+              }}
+            >
+              Date:
             </Typography>
-            <Typography variant="h7" xs={6}>
-              {`${
-                lastMedical
-                  ? lastMedical.doctorId?.firstName +
-                    lastMedical.doctorId?.lastName
-                  : ""
-              }`}
+            <Typography
+              variant="body1"
+              sx={{ fontSize: "1rem", color: "#666" }}
+            >
+              {lastMedical
+                ? new Date(lastMedical.createdAt).toISOString().split("T")[0]
+                : "--/--/----"}
             </Typography>
           </Grid>
 
-          {/* <Grid item xs={12} sx={{display:'flex',alignItems:'center', justifyContent:'flex-start'}}>
-            <Typography variant='h7'xs={6} sx={{fontWeight:'bold'}}>
-                Sickness :  
-            </Typography>
-            <Typography variant='h7' xs={6}>
-              {` Influenza Beta Rapid`}
-            </Typography>
-          </Grid> */}
-
+          {/* Consultant */}
           <Grid
             item
             xs={12}
-            sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+            sx={{ display: "flex", alignItems: "center", mb: 2 }}
           >
-            <Box sx={{ width: "100%", p: 3 }}>
-              {/* Header for the medicines table */}
-              <Typography variant="h6" sx={{ mb: 2, textAlign: "center" }}>
+            <Typography
+              variant="body1"
+              sx={{
+                fontWeight: "bold",
+                fontSize: "1rem",
+                color: "#333",
+                mr: 1,
+              }}
+            >
+              Consultant:
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ fontSize: "1rem", color: "#666" }}
+            >
+              {lastMedical
+                ? `${lastMedical.doctorId?.firstName} ${lastMedical.doctorId?.lastName}`
+                : "N/A"}
+            </Typography>
+          </Grid>
+
+          {/* Medicines List */}
+          <Grid item xs={12}>
+            <Box
+              sx={{
+                backgroundColor: "#fff",
+                borderRadius: 2,
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                p: 3,
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "1.5rem",
+                  color: "#333",
+                  textAlign: "center",
+                  mb: 2,
+                }}
+              >
                 Medicines List
               </Typography>
+
+              {/* Medicines Table Header */}
               <Grid container spacing={2} sx={{ mb: 2 }}>
                 <Grid item xs={3}>
                   <Typography
                     variant="subtitle1"
-                    sx={{ fontWeight: "bold", textAlign: "center" }}
+                    sx={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      color: "#555",
+                    }}
                   >
                     Name
                   </Typography>
@@ -534,7 +614,11 @@ function HealthCardPage() {
                 <Grid item xs={3}>
                   <Typography
                     variant="subtitle1"
-                    sx={{ fontWeight: "bold", textAlign: "center" }}
+                    sx={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      color: "#555",
+                    }}
                   >
                     Dosage
                   </Typography>
@@ -542,7 +626,11 @@ function HealthCardPage() {
                 <Grid item xs={3}>
                   <Typography
                     variant="subtitle1"
-                    sx={{ fontWeight: "bold", textAlign: "center" }}
+                    sx={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      color: "#555",
+                    }}
                   >
                     Frequency
                   </Typography>
@@ -550,7 +638,11 @@ function HealthCardPage() {
                 <Grid item xs={3}>
                   <Typography
                     variant="subtitle1"
-                    sx={{ fontWeight: "bold", textAlign: "center" }}
+                    sx={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      color: "#555",
+                    }}
                   >
                     Duration
                   </Typography>
@@ -560,27 +652,45 @@ function HealthCardPage() {
                 </Grid>
               </Grid>
 
-              {/* Mapping over the medicines data */}
+              {/* Medicines Data */}
               {lastMedical?.medicines?.map((medicine) => (
                 <Grid
                   container
                   spacing={2}
                   key={medicine._id}
-                  sx={{ alignItems: "center" }}
+                  sx={{ alignItems: "center", mb: 1 }}
                 >
                   <Grid item xs={3}>
-                    <Typography variant="body1">{medicine.name}</Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ textAlign: "center", color: "#444" }}
+                    >
+                      {medicine.name}
+                    </Typography>
                   </Grid>
                   <Grid item xs={3}>
-                    <Typography variant="body1">{medicine.dosage}</Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ textAlign: "center", color: "#444" }}
+                    >
+                      {medicine.dosage}
+                    </Typography>
                   </Grid>
                   <Grid item xs={3}>
-                    <Typography variant="body1">
+                    <Typography
+                      variant="body1"
+                      sx={{ textAlign: "center", color: "#444" }}
+                    >
                       {medicine.frequency}
                     </Typography>
                   </Grid>
                   <Grid item xs={3}>
-                    <Typography variant="body1">{medicine.duration}</Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ textAlign: "center", color: "#444" }}
+                    >
+                      {medicine.duration}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12}>
                     <Divider />
@@ -593,6 +703,10 @@ function HealthCardPage() {
       </Box>
     );
   }
+
+
+
+
 
   // function most_recent_test_reports(){
 
