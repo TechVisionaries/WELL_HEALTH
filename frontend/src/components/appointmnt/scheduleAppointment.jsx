@@ -6,7 +6,7 @@ import style from '../../styles/scheduleAppointment.module.css'; // Using module
 import { Modal, Button } from "react-bootstrap"; 
 import axios from "axios";
 
-const ScheduleAppointment = () => {
+const ScheduleAppointment = ({ onAppointmentScheduled }) => {
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -20,7 +20,6 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
     consultant: "",
     appointmentDate: null,
     appointmentTime: "",
-    comments: "",
     serviceType: "", 
   });
 
@@ -74,6 +73,26 @@ const dataSubmit = async () => {
   try{
     const response = await axios.post(`${baseUrl}/appointments`, formData,{ withCredentials: true });
     console.log(response.data);
+  
+    if(response.status === 201){
+      onAppointmentScheduled();
+    }
+
+    // set the form data to empty
+    setFormData({
+      name: "",
+      email: "",
+      sector: "",
+      hospital: "",
+      specialization: "",
+      consultant: "",
+      appointmentDate: null,
+      appointmentTime: "",
+      serviceType: "",
+    });
+
+
+
   }catch(error){
     console.error(`Error: ${error}`);
   }

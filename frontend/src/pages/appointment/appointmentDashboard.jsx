@@ -70,11 +70,32 @@ const fetchUpcomingAppointments = async () => {
   }
 };
 
+
+  // Callback function to refresh the appointment list
+  const onAppointmentScheduled = () => {
+    fetchUpcomingAppointments();
+  };
+
+
   useEffect(() => {
     // Fetch upcoming appointments from the server
     fetchUpcomingAppointments();
     console.log("Upcoming Appointments: ", upcomingAppointments);
   }, []);
+
+const handleCancelAppointment = async (e,id) => {
+  e.preventDefault();
+  console.log("Cancel appointment clicked");
+
+  try{
+    const response = await axios.delete(`${baseUrl}/appointments/${id}`,{ withCredentials: true });    
+    console.log("Response: ", response.data); 
+    fetchUpcomingAppointments();
+  }catch(error){
+    console.error(`Error: ${error}`);
+  }
+};
+
 
   return (
     <>
@@ -85,7 +106,7 @@ const fetchUpcomingAppointments = async () => {
           <h2>Appointment Dashboard</h2>
         </Card>
         <div className={style.appointmentDashboardContainer}>
-          <ScheduleAppointment />
+          <ScheduleAppointment onAppointmentScheduled={onAppointmentScheduled} />
           <div className={style.divRow}>
             {/* Upcoming Appointments */}
             <Col md={12} className={`mb-5 ${style.box}`}>
@@ -104,13 +125,13 @@ const fetchUpcomingAppointments = async () => {
                     </thead>
                     <tbody>
                       {upcomingAppointments.map((appointment) => (
-                        <tr key={appointment.id}>
+                        <tr key={appointment._id}>
                           <td>{appointment.appointmentDate}</td>
                           <td>{appointment.hospital}</td>
                           <td>{appointment.appointmentTime}</td>
                           <td>{appointment.consultant}</td>
-                          <td style={{display:"grid", justifyItems:"end",gap:"1em"}}>
-                            <button
+                          <td>
+                            {/* <button
                               style={{
                                 padding: "0.25rem 0.5rem",
                                 fontSize: "0.8rem",
@@ -123,7 +144,7 @@ const fetchUpcomingAppointments = async () => {
                               }}
                             >
                               Modify
-                            </button>
+                            </button> */}
                             <button
                               className="ml-2"
                               style={{
@@ -135,9 +156,9 @@ const fetchUpcomingAppointments = async () => {
                                 marginLeft: "1em",
                                 borderRadius: "0.2rem",
                                 cursor: "pointer",
-                                width:"100%"
 
                               }}
+                              onClick={(e) => handleCancelAppointment(e, appointment._id)}
                             >
                               Cancel
                             </button>

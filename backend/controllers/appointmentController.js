@@ -85,3 +85,29 @@ export const getMyUpcommingAppointments = async (req, res) => {
   }
 };
 
+// delete appointment
+export const deleteMyAppointment = async (req, res) => {
+  const appointmentId = req.params.id;
+  const userId = req.user._id;
+
+  try {
+    const appointment = await Appointment.findOne({
+      _id: appointmentId,
+      user: userId,
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    appointment.deletedOn = new Date();
+    await appointment.save();
+
+    return res.status(200).json({ message: "Appointment deleted successfully" });
+  }
+  catch (error) {
+    return res.status(500).json({ message: "Error deleting appointment", error: error.message });
+  }
+}
+
+
