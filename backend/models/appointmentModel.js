@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 
 const AppointmentSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     name: {
         type: String,
         required: true,
@@ -9,10 +14,7 @@ const AppointmentSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    sector: {
-        type: String,
-        required: true,
-    },
+
     hospital: {
         type: String,
         required: true,
@@ -26,7 +28,7 @@ const AppointmentSchema = new mongoose.Schema({
         required: true,
     },
     appointmentDate: {
-        type: Date,
+        type: String,
         required: true,
     },
     appointmentTime: {
@@ -40,6 +42,10 @@ const AppointmentSchema = new mongoose.Schema({
     status: {
         type: String,
         default: 'pending',
+    },
+    payment:{
+        type: Boolean,
+        default: false,
     },
     deletedOn: {
         type: Date,
