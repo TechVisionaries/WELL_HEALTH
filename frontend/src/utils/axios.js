@@ -74,5 +74,11 @@ export const endpoints = {
   },
   health_card: {
     create: '/api/health_card/create',
+    get_all_doctors: '/api/health_card/get_all_doctors',
+    get_hralth_card_by_patient_id: '/api/health_card/get_hralth_card_by_patient_id',
+    get_all_patients: '/api/health_card/get_all_patients',
+    get_all_prescriptions: '/api/health_card/get_all_prescriptions',
+    addPrescription: '/api/health_card/add_prescription',
+    update_health_card: '/api/health_card/update_health_card',
   },
 };

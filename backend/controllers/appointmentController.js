@@ -1,46 +1,87 @@
-import Appointment from '../models/appointmentModel.js';
+import Appointment from "../models/appointmentModel.js";
 
+// Create a new appointment
 export const createAppointment = async (req, res) => {
-    try {
-        const newAppointment = new Appointment(req.body);
-        const savedAppointment = await newAppointment.save();
-        res.status(201).json(savedAppointment);
-    } catch (err) {
-        res.status(500).json({ message: 'Failed to create appointment', error: err });
-    }
+
+  const userId = req.user._id;
+
+
+  if (!userId) {
+    return res.status(400).json({ message: "User not found" });
+  }
+
+
+
+  const {
+    name,
+    email,
+    hospital,
+    specialization,
+    consultant,
+    appointmentDate,
+    appointmentTime,
+    serviceType,
+  } = req.body;
+  // console.log(req.body);
+
+  if (
+    !name ||
+    !email ||
+    !hospital ||
+    !specialization ||
+    !consultant ||
+    !appointmentDate ||
+    !appointmentTime ||
+    !serviceType
+  ) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  //   convert 2024-10-14T18:30:00.000Z format to DD-MM-YYYY format
+  const newAppointmentDate = new Date(appointmentDate).toLocaleDateString(
+    "en-GB"
+  );
+
+  try {
+    const appointment = new Appointment({
+      user:userId,
+      name,
+      email,
+      hospital,
+      specialization,
+      consultant,
+      appointmentDate: newAppointmentDate,
+      appointmentTime,
+      serviceType,
+    });
+
+    await appointment.save();
+    return res
+      .status(201)
+      .json({ message: "Appointment created successfully", appointment });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error creating appointment", error: error.message });
+  }
 };
 
-export const getAllAppointments = async (req, res) => {
-    try {
-        const appointments = await Appointment.find();
-        res.status(200).json(appointments);
-    } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch appointments', error: err });
-    }
+// Get all appointments base on userId,status and deletedOn
+export const getMyUpcommingAppointments = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const appointments = await Appointment.find({
+      user: userId,
+      status: "pending",
+      deletedOn: null,
+    });
+
+    return res.status(200).json(appointments);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error fetching appointments", error: error.message });
+  }
 };
 
-export const getAppointmentById = async (req, res) => {
-    try {
-        const appointment = await Appointment.findById(req.params.id);
-        if (!appointment) {
-            return res.status(404).json({ message: 'Appointment not found' });
-        }
-        res.status(200).json(appointment);
-    } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch appointment', error: err });
-    }
-};
-
-export const deleteAppointmentById = async (req, res) => {
-    try {
-        const appointment = await Appointment.findById(req.params.id);
-        if (!appointment) {
-            return res.status(404).json({ message: 'Appointment not found' });
-        }
-        appointment.deletedOn = new Date();
-        await appointment.save();
-        res.status(200).json({ message: 'Appointment soft-deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ message: 'Failed to delete appointment', error: err });
-    }
-};
