@@ -56,7 +56,7 @@ const userSchema = mongoose.Schema({
         type: String,
     },
     birthday: {
-        type: Date
+        type: String
     },
     age: {
         type: Number

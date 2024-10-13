@@ -375,6 +375,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         user.address = req.body.address || user.address;
         user.workPlace = req.body.workPlace || user.workPlace;
         user.martialState = req.body.martialState || user.martialState;
+        user.password = req.body.password || user.password;
 
         if(user.userType == 'patient'){
             user.healthCard = req.body.healthCard || user.healthCard;
@@ -392,27 +393,27 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         const updatedUser = await user.save();
 
         res.status(200).json({
-            _id: req.user._id,
-            email: req.user.email, 
-            image: req.user.image, 
-            firstName: req.user.firstName, 
-            lastName: req.user.lastName, 
-            accType: req.user.accType, 
-            password: req.user.password, 
-            userType: req.user.userType,
-            phoneNo: req.user.phoneNo,
-            gender: req.user.gender,
-            healthCard: req.user.healthCard,
-            nic: req.user.nic,
-            department: req.user.department,
-            occupation: req.user.occupation,
-            birthday: req.user.birthday,
-            age: req.user.age,
-            address: req.user.address,
-            workPlace: req.user.workPlace,
-            martialState: req.user.martialState,
-            createdAt: req.user.createdAt,
-            updatedAt: req.user.updatedAt
+            _id: updatedUser._id,
+            email: updatedUser.email, 
+            image: updatedUser.image, 
+            firstName: updatedUser.firstName, 
+            lastName: updatedUser.lastName, 
+            accType: updatedUser.accType, 
+            password: updatedUser.password, 
+            userType: updatedUser.userType,
+            phoneNo: updatedUser.phoneNo,
+            gender: updatedUser.gender,
+            healthCard: updatedUser.healthCard,
+            nic: updatedUser.nic,
+            department: updatedUser.department,
+            occupation: updatedUser.occupation,
+            birthday: updatedUser.birthday,
+            age: updatedUser.age,
+            address: updatedUser.address,
+            workPlace: updatedUser.workPlace,
+            martialState: updatedUser.martialState,
+            createdAt: updatedUser.createdAt,
+            updatedAt: updatedUser.updatedAt
         });
     }else{
         res.status(404);
