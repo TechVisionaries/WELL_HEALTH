@@ -39,44 +39,54 @@ import PaymentSuccess from './pages/appointment/paymentSuccess.jsx';
 import PaymentFailure from './pages/appointment/paymentFailure.jsx';
 import DoctorAppointmentsDashboard from './pages/appointment/doctorAppointmentsDashboard.jsx';
 import StaffPage from './pages/manage staff/staffPage.jsx';
+import PrescriptionsPage from './pages/PrescriptionsPage.jsx';
+
 
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={ <App /> }>
-      
+    <Route path="/" element={<App />}>
       {/* Public Routes */}
-      <Route index={ true } path='/' element={ <PatientHomePage /> } />
-      <Route index={ true } path='/doctor-home' element={ <DoctorHomePage /> } />
-      <Route index={ true } path='/admin-home' element={<AdminHomePage />} /> 
-      <Route index={ true } path='/manager-home' element={<ManagerHomePage />} /> 
-      <Route path='/login' element={ <LoginPage /> } />
-      <Route path='/register' element={ <RegisterPage /> } />
-      <Route path='/register/:tokenHeader/:tokenPayload/:tokenSecret' element={ <VerifyEmailPage /> } />
-      <Route path='/generateotp' element={ <GenerateOtpPage /> } />
-      <Route path='/resetpassword' element={ <ResetPasswordPage /> } />
-      <Route path='/health-card' element={ <HealthCardPage /> } />
-      <Route path='/patient-profile' element={ <PatientProfile /> } />
-      <Route path='/add-prescription' element={ <AddPrescription /> } />
+      <Route index={true} path="/" element={<PatientHomePage />} />
+      <Route index={true} path="/doctor-home" element={<DoctorHomePage />} />
+      <Route index={true} path="/admin-home" element={<AdminHomePage />} />
+      <Route index={true} path="/manager-home" element={<ManagerHomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/register/:tokenHeader/:tokenPayload/:tokenSecret"
+        element={<VerifyEmailPage />}
+      />
+      <Route path="/generateotp" element={<GenerateOtpPage />} />
+      <Route path="/resetpassword" element={<ResetPasswordPage />} />
+      <Route path="/health-card" element={<HealthCardPage />} />
+      <Route path="/patient-profile" element={<PatientProfile />} />
+      <Route path="/add-prescription" element={<AddPrescription />} />
+      <Route path="/prescriptions" element={PrescriptionsPage} />
 
       {/* Private Routes */}
-      <Route path='' element={ <PrivateRoute /> }>
-        <Route path='/profile' element={ <ProfilePage /> } />
-        <Route path= '/appointment' element={ <AppointmentDashboard/>} />
-        <Route path= '/appointment/payment' element={ <PaymentPage/> } />
-        <Route path= '/appointment/payment/success' element={ <PaymentSuccess/> } />
-        <Route path= '/appointment/payment/cancel' element={ <PaymentFailure/> } />
-        <Route path= '/doctor/appointments' element={ <DoctorAppointmentsDashboard/>} />
+      <Route path="" element={<PrivateRoute />}>
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/appointment" element={<AppointmentDashboard />} />
+        <Route path="/appointment/payment" element={<PaymentPage />} />
+        <Route
+          path="/appointment/payment/success"
+          element={<PaymentSuccess />}
+        />
+        <Route
+          path="/appointment/payment/cancel"
+          element={<PaymentFailure />}
+        />
+        <Route
+          path="/doctor/appointments"
+          element={<DoctorAppointmentsDashboard />}
+        />
 
-
-        <Route path= '/staff' element={ <StaffPage/> } />
+        <Route path="/staff" element={<StaffPage />} />
       </Route>
 
       {/* Admin Routes */}
-      <Route path='' element={ <AdminRoute /> }>
-
-      
-      </Route>
+      <Route path="" element={<AdminRoute />}></Route>
     </Route>
   )
 );
