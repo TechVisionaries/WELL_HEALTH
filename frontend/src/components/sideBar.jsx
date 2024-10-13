@@ -244,7 +244,7 @@ export default function Sidebar() {
               </Tooltip>
             </ListItem>
           </Link>
-          <Link
+          {/* <Link
             to="/medical-records"
             style={{ textDecoration: "none", color: "black" }}
           >
@@ -283,7 +283,7 @@ export default function Sidebar() {
                 </ListItemButton>
               </Tooltip>
             </ListItem>
-          </Link>
+          </Link> */}
 
           <Link
             to="/prescriptions"
