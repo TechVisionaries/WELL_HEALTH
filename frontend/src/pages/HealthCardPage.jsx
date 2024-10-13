@@ -197,7 +197,9 @@ function HealthCardPage() {
               <QRCode
                 size={256}
                 style={{ height: "20vh", maxWidth: "100%", width: "100%" }}
-                value={"https://www.google.com"}
+                value={
+                  `http://172.28.28.111:3000/add-prescription?userId=${JSON.parse(localStorage.getItem("userInfo"))._id}`
+                }
                 viewBox={`0 0 256 256`}
               />
             </Box>
@@ -647,10 +649,9 @@ function HealthCardPage() {
                     Duration
                   </Typography>
                 </Grid>
-                <Grid item xs={12}>
-                  <Divider />
-                </Grid>
               </Grid>
+
+              <Divider sx={{ mb: 2 }} />
 
               {/* Medicines Data */}
               {lastMedical?.medicines?.map((medicine) => (
@@ -658,7 +659,7 @@ function HealthCardPage() {
                   container
                   spacing={2}
                   key={medicine._id}
-                  sx={{ alignItems: "center", mb: 1 }}
+                  sx={{ alignItems: "center", mb: 2 }} // Increased margin-bottom for better spacing
                 >
                   <Grid item xs={3}>
                     <Typography
@@ -693,7 +694,8 @@ function HealthCardPage() {
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Divider />
+                    <Divider sx={{ mb: 2 }} />{" "}
+                    {/* Increased spacing after divider */}
                   </Grid>
                 </Grid>
               ))}
@@ -703,6 +705,7 @@ function HealthCardPage() {
       </Box>
     );
   }
+
 
 
 
