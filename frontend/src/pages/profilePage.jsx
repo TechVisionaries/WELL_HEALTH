@@ -334,18 +334,6 @@ const ProfilePage = () => {
                                         </Card>
                                     </Col>
                                 </Row>
-                                {/*userType == 'occupant' ? 
-                                <Row>
-                                    <Col>
-                                        <Card className='mt-3'>
-                                            <CardContent className={`${dashboardStyles.cardContent} pt-3 pb-3`}>
-                                                <h4>Total Payable</h4>
-                                                <h3>Rs. {totalPayable}</h3>
-                                            </CardContent>
-                                        </Card>
-                                    </Col>
-                                </Row>
-                                :<></>*/}
                             </Col>
                             <Col className="mb-3" xs={12} md={8}>
                                 <Card>

@@ -144,7 +144,7 @@ const ManagerHeader = () => {
                     </Box>
                     <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent:'center' }}>
                             <Button
-                                onClick={() => {navigate('/doctor-home');scrollToElement('top')}}
+                                onClick={() => {navigate('/manager-home');scrollToElement('top')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
@@ -165,11 +165,11 @@ const ManagerHeader = () => {
                                 Appoinments
                             </Button>
                             <Button
-                                onClick={() => {navigate('/doctor-home');scrollToElement('contactUs')}}
+                                onClick={() => {navigate('/manage_users')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
-                                Manage Staff
+                                User Management
                             </Button>
                             <Button
                                 onClick={() => {navigate('/appointment');scrollToElement('contactUs')}}

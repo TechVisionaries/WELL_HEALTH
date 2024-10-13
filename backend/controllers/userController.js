@@ -31,7 +31,12 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
 
     if(userType == "doctor"){
         specialization = req.body.specialization;
+        department = req.body.department;
+    }else if(userType == "manager"){
+        department = req.body.department;
     }
+
+
     const user = ({
         email, 
         image, 
