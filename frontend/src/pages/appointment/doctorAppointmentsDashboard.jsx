@@ -16,10 +16,19 @@ const AppointmentStatus = {
 const DoctorAppointmentsDashboard = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [appointments, setAppointments] = useState([
-    { id: 1, date: '2024-10-10', timeSlot: '10:00 AM - 10:30 AM', patientName: 'John Doe', reason: 'General Checkup', status: AppointmentStatus.SCHEDULED },
-    { id: 2, date: '2024-10-10', timeSlot: '10:30 AM - 11:00 AM', patientName: 'Jane Smith', reason: 'Consultation', status: AppointmentStatus.IN_PROGRESS },
-    { id: 3, date: '2024-10-09', timeSlot: '11:00 AM - 11:30 AM', patientName: 'Bob Johnson', reason: 'Flu Symptoms', status: AppointmentStatus.CANCELLED }
+    { id: 1, date: '2024-10-10', timeSlot: '10:00 AM - 10:30 AM', hospital: 'National Hospital of Sri Lanka, Colombo', patientName: 'Kasun Perera', reason: 'General Checkup', status: AppointmentStatus.SCHEDULED },
+    { id: 2, date: '2024-10-10', timeSlot: '10:30 AM - 11:00 AM', hospital: 'Sri Jayawardenepura General Hospital, Kotte', patientName: 'Anjali Silva', reason: 'Consultation', status: AppointmentStatus.IN_PROGRESS },
+    { id: 3, date: '2024-10-09', timeSlot: '11:00 AM - 11:30 AM', hospital: 'Apeksha Hospital, Maharagama', patientName: 'Nimal Fernando', reason: 'Flu Symptoms', status: AppointmentStatus.CANCELLED },
+    { id: 4, date: '2024-10-11', timeSlot: '9:00 AM - 9:30 AM', hospital: 'Lady Ridgeway Hospital for Children, Colombo', patientName: 'Amaya Gunasekara', reason: 'Pediatric Checkup', status: AppointmentStatus.COMPLETED },
+    { id: 5, date: '2024-10-11', timeSlot: '9:30 AM - 10:00 AM', hospital: 'Teaching Hospital Karapitiya, Galle', patientName: 'Ruwan Wijesinghe', reason: 'Post-Surgery Follow-up', status: AppointmentStatus.SCHEDULED },
+    { id: 6, date: '2024-10-11', timeSlot: '11:00 AM - 11:30 AM', hospital: 'District General Hospital, Kegalle', patientName: 'Lihini de Alwis', reason: 'Skin Rash', status: AppointmentStatus.IN_PROGRESS },
+    { id: 7, date: '2024-10-12', timeSlot: '1:00 PM - 1:30 PM', hospital: 'Teaching Hospital Jaffna, Jaffna', patientName: 'Tharindu Pathirana', reason: 'Orthopedic Consultation', status: AppointmentStatus.SCHEDULED },
+    { id: 8, date: '2024-10-12', timeSlot: '2:00 PM - 2:30 PM', hospital: 'Base Hospital, Nuwara Eliya', patientName: 'Suwini Rathnayake', reason: 'Allergy Testing', status: AppointmentStatus.COMPLETED },
+    { id: 9, date: '2024-10-12', timeSlot: '3:00 PM - 3:30 PM', hospital: 'Teaching Hospital Peradeniya, Kandy', patientName: 'Chamika Samarawickrama', reason: 'Eye Examination', status: AppointmentStatus.CANCELLED },
+    { id: 10, date: '2024-10-13', timeSlot: '10:00 AM - 10:30 AM', hospital: 'Base Hospital, Matara', patientName: 'Shalini Jayawardene', reason: 'Dental Checkup', status: AppointmentStatus.SCHEDULED },
+    { id: 11, date: '2024-10-13', timeSlot: '11:00 AM - 11:30 AM', hospital: 'Base Hospital, Dambulla', patientName: 'Naveen Gunaratne', reason: 'Diabetes Follow-up', status: AppointmentStatus.SCHEDULED },
   ]);
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
   const [currentAppointment, setCurrentAppointment] = useState(null);
@@ -106,11 +115,11 @@ const DoctorAppointmentsDashboard = () => {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>Time Slot</th>
-                <th>Patient Name</th>
-                <th>Reason</th>
-                <th>Status</th>
-                <th>Actions</th>
+                 <th>Time Slot</th>
+                  <th>Patient Name</th>
+                  <th>Hospital</th>
+                  <th>Reason</th>
+                  <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -123,9 +132,9 @@ const DoctorAppointmentsDashboard = () => {
                 .map((appointment) => (
                   <tr key={appointment.id}>
                     <td>{appointment.timeSlot}</td>
-                    <td>{appointment.patientName}</td>
-                    <td>{appointment.reason}</td>
-                    <td>{getStatusBadge(appointment.status)}</td>
+                      <td>{appointment.patientName}</td>
+                      <td>{appointment.hospital}</td>
+                      <td>{appointment.reason}</td>
                     <td style={{display:'flex', justifyContent:"space-evenly"}}>
                       <Button variant="outline-primary" size="sm" onClick={() => handleModify(appointment)} >
                         <FaEdit /> Modify

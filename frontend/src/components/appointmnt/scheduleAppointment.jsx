@@ -20,7 +20,6 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
     consultant: "",
     appointmentDate: null,
     appointmentTime: "",
-    comments: "",
     serviceType: "", 
   });
 
@@ -70,10 +69,64 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
     setFormData({ ...formData, appointmentDate: date });
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [paymentError, setPaymentError] = useState(null);
+  const [paymentSuccess, setPaymentSuccess] = useState(null);
+
+  // Calculate charges
+  const consultationFee = 50; // Example fee
+  const channelingCharge = 10; // Example charge
+  const vatTaxRate = 0.18;
+  const subtotal = consultationFee + channelingCharge;
+  const vatTax = subtotal * vatTaxRate;
+  const totalCharges = subtotal + vatTax;
+
+  const handlePayment = async () => {
+      setIsLoading(true);
+      setPaymentError(null);
+      setPaymentSuccess(null);
+
+      try {
+          // Create a Checkout Session on the server
+          const { data } = await axios.post(`${baseUrl}/payment/create-checkout-session`, {
+              amount: totalCharges
+          });
+
+          // Redirect to Stripe Checkout using the session URL
+          if (data.url) {
+              window.location.href = data.url;
+          } else {
+              throw new Error('No URL returned for Checkout session');
+          }
+      } catch (error) {
+          console.error('Error creating Checkout session:', error);
+          setPaymentError('Payment failed. Please try again.');
+      } finally {
+          setIsLoading(false);
+      }
+  };
+
 const dataSubmit = async () => {
   try{
     const response = await axios.post(`${baseUrl}/appointments`, formData,{ withCredentials: true });
     console.log(response.data);
+  
+   
+    // set the form data to empty
+    setFormData({
+      name: "",
+      email: "",
+      sector: "",
+      hospital: "",
+      specialization: "",
+      consultant: "",
+      appointmentDate: null,
+      appointmentTime: "",
+      serviceType: "",
+    });
+
+
+
   }catch(error){
     console.error(`Error: ${error}`);
   }
@@ -87,21 +140,19 @@ const dataSubmit = async () => {
 
   const handleClose = () => setShowSummary(false);
   const handleProceedToPayment = () => {
-    const appointmentDetails = {
-      name: formData.name,
-      email: formData.email,
-      hospital: formData.hospital,
-      specialization: formData.specialization,
-      consultant: formData.consultant,
-      appointmentDate: formData.appointmentDate,
-      appointmentTime: formData.appointmentTime,
-      serviceType: formData.serviceType, 
-    };
+    // const appointmentDetails = {
+    //   name: formData.name,
+    //   email: formData.email,
+    //   hospital: formData.hospital,
+    //   specialization: formData.specialization,
+    //   consultant: formData.consultant,
+    //   appointmentDate: formData.appointmentDate,
+    //   appointmentTime: formData.appointmentTime,
+    //   serviceType: formData.serviceType, 
+    // };
 
     dataSubmit();
-
-    setShowSummary(false);
-    // navigate("/appointment/payment", { state: { appointmentDetails } });
+    handlePayment();
   };
 
   return (
