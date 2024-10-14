@@ -300,6 +300,7 @@ const dataSubmit = async () => {
             dateFormat="yyyy/MM/dd"
             required
             placeholderText="Select a date"
+            minDate={new Date()} 
           />
         </div>
 
@@ -348,7 +349,7 @@ const dataSubmit = async () => {
         </div>
 
         <button type="submit" className={`btn btn-primary ${style.submitButton}`}>
-          Proceed
+          Schedule
         </button>
       </form>
 

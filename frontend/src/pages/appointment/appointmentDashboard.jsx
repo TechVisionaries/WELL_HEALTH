@@ -6,6 +6,17 @@ import ScheduleAppointment from "../../components/appointmnt/scheduleAppointment
 import Sidebar from "../../components/sideBar";
 import axios from "axios";
 
+
+ const cardHeadingStyle = {
+  background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
+  borderRadius: "10px",
+  color: "white",
+  textAlign: "center",
+  marginTop: "20px",
+  marginBottom: "20px",
+  padding: "15px", // Add padding as per your requirement
+};
+
 const AppointmentDashboard = () => {
 
 // base url
@@ -47,15 +58,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
   // ];
 
 
-  const cardHeadingStyle = {
-    background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
-    borderRadius: "10px",
-    color: "white",
-    textAlign: "center",
-    marginTop: "20px",
-    marginBottom: "20px",
-    padding: "15px", // Add padding as per your requirement
-  };
+ 
 
 
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
