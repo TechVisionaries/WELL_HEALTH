@@ -265,7 +265,7 @@ const DoctorHeader = () => {
             <Button
               onClick={() => {
                 const userId = userInfo ? userInfo._id : "undefined";
-                window.open(`/add-prescription?userId=${userId}`, "_blank");
+                navigate(`/add-prescription?userId=${userId}`);
               }}
               sx={{
                 my: 2,

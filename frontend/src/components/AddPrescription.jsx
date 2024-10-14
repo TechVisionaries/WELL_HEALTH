@@ -24,6 +24,7 @@ import Swal from "sweetalert2";
 import { useLocation } from "react-router-dom";
 import dashboardStyles from "../styles/dashboardStyles.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Sidebar from "./sideBar";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -149,128 +150,130 @@ function AddPrescription() {
 
   function render_profile_card() {
     return (
-      <Box
-        sx={{
-          flexGrow: 1,
-          backgroundColor: "#f9f9f9",
-          borderRadius: 2,
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          p: 4,
-          maxWidth: "600px",
-          margin: "auto",
-        }}
-      >
-        <Grid container spacing={3}>
-          {/* Profile Avatar and Name */}
-          <Grid item xs={12}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                mb: 3,
-              }}
-            >
-              <Avatar
-                alt="USER"
-                variant="square"
+      <>
+        <Box
+          sx={{
+            flexGrow: 1,
+            backgroundColor: "#f9f9f9",
+            borderRadius: 2,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            p: 4,
+            maxWidth: "600px",
+            margin: "auto",
+          }}
+        >
+          <Grid container spacing={3}>
+            {/* Profile Avatar and Name */}
+            <Grid item xs={12}>
+              <Box
                 sx={{
-                  width: "50%",
-                  height: "15vh",
-                  bgcolor: "#1976d2",
-                  color: "#fff",
-                  fontSize: "2rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  mb: 3,
                 }}
               >
-                {selectedPatient && selectedPatient.firstName
-                  ? selectedPatient.firstName.charAt(0).toUpperCase()
-                  : "P"}
-              </Avatar>
-              <Typography variant="h6" sx={{ color: "#000", mt: 1 }}>
-                {selectedPatient && selectedPatient.firstName
-                  ? selectedPatient.firstName
-                  : "Patient Name"}
-              </Typography>
-            </Box>
-          </Grid>
+                <Avatar
+                  alt="USER"
+                  variant="square"
+                  sx={{
+                    width: "50%",
+                    height: "15vh",
+                    bgcolor: "#1976d2",
+                    color: "#fff",
+                    fontSize: "2rem",
+                  }}
+                >
+                  {selectedPatient && selectedPatient.firstName
+                    ? selectedPatient.firstName.charAt(0).toUpperCase()
+                    : "P"}
+                </Avatar>
+                <Typography variant="h6" sx={{ color: "#000", mt: 1 }}>
+                  {selectedPatient && selectedPatient.firstName
+                    ? selectedPatient.firstName
+                    : "Patient Name"}
+                </Typography>
+              </Box>
+            </Grid>
 
-          {/* Email */}
-          <Grid item xs={12}>
-            <TextField
-              id="email-field"
-              variant="standard"
-              label="Email"
-              disabled
-              sx={{ width: "100%", p: 2 }}
-              InputProps={{ style: { color: "bla" } }} // Set text color to black
-              value={
-                selectedPatient && selectedPatient.email
-                  ? selectedPatient.email
-                  : ""
-              }
-            />
-          </Grid>
+            {/* Email */}
+            <Grid item xs={12}>
+              <TextField
+                id="email-field"
+                variant="standard"
+                label="Email"
+                disabled
+                sx={{ width: "100%", p: 2 }}
+                InputProps={{ style: { color: "bla" } }} // Set text color to black
+                value={
+                  selectedPatient && selectedPatient.email
+                    ? selectedPatient.email
+                    : ""
+                }
+              />
+            </Grid>
 
-          {/* Phone Number */}
-          <Grid item xs={12}>
-            <TextField
-              id="phone-field"
-              variant="standard"
-              label="Phone Number"
-              disabled
-              sx={{ width: "100%", p: 2 }}
-              InputProps={{ style: { color: "#000" } }} // Set text color to black
-              value={
-                selectedPatient && selectedPatient.phoneNo
-                  ? selectedPatient.phoneNo
-                  : ""
-              }
-            />
-          </Grid>
+            {/* Phone Number */}
+            <Grid item xs={12}>
+              <TextField
+                id="phone-field"
+                variant="standard"
+                label="Phone Number"
+                disabled
+                sx={{ width: "100%", p: 2 }}
+                InputProps={{ style: { color: "#000" } }} // Set text color to black
+                value={
+                  selectedPatient && selectedPatient.phoneNo
+                    ? selectedPatient.phoneNo
+                    : ""
+                }
+              />
+            </Grid>
 
-          {/* Age */}
-          <Grid item xs={12}>
-            <TextField
-              id="age-field"
-              variant="standard"
-              label="Age"
-              disabled
-              sx={{ width: "100%", p: 2 }}
-              InputProps={{ style: { color: "#000" } }} // Set text color to black
-              value={
-                selectedPatient && selectedPatient.age
-                  ? selectedPatient.age
-                  : ""
-              }
-            />
-          </Grid>
+            {/* Age */}
+            <Grid item xs={12}>
+              <TextField
+                id="age-field"
+                variant="standard"
+                label="Age"
+                disabled
+                sx={{ width: "100%", p: 2 }}
+                InputProps={{ style: { color: "#000" } }} // Set text color to black
+                value={
+                  selectedPatient && selectedPatient.age
+                    ? selectedPatient.age
+                    : ""
+                }
+              />
+            </Grid>
 
-          {/* Gender */}
-          <Grid item xs={12}>
-            <TextField
-              id="gender-field"
-              variant="standard"
-              label="Gender"
-              disabled
-              sx={{ width: "100%", p: 2 }}
-              InputProps={{ style: { color: "#000" } }} // Set text color to black
-              value={
-                selectedPatient && selectedPatient.gender
-                  ? selectedPatient.gender
-                  : ""
-              }
-            />
-          </Grid>
+            {/* Gender */}
+            <Grid item xs={12}>
+              <TextField
+                id="gender-field"
+                variant="standard"
+                label="Gender"
+                disabled
+                sx={{ width: "100%", p: 2 }}
+                InputProps={{ style: { color: "#000" } }} // Set text color to black
+                value={
+                  selectedPatient && selectedPatient.gender
+                    ? selectedPatient.gender
+                    : ""
+                }
+              />
+            </Grid>
 
-          {/* Uncomment to enable Edit button */}
-          {/* <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-          <Button variant="contained" startIcon={<EditIcon />}>
-            Edit
-          </Button>
-        </Grid> */}
-        </Grid>
-      </Box>
+            {/* Uncomment to enable Edit button */}
+            {/* <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button variant="contained" startIcon={<EditIcon />}>
+              Edit
+            </Button>
+          </Grid> */}
+          </Grid>
+        </Box>
+      </>
     );
   }
 
@@ -449,8 +452,9 @@ function AddPrescription() {
 
   return (
     <>
+      <Sidebar />
       <div className={dashboardStyles.mainDiv}>
-        <Box sx={{ overflow: "hidden", flexGrow: 1 }}>
+        <Box className={dashboardStyles.container} sx={{ overflow: "hidden", flexGrow: 1 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={4}>
               <Item>
