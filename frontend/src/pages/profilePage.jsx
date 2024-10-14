@@ -206,10 +206,30 @@ const ProfilePage = () => {
                 toast.success('Profile Updated');
                 navigate('/profile');
             } catch (err) {
+                toast.error(err);
                 toast.error(err.data?.message || err.error);
             }
         }
     }
+
+    const handleBirthdayChange = (birthdayValue) => {
+        const formattedDate = new Date(birthdayValue).toISOString().split("T")[0];
+        setBirthday(formattedDate);
+        const ageValue = calculateAge(formattedDate);
+        setAge(ageValue);;
+    };
+
+    const calculateAge = (birthDate) => {
+        const today = new Date();
+        const birthDateObj = new Date(birthDate);
+        let age = today.getFullYear() - birthDateObj.getFullYear();
+        const monthDiff = today.getMonth() - birthDateObj.getMonth();
+    
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) {
+            age--;
+        }
+        return age;
+    };
 
     return (
         <>
@@ -229,7 +249,7 @@ const ProfilePage = () => {
                     <Row>
                         <Col>
                             <Card className={`mt-3 py-3 text-center`} style={cardHeadingStyle}>
-                                {userType == 'patient' ? <h2>Patient Dashboard</h2> : (userType == 'Doctor' ? <h2>Doctor Dashboard</h2> : userType == 'admin' ? <h2>Admin Dashboard</h2> : userType == 'kitchen' ? <h2>Inventory Manager Dashboard</h2> : <></>)}
+                                {userType == 'patient' ? <h2>Patient Profile</h2> : (userType == 'doctor' ? <h2>Doctor Profile</h2> : userType == 'admin' ? <h2>Admin Profile</h2> : userType == 'manager' ? <h2>Manager Profile</h2> : <></>)}
                             </Card>
                         </Col>
                     </Row>
@@ -274,6 +294,38 @@ const ProfilePage = () => {
                                                     {workPlace}
                                                 </Col>
                                             </Row>
+                                            { userType === "doctor" && (
+                                            <>
+                                                <Row className='py-1'>
+                                                    <Col>
+                                                        <b>Department: </b>
+                                                    </Col>
+                                                    <Col>
+                                                        {department}
+                                                    </Col>
+                                                </Row>
+                                                <Row className='py-1'>
+                                                    <Col>
+                                                        <b>Specializaton: </b>
+                                                    </Col>
+                                                    <Col>
+                                                        {specialization}
+                                                    </Col>
+                                                </Row>
+                                                </>
+                                            )}
+                                            { userType === "manager" && (
+                                            <>
+                                                <Row className='py-1'>
+                                                    <Col>
+                                                        <b>Department: </b>
+                                                    </Col>
+                                                    <Col>
+                                                        {department}
+                                                    </Col>
+                                                </Row>
+                                                </>
+                                            )}
                                                 <Stack direction="row" spacing={2} className='mt-3'>
                                                     <Button variant="contained" color="primary" onClick={editProfile} startIcon={<EditIcon />}>Edit</Button>
                                                     <Button variant="outlined" color="error" onClick={ logoutHandler }>Logout</Button>
@@ -282,18 +334,6 @@ const ProfilePage = () => {
                                         </Card>
                                     </Col>
                                 </Row>
-                                {/*userType == 'occupant' ? 
-                                <Row>
-                                    <Col>
-                                        <Card className='mt-3'>
-                                            <CardContent className={`${dashboardStyles.cardContent} pt-3 pb-3`}>
-                                                <h4>Total Payable</h4>
-                                                <h3>Rs. {totalPayable}</h3>
-                                            </CardContent>
-                                        </Card>
-                                    </Col>
-                                </Row>
-                                :<></>*/}
                             </Col>
                             <Col className="mb-3" xs={12} md={8}>
                                 <Card>
@@ -334,6 +374,22 @@ const ProfilePage = () => {
                                                     {gender}
                                                 </Col>
                                             </Row>
+                                            <Divider sx={{borderColor:'initial'}}/>
+                                            <Row className='py-3'>
+                                                <Col>
+                                                    <b>Birthday</b>
+                                                </Col>
+                                                <Col>
+                                                    {birthday}
+                                                </Col>
+                                                <Col>
+                                                    <b>Age</b>
+                                                </Col>
+                                                <Col>
+                                                    {age}
+                                                </Col>
+                                            </Row>
+                                            <Divider sx={{borderColor:'initial'}}/>
                                             <Row className='py-3'>
                                                 <Col>
                                                     <b>Address</b>
@@ -341,7 +397,7 @@ const ProfilePage = () => {
                                                 <Col>
                                                     {address}
                                                 </Col>
-                                            </Row>
+                                            </Row>  
                                             <Divider sx={{borderColor:'initial'}}/>
                                             { userType != "admin"?
                                             <>
@@ -542,6 +598,38 @@ const ProfilePage = () => {
                                                     {workPlace}
                                                 </Col>
                                             </Row>
+                                            { userType === "doctor" && (
+                                            <>
+                                                <Row className='py-1'>
+                                                    <Col>
+                                                        <b>Department: </b>
+                                                    </Col>
+                                                    <Col>
+                                                        {department}
+                                                    </Col>
+                                                </Row>
+                                                <Row className='py-1'>
+                                                    <Col>
+                                                        <b>Specialization: </b>
+                                                    </Col>
+                                                    <Col>
+                                                        {specialization}
+                                                    </Col>
+                                                </Row>
+                                                </>
+                                            )}
+                                            { userType === "manager" && (
+                                            <>
+                                                <Row className='py-1'>
+                                                    <Col>
+                                                        <b>Department: </b>
+                                                    </Col>
+                                                    <Col>
+                                                        {department}
+                                                    </Col>
+                                                </Row>
+                                                </>
+                                            )}
                                             <Stack direction="row" spacing={2} className='mt-2'>
                                                 <LoadingButton type="submit" loading={isLoading} color="warning" variant="contained" startIcon={<UpdateIcon />}>Update</LoadingButton>
                                                 <Button variant="outlined" color="error" onClick={viewProfile}>Cancel</Button>
@@ -551,7 +639,7 @@ const ProfilePage = () => {
                                 </Grid>
                                 <Grid item xs={8}>
                                     <Card>
-                                        <CardContent style={{display:"flex", alignItems:"center", flexDirection:"column", padding:"10px 50px 30px 50px", height:'342px', overflow:'auto'}}>
+                                        <CardContent style={{display:"flex", alignItems:"center", flexDirection:"column", padding:"10px 50px 30px 50px", height:'435px', overflow:'auto'}}>
                                             <List sx={{width:'100%'}} component="nav">
                                                 <Form.Group controlId="fName">
                                                     <Row className='py-3'>
@@ -581,6 +669,22 @@ const ProfilePage = () => {
                                                                 placeholder="Enter Last Name" 
                                                                 value={lastName} 
                                                                 onChange={ (e) => setLastName(e.target.value)}
+                                                            ></Form.Control>
+                                                        </Col>
+                                                    </Row>
+                                                </Form.Group>
+                                                <Divider sx={{borderColor:'initial'}}/>
+                                                <Form.Group controlId="nic">
+                                                    <Row className='py-3'>
+                                                        <Col>
+                                                            <Form.Label><b>NIC</b></Form.Label>
+                                                        </Col>
+                                                        <Col>
+                                                            <Form.Control 
+                                                                type="text" 
+                                                                placeholder="Enter NIC Number" 
+                                                                value={nic} 
+                                                                onChange={ (e) => setNic(e.target.value)}
                                                             ></Form.Control>
                                                         </Col>
                                                     </Row>
@@ -646,7 +750,141 @@ const ProfilePage = () => {
                                                     </Row>
                                                 </Form.Group>
                                                 <Divider sx={{borderColor:'initial'}}/>
-                                                { userType != "owner"?
+                                                <Form.Group controlId="occupation">
+                                                    <Row className='py-3'>
+                                                        <Col>
+                                                            <Form.Label><b>Occupation</b></Form.Label>
+                                                        </Col>
+                                                        <Col>
+                                                            <Form.Control 
+                                                                type="text" 
+                                                                placeholder="Enter occuption" 
+                                                                value={occupation} 
+                                                                onChange={ (e) => setOccupation(e.target.value)}
+                                                            ></Form.Control>
+                                                        </Col>
+                                                    </Row>
+                                                </Form.Group>
+                                                <Divider sx={{ borderColor: 'initial' }} />
+                                                    <Form.Group controlId="birthday">
+                                                        <Row className='py-3'>
+                                                            <Col>
+                                                                <Form.Label><b>Birthday</b></Form.Label>
+                                                            </Col>
+                                                            <Col>
+                                                                <Form.Control
+                                                                    type="date"
+                                                                    max={new Date().toISOString().split("T")[0]}  // Restricts future dates
+                                                                    value={birthday}
+                                                                    onChange={(e) => handleBirthdayChange(e.target.value)}
+                                                                />
+                                                            </Col>
+                                                        </Row>
+                                                    </Form.Group>
+                                                    <Divider sx={{ borderColor: 'initial' }} />
+                                                        <Form.Group controlId="age">
+                                                            <Row className='py-3'>
+                                                                <Col>
+                                                                    <Form.Label><b>Age</b></Form.Label>
+                                                                </Col>
+                                                                <Col>
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        value={age}
+                                                                        disabled  // Age is read-only
+                                                                    />
+                                                                </Col>
+                                                            </Row>
+                                                        </Form.Group>
+                                                    <Divider sx={{borderColor:'initial'}}/>
+                                                        <Form.Group controlId="Address">
+                                                            <Row className='py-3'>
+                                                                <Col>
+                                                                    <Form.Label><b>Address</b></Form.Label>
+                                                                </Col>
+                                                                <Col>
+                                                                    <Form.Control 
+                                                                        type="text" 
+                                                                        placeholder="Enter Address" 
+                                                                        value={address} 
+                                                                        required
+                                                                        onChange={ (e) => setAddress(e.target.value)}
+                                                                    ></Form.Control>
+                                                                </Col>
+                                                            </Row>
+                                                        </Form.Group>
+                                                        <Divider sx={{borderColor:'initial'}}/>
+                                                        <Form.Group controlId="workplace">
+                                                            <Row className='py-3'>
+                                                                <Col>
+                                                                    <Form.Label><b>Work-Place</b></Form.Label>
+                                                                </Col>
+                                                                <Col>
+                                                                    <Form.Control 
+                                                                        type="text" 
+                                                                        placeholder="Enter Work-place" 
+                                                                        value={workPlace} 
+                                                                        required
+                                                                        onChange={ (e) => setWorkPlace(e.target.value)}
+                                                                    ></Form.Control>
+                                                                </Col>
+                                                            </Row>
+                                                        </Form.Group>
+                                                        <Divider sx={{borderColor:'initial'}}/>
+                                                        <Form.Group controlId="maritialstate">
+                                                            <Row className='py-3'>
+                                                                <Col>
+                                                                    <Form.Label><b>Marital State</b></Form.Label>
+                                                                </Col>
+                                                                <Col style={{ display: 'inline-flex', justifyContent: 'space-around' }}>
+                                                                    <Form.Check
+                                                                        type='radio'
+                                                                        id='Single'
+                                                                        label='Single'
+                                                                        name='maritalState'
+                                                                        checked={martialState === 'Single'}
+                                                                        onChange={(e) => setMartialState(e.target.id)}
+                                                                    />
+                                                                    <Form.Check
+                                                                        type='radio'
+                                                                        id='Married'
+                                                                        label='Married'
+                                                                        name='maritalState'
+                                                                        checked={martialState === 'Married'}
+                                                                        onChange={(e) => setMartialState(e.target.id)}
+                                                                    />
+                                                                    <Form.Check
+                                                                        type='radio'
+                                                                        id='Divorced'
+                                                                        label='Divorced'
+                                                                        name='maritalState'
+                                                                        checked={martialState === 'Divorced'}
+                                                                        onChange={(e) => setMartialState(e.target.id)}
+                                                                    />
+                                                                </Col>
+                                                            </Row>
+                                                        </Form.Group>
+                                                        <Divider sx={{borderColor:'initial'}}/>
+                                                        { userType === "doctor" && (
+                                                            <Form.Group controlId="specialization">
+                                                                <Row className='py-3'>
+                                                                    <Col>
+                                                                        <Form.Label><b>Specialization</b></Form.Label>
+                                                                    </Col>
+                                                                    <Col>
+                                                                        <Form.Control 
+                                                                            type="text" 
+                                                                            placeholder="Enter Specialization" 
+                                                                            value={specialization} 
+                                                                            required
+                                                                            onChange={(e) => setSpecialization(e.target.value)}
+                                                                        ></Form.Control>
+                                                                    </Col>
+                                                                </Row>
+                                                            </Form.Group>
+                                                        )}
+                                                <Divider sx={{borderColor:'initial'}}/>
+                                                { userType != "admin"?
                                             <>
                                             <hr />
                                             <Row style={{marginTop:'20px'}}>
