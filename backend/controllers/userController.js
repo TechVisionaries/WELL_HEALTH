@@ -28,12 +28,16 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
     }
 
     var specialization = '';
+    var department = '';
+    var workPlace = '';
 
     if(userType == "doctor"){
         specialization = req.body.specialization;
         department = req.body.department;
+        workPlace = req.body.workPlace;
     }else if(userType == "manager"){
         department = req.body.department;
+        workPlace = req.body.workPlace;
     }
 
 
@@ -45,6 +49,8 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
         password,
         userType,
         specialization,
+        department,
+        workPlace,
         gender 
     });
 
@@ -74,7 +80,6 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
 // route    GET /api/users/
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-
     try {
         const {
             email, 
@@ -84,9 +89,11 @@ const registerUser = asyncHandler(async (req, res) => {
             password,
             userType,
             specialization,
+            department,
+            workPlace,
             gender 
         } = jwt.decode(req.query.token).user;
-        var userExists = await User.findOne({ email, userType });
+        var userExists = await User.findOne({ email });
 
         if(userExists){
             res.status(400);
@@ -122,6 +129,8 @@ const registerUser = asyncHandler(async (req, res) => {
                 password,
                 userType,
                 specialization,
+                department,
+                workPlace,
                 gender,
                 phoneNo: "",
                 nic : "",
@@ -143,6 +152,8 @@ const registerUser = asyncHandler(async (req, res) => {
                 password,
                 userType,
                 gender,
+                department,
+                workPlace,
                 phoneNo: "",
                 nic : "",
                 department: "",
