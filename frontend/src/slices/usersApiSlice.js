@@ -13,7 +13,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         }),
         verifyEmail: builder.mutation({
             query: (data) => ({
-                url: `${USERS_URL}/`,
+                url: `${USERS_URL}/register`,
                 method: 'GET',
                 params: data
             }),

@@ -21,7 +21,7 @@ const router = express.Router();
 
 // Register a user and send a registration email
 router.post('/', sendRegisterMail);
-router.post('/register', registerUser); // Changed to POST for registration
+router.get('/register', registerUser); // Changed to POST for registration
 
 // Authentication routes
 router.post('/auth', authUser);
