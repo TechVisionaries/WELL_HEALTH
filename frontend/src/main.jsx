@@ -41,6 +41,7 @@ import DoctorAppointmentsDashboard from './pages/appointment/doctorAppointmentsD
 import StaffPage from './pages/manage staff/staffPage.jsx';
 import PrescriptionsPage from './pages/PrescriptionsPage.jsx';
 import ManageUsersPage from './pages/manageUsersPage.jsx';
+import ShiftSchedulingPage from './pages/manage staff/shiftShedulingPage.jsx';
 
 
 
@@ -85,6 +86,7 @@ const router = createBrowserRouter(
         />
 
         <Route path="/staff" element={<StaffPage />} />
+        <Route path="/staff/shift" element={<ShiftSchedulingPage />} />
       </Route>
 
       {/* Admin Routes */}
