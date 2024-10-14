@@ -71,10 +71,6 @@ const fetchUpcomingAppointments = async () => {
 };
 
 
-  // Callback function to refresh the appointment list
-  const onAppointmentScheduled = () => {
-    fetchUpcomingAppointments();
-  };
 
 
   useEffect(() => {
@@ -106,7 +102,7 @@ const handleCancelAppointment = async (e,id) => {
           <h2>Appointment Dashboard</h2>
         </Card>
         <div className={style.appointmentDashboardContainer}>
-          <ScheduleAppointment onAppointmentScheduled={onAppointmentScheduled} />
+          <ScheduleAppointment />
           <div className={style.divRow}>
             {/* Upcoming Appointments */}
             <Col md={12} className={`mb-5 ${style.box}`}>
