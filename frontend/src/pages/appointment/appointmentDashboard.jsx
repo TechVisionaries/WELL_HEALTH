@@ -96,7 +96,6 @@ const handleCancelAppointment = async (e,id) => {
   return (
     <>
       <Sidebar />
-
       <div className={style.mainContainer}>
         <Card className={`mt-3 py-3 text-center`} style={cardHeadingStyle}>
           <h2>Appointment Dashboard</h2>
