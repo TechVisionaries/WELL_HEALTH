@@ -3,6 +3,7 @@ import {
   Avatar,
   Box,
   Button,
+  Card,
   Grid,
   IconButton,
   TextField,
@@ -450,7 +451,18 @@ function AddPrescription() {
   return (
     <>
       <div className={dashboardStyles.mainDiv}>
-        <Box sx={{ overflow: "hidden", flexGrow: 1 }}>
+        <Box className={dashboardStyles.container} sx={{ overflow: "hidden", flexGrow: 1 }}>
+        <Card className={`mt-3 py-3 text-center`} style={{
+    background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
+    borderRadius: "10px",
+    color: "white",
+    textAlign: "center",
+    marginTop: "20px",
+    marginBottom: "20px",
+    padding: "15px", // Add padding as per your requirement
+  }}>
+          <h2>Add Prescription</h2>
+        </Card>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={4}>
               <Item>
