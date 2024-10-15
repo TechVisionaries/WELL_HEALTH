@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Card, CardContent, TextField, FormControl, RadioGroup, FormControlLabel, Radio, InputAdornment, IconButton, Avatar, Button, Stack, List, Divider, Modal, Box, Breadcrumbs, Typography, MenuItem, Select, InputLabel } from '@mui/material';
+import { Card, CardContent, TextField, FormControl, RadioGroup, FormControlLabel, Radio, InputAdornment, IconButton, Avatar, Button, Stack, List, Divider, Modal, Box, Breadcrumbs, Typography, MenuItem, Select, InputLabel, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { Container, Row, Col } from 'react-bootstrap';
 import Sidebar from '../components/sideBar';
 import dashboardStyles from '../styles/dashboardStyles.module.css';
@@ -12,7 +12,8 @@ import styles from '../styles/loginStyles.module.css';
 import { Delete, Sync, Visibility, VisibilityOff } from '@mui/icons-material';
 import { LinearProgress } from '@mui/joy';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useRegisterMutation } from '../slices/usersApiSlice';
+import { useRegisterMutation, useGetAllUsersQuery, useDeleteUserMutation } from '../slices/usersApiSlice'; // Added custom hooks
+import { toast } from 'react-toastify';
 
 const ManageUsersPage = () => {
     const [imagePath, setImagePath] = useState('./images/addProfile.png');
@@ -34,6 +35,11 @@ const ManageUsersPage = () => {
     const dispatch = useDispatch();
 
     const [register, { isLoading }] = useRegisterMutation();
+    const { data: users, isLoading: usersLoading } = useGetAllUsersQuery(); // Fetching all users
+    const [deleteUser] = useDeleteUserMutation(); // Delete user functionality
+    const [filteredUsers, setFilteredUsers] = useState([]); // State for filtered users
+    const [userTypeFilter, setUserTypeFilter] = useState(''); // State for user type filter
+
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
@@ -57,6 +63,29 @@ const ManageUsersPage = () => {
         setImagePath(URL.createObjectURL(e.target.files[0]));
         const data = await ImageToBase64(e.target.files[0]);
         setImage(data);
+    };
+
+    useEffect(() => {
+        // Filter out users who are not patients
+        const filtered = users?.filter(user => user.userType !== 'patient' && user.userType !== 'manager');
+        setFilteredUsers(filtered);
+    }, [users]);
+
+    const handleDeleteUser = async (id) => {
+        try {
+            await deleteUser(id).unwrap();
+            toast.success('User deleted successfully');
+            setFilteredUsers((prevUsers) => prevUsers.filter((user) => user._id !== id));
+        } catch (err) {
+            toast.error('Failed to delete user');
+        }
+    };
+
+    const handleFilterChange = (event) => {
+        const selectedType = event.target.value;
+        setUserTypeFilter(selectedType);
+        const filtered = users?.filter(user => user.userType === selectedType || selectedType === '' && user.userType !== 'patient' && user.userType !== 'manager');
+        setFilteredUsers(filtered);
     };
 
     return (
@@ -239,18 +268,60 @@ const ManageUsersPage = () => {
                         </Col>
 
                         <Col xs={12} md={8}>
-                            <Card>
-                                <CardContent className={dashboardStyles.cardContent}>
-                                    <List sx={{ width: '100%' }}>
-                                        <Row className="py-3">
-                                            <Col><b>Full Name</b></Col>
-                                            <Col>{`${firstName} ${lastName}`}</Col>
-                                        </Row>
-                                        <Divider />
-                                        {/* Add other rows for birthday, age, etc */}
-                                    </List>
-                                </CardContent>
-                            </Card>
+                        <Card>
+                <CardContent>
+                <Breadcrumbs 
+                                    aria-label="breadcrumb" 
+                                    className="py-4 ps-3 mt-2" 
+                                    style={{ backgroundColor: '#ea3367df', display: 'flex', justifyContent: 'center' }}>
+                                    <Typography color="text.primary">All Staff</Typography>
+                                </Breadcrumbs>
+                    {/* Radio Buttons to Filter by User Type */}
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                        <RadioGroup row value={userTypeFilter} onChange={handleFilterChange}>
+                            <FormControlLabel value="" control={<Radio />} label="All" />
+                            <FormControlLabel value="doctor" control={<Radio />} label="Doctor" />
+                            <FormControlLabel value="nurse" control={<Radio />} label="Nurse" />
+                        </RadioGroup>
+                    </div>
+
+
+                    {/* Loading Indicator */}
+                    {usersLoading ? (
+                        <Typography>Loading...</Typography>
+                    ) : (
+                        /* Table to Display Users */
+                        <TableContainer component={Paper} style={{ maxHeight: '360px', overflowY: 'scroll' }}>
+                            <Table stickyHeader>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>First Name</TableCell>
+                                        <TableCell>Last Name</TableCell>
+                                        <TableCell>Email</TableCell>
+                                        <TableCell>User Type</TableCell>
+                                        <TableCell>Actions</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {filteredUsers?.map((user) => (
+                                        <TableRow key={user._id}>
+                                            <TableCell>{user.firstName}</TableCell>
+                                            <TableCell>{user.lastName}</TableCell>
+                                            <TableCell>{user.email}</TableCell>
+                                            <TableCell>{user.userType}</TableCell>
+                                            <TableCell>
+                                                <IconButton color="error" onClick={() => handleDeleteUser(user._id)}>
+                                                    <Delete />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    )}
+                </CardContent>
+            </Card>
                         </Col>
                     </Row>
                 </Container>
