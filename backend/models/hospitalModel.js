@@ -1,22 +1,48 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const hospitalSchema = mongoose.Schema({
-    hospitalID: {
-        type: String,
-        required: true
+const { Schema } = mongoose;
+
+const hospitalSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  doctors: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Doctor",
     },
-    name: {
-        type: String,
-        required: true
+  ],
+  nurses: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Nurse",
     },
-    Location: {
-        type: String,
-        required: true
+  ],
+
+  sector: {
+    type: String,
+    enum: ["Government", "Private"],
+    required: true,
+  },
+  serviceCharge: {
+    type: Number,
+    required: true,
+  },
+  operatingHours: {
+    open: {
+      type: String, // Example: '08:00 AM'
     },
-}, {
-    timestamps: true
+    close: {
+      type: String, // Example: '08:00 PM'
+    },
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
 });
 
-const Hospital = mongoose.model('Hospital', hospitalSchema);
+const Hospital = mongoose.model("Hospital", hospitalSchema);
 
 export default Hospital;

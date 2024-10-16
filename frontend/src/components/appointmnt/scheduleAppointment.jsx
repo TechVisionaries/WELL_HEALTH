@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,6 +9,9 @@ import axios from "axios";
 const ScheduleAppointment = () => {
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
+
+const [hospitals, setHospitals] = useState([]);
+const [doctors, setDoctors] = useState([]);
 
 
   const [formData, setFormData] = useState({
@@ -23,16 +26,61 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
     serviceType: "", 
   });
 
+const getHospitalsBySector = async(sector) => {
+
+  sector = sector.toLowerCase();
+
+  try {
+    const response = await axios.get(`${baseUrl}/hospitals/${sector}`);
+    setHospitals(response.data);
+  } catch (error) {
+    console.error(`Error: ${error}`);
+    
+  }
+};
+
+const getDoctorsByHospital = async(hospitalName) => {
+  let formattedName = hospitalName.replace(/ /g, '_');
+  try {
+    const response = await axios.get(`${baseUrl}/hospitals/doctors/name?hostpitalName=${formattedName}`);
+    console.log(response.data);
+    setDoctors(response.data);
+  } catch (error) {
+    console.error(`Error: ${error}`);
+  }
+};
+
+
+// get list of hospitals names
+const hospitalsNameList = hospitals.map((hospital) =>{
+  let name = hospital.name
+  let hospitalName = name.replace(/_/g, ' ');
+  return hospitalName;
+});
+console.log(hospitals);
+// console.log(hospitalsNameList);
+
+// get list of doctors names
+const doctorsNameList = doctors.map((doctor) => doctor.name);
+
+
+
+
   const navigate = useNavigate();
 
   const [showSummary, setShowSummary] = useState(false); 
 
   const sectors = ["Government", "Private"];
-  const hospitalsBySector = {
-    Government: ["National Hospital of Sri Lanka", "Teaching Hospital Karapitiya", "Lady Ridgeway Hospital"],
-    Private: ["Asiri Central Hospital", "Nawaloka Hospital", "Durdans Hospital", "Lanka Hospitals"],
-  };
-  const specializations = ["Cardiology", "Dermatology", "Pediatrics", "Oncology"];
+  // const hospitalsBySector = {
+  //   Government: ["National Hospital of Sri Lanka", "Teaching Hospital Karapitiya", "Lady Ridgeway Hospital"],
+  //   Private: ["Asiri Central Hospital", "Nawaloka Hospital", "Durdans Hospital", "Lanka Hospitals"],
+  // };
+
+
+
+
+
+  // const specializations = ["Cardiology", "Dermatology", "Pediatrics", "Oncology"];
   
   const serviceTypes = [
     "General Checkup",
@@ -57,12 +105,22 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
   ];
 
   const handleChange = (e) => {
+    e.preventDefault();
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   
     if (name === "sector") {
       setFormData({ ...formData, hospital: "", [name]: value });
+      getHospitalsBySector(value);
     }
+
+    if (name === "hospital") {
+      setFormData({ ...formData, consultant: "", [name]: value });
+      console.log(value);
+      getDoctorsByHospital(value);
+    }
+
+
   };
   
   const handleDateChange = (date) => {
@@ -152,7 +210,7 @@ const dataSubmit = async () => {
     // };
 
     dataSubmit();
-    handlePayment();
+    // handlePayment();
   };
 
   return (
@@ -227,7 +285,7 @@ const dataSubmit = async () => {
               required
             >
               <option value="">Choose a hospital...</option>
-              {hospitalsBySector[formData.sector]?.map((hospital, index) => (
+              {hospitalsNameList.map((hospital, index) => (
                 <option key={index} value={hospital}>
                   {hospital}
                 </option>
@@ -236,8 +294,7 @@ const dataSubmit = async () => {
           </div>
         )}
 
-        {/* Select Specialization */}
-        <div className={`mb-3 ${style.formGroup}`}>
+        {/* <div className={`mb-3 ${style.formGroup}`}>
           <label htmlFor="specialization" className={`form-label ${style.label}`}>
             Select Specialization
           </label>
@@ -256,10 +313,10 @@ const dataSubmit = async () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         {/* Select Consultant */}
-        {formData.specialization && (
+        
           <div className={`mb-3 ${style.formGroup}`}>
             <label htmlFor="consultant" className={`form-label ${style.label}`}>
               Select Consultant
@@ -273,16 +330,14 @@ const dataSubmit = async () => {
               required
             >
               <option value="">Choose a consultant...</option>
-              {consultantsBySpecialization[formData.specialization]?.map(
-                (consultant, index) => (
-                  <option key={index} value={consultant}>
-                    {consultant}
-                  </option>
-                )
-              )}
+              {doctorsNameList.map((doctor, index) => (
+                <option key={index} value={doctor}>
+                  {doctor}
+                </option>
+              ))}
             </select>
           </div>
-        )}
+       
 
         {/* Appointment Date */}
         <div className={`mb-3 ${style.formGroup}`}>
@@ -363,7 +418,6 @@ const dataSubmit = async () => {
           <p><strong>Email:</strong> {formData.email}</p>
           <p><strong>Sector:</strong> {formData.sector}</p>
           <p><strong>Hospital:</strong> {formData.hospital}</p>
-          <p><strong>Specialization:</strong> {formData.specialization}</p>
           <p><strong>Consultant:</strong> {formData.consultant}</p>
           <p><strong>Appointment Date:</strong> {formData.appointmentDate?.toLocaleDateString()}</p>
           <p><strong>Appointment Time:</strong> {formData.appointmentTime}</p>
