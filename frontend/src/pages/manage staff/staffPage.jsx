@@ -27,9 +27,9 @@ import { Locations, Shifts, Statuses } from "./data";
 import { useState } from "react";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import { AssignmentInd } from "@mui/icons-material";
+import { AssignmentInd, GroupRemove } from "@mui/icons-material";
 import { useRef } from "react";
-import { useAssignStaffMutation, useGetAvailableStaffMutation, useGetShiftsMutation } from "../../slices/shiftsApiSlice";
+import { useAssignStaffMutation, useGetAvailableStaffMutation, useGetShiftsMutation, useRemoveStaffMutation } from "../../slices/shiftsApiSlice";
 
 const cardHeadingStyle = {
   background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
@@ -73,11 +73,12 @@ const StaffPage = () => {
   const [getAvailableStaff] = useGetAvailableStaffMutation();
   const [getShifts] = useGetShiftsMutation();
   const [assign] = useAssignStaffMutation();
+  const [remove] = useRemoveStaffMutation();
 
   const fetchAvailableStaff = async () => {
     setIsLoading(true);    
     try {
-      const res = await getAvailableStaff({date: shift.date?.format("YYYY-MM-DD") || ''}).unwrap();
+      const res = await getAvailableStaff({date: shift.date?.format("YYYY-MM-DD") || '', shift: shift.shift}).unwrap();
       
       setAvailableStaffData(res)
       setFilteredAvailableStaffData(res)
@@ -137,24 +138,16 @@ const StaffPage = () => {
       toast.error(error.data?.message || error.message);
     } finally {
       setIsLoading(false);
+      setAvilableChecked([])
     }
   }; 
 
   const removeStaff = async () => {
     setIsLoading(true);
     try {
-      if(!shift.date){
-        if(dateRef.current){
-          dateRef.current.click();
-        }
-        throw new Error("Please select a date to remove staff");
-      }
-      if(!shift.shift){
-        if(shiftRef.current){
-          shiftRef.current.click();
-        }
-        throw new Error("Please select a shift to remove staff");
-      }
+      const res = await remove({ shift: assignChecked}).unwrap();
+      toast.success('Staff Unassigned Successfully');
+
 
       await fetchAssignedStaff();
       await fetchAvailableStaff();
@@ -162,6 +155,7 @@ const StaffPage = () => {
       toast.error(error.data?.message || error.message);
     } finally {
       setIsLoading(false);
+      setAssignChecked([])
     }
   }; 
 
@@ -245,13 +239,10 @@ const StaffPage = () => {
     fetchAvailableStaff()
   }, []);
 
-  useEffect(() => {
-    if(shift.date){
-      fetchAvailableStaff()
-    }
-    
+  useEffect(() => {    
     if(shift.date && shift.shift){
       fetchAssignedStaff()
+      fetchAvailableStaff()
     }
   }, [shift.date, shift.shift]);
 
@@ -386,9 +377,18 @@ const StaffPage = () => {
                   ))}
                   </Select>
                 </FormControl>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Assigned Staff
-                </Typography>
+                <Row>
+                  <Col>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                    Assigned Staff
+                    </Typography>
+                  </Col>
+                  {shift.date && shift.shift && assignChecked.length > 0 && (<>
+                  <Col style={{textAlign: 'right'}}>
+                    <Button variant="contained" sx={{borderRadius: '50px', marginBottom: '5px'}} onClick={removeStaff}>Remove &nbsp; <GroupRemove /></Button>
+                  </Col>
+                  </>)}
+                </Row>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableHead>

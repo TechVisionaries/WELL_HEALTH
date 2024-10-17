@@ -46,6 +46,23 @@ const createShift = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Delete Shift
+// route    DELETE /api/shift/
+// @access  Private
+const deleteShift = asyncHandler(async (req, res) => {
+    const {shift: shiftList} = req.body;
+
+    try {
+        for (const shiftId of shiftList) {
+            await Shift.findByIdAndDelete(shiftId);
+        }
+        res.status(200).send({ status: "Shift removed" });;
+    } catch (error) {
+        res.status(400);
+        throw new Error('Error Deleting shift');
+    }
+});
+
 // @desc    Get all shifts
 // route    GET /api/shift/all
 // @access  Private
@@ -82,7 +99,7 @@ const getAllShifts = asyncHandler(async (req, res) => {
     }
     else {
         res.status(400);
-        throw new Error('No Shifts found for the day');
+        throw new Error('No Shifts found');
     }
 
 });
@@ -92,12 +109,13 @@ const getAllShifts = asyncHandler(async (req, res) => {
 // @access  Private
 const getAvailableStaff = asyncHandler(async (req, res) => {
     const date = req.query.date || '';
+    const shiftSlot = req.query.shift || '';
 
     let shifts = [];
     
-    if (date) {
+    if (date && shiftSlot) {
         // Get all shifts for the given date and shiftSlot
-        shifts = await Shift.find({ date });
+        shifts = await Shift.find({ date, shiftSlot });
     }
 
     // Get all user IDs who have an assigned shift
@@ -144,13 +162,14 @@ const getAvailableStaff = asyncHandler(async (req, res) => {
         res.status(200).json(finalResponseUsers); // Return the filtered list of users
     } else {
         res.status(400);
-        throw new Error('No Staff available for the day');
+        throw new Error('No Staff available');
     }
 });
 
 
 export { 
     createShift,
+    deleteShift,
     getAvailableStaff,
     getAllShifts
 };
