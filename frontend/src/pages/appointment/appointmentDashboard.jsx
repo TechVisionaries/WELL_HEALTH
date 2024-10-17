@@ -22,6 +22,10 @@ const AppointmentDashboard = () => {
 // base url
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
+const convertHospitalName = (name) => {
+  return name.replace(/_/g, ' ');
+};
+
 
   // const upcomingAppointments = [
   //   {
@@ -125,7 +129,7 @@ const handleCancelAppointment = async (e,id) => {
                       {upcomingAppointments.map((appointment) => (
                         <tr key={appointment._id}>
                           <td>{appointment.appointmentDate}</td>
-                          <td>{appointment.hospital}</td>
+                          <td>{convertHospitalName(appointment.hospital)}</td>
                           <td>{appointment.appointmentTime}</td>
                           <td>{appointment.consultant}</td>
                           <td>

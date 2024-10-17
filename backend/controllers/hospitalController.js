@@ -36,12 +36,12 @@ export const getAllHospitals = async (req, res) => {
 export const getDoctorsByHospital = async (req, res) => {
   
   // get hospital name as query parameter
-  const {hostpitalName} = req.query;
-  console.log(hostpitalName);
+  const {hospitalName} = req.query;
+  console.log(hospitalName);
 
   try {
     // populate doctors in hospital
-    const hospital = await Hospital.findOne({name: hostpitalName}).populate("doctors");
+    const hospital = await Hospital.findOne({name: hospitalName}).populate("doctors");
 
     if (!hospital) {
       return res.status(404).json({ message: "Hospital not found" });
@@ -54,3 +54,23 @@ export const getDoctorsByHospital = async (req, res) => {
       .json({ message: "Error fetching doctors", error: error.message });
   }
 };
+
+// get hospital by name
+export const getHospitalByName = async (req, res) => {
+  const {name} = req.query;
+
+  try {
+    const hospital = await Hospital.findOne({name});
+    
+    if (!hospital) {
+      return res.status(404).json({ message: "Hospital not found" });
+    }
+
+    return res.status(200).json(hospital);
+  }
+  catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error fetching hospital", error: error.message });
+  }
+}
