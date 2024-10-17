@@ -1,4 +1,5 @@
 import Appointment from "../models/appointmentModel.js";
+import Doctor from "../models/doctorModel.js";
 
 // Create a new appointment
 export const createAppointment = async (req, res) => {
@@ -16,6 +17,7 @@ export const createAppointment = async (req, res) => {
     appointmentDate,
     appointmentTime,
     serviceType,
+    doctorId,
   } = req.body;
   // console.log(req.body);
 
@@ -30,6 +32,11 @@ export const createAppointment = async (req, res) => {
   ) {
     return res.status(400).json({ message: "All fields are required" });
   }
+
+  if(!doctorId){
+    return res.status(400).json({ message: "Doctor not found" });
+  }
+
 
   //   convert 2024-10-14T18:30:00.000Z format to DD-MM-YYYY format
   const newAppointmentDate = new Date(appointmentDate).toLocaleDateString(
@@ -46,6 +53,7 @@ export const createAppointment = async (req, res) => {
       appointmentDate: newAppointmentDate,
       appointmentTime,
       serviceType,
+      doctorId,
     });
 
     await appointment.save();
@@ -117,5 +125,36 @@ export const getAllAppointments = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Error fetching appointments", error: error.message });
+  }
+};
+
+
+// find doctors by user id
+export const findAppointmentsByDoctor = async (req, res) => {
+  const userId = req.user ? req.user._id : null;
+
+  if(!userId){
+    return res.status(400).json({ message: "UserId not found" });
+  }
+
+  try {
+    const doctor = await Doctor.findOne({
+      user: userId,
+    });
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    const appointments = await Appointment.find({
+      doctorId: doctor._id,
+    });
+
+    return res.status(200).json(appointments);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error fetching appointments", error: error.message });
+      
   }
 };

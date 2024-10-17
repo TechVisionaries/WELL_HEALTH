@@ -202,7 +202,7 @@ const authUser = asyncHandler(async (req, res) => {
             throw new Error('Invalid Credentials');
         }
 
-        generateToken(res, user._id);
+        generateToken(res, user.email);
         res.status(200).json({
             _id: user._id,
             email: user.email,  

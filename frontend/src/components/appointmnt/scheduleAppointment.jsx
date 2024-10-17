@@ -8,93 +8,64 @@ import axios from "axios";
 
 const ScheduleAppointment = () => {
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const [hospitals, setHospitals] = useState([]);
-const [doctors, setDoctors] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
+  const [choosenHospital, setChoosenHospital] = useState("");
 
+  const [doctors, setDoctors] = useState([]);
+  const [choosenDoctor, setChoosenDoctor] = useState("");
+  const [doctorId, setDoctorId] = useState("");
+
+
+  const [serviceCharge, setServiceCharge] = useState(0);
+  const [consultationFee, setConsultationFee] = useState(0);
+  const totalCharges = serviceCharge + consultationFee;
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     sector: "",
     hospital: "",
-    specialization: "",
     consultant: "",
     appointmentDate: null,
     appointmentTime: "",
     serviceType: "", 
   });
 
-const getHospitalsBySector = async(sector) => {
+  const getHospitalsBySector = async(sector) => {
+    sector = sector.toLowerCase();
+    try {
+      const response = await axios.get(`${baseUrl}/hospitals/${sector}`);
+      setHospitals(response.data);
+    } catch (error) {
+      console.error(`Error: ${error}`);
+    }
+  };
 
-  sector = sector.toLowerCase();
+  const getDoctorsByHospital = async(hospitalName) => {
+    try {
+      const response = await axios.get(`${baseUrl}/hospitals/doctors/name?hospitalName=${hospitalName}`);
+      setDoctors(response.data);
+    } catch (error) {
+      console.error(`Error: ${error}`);
+    }
+  };
 
-  try {
-    const response = await axios.get(`${baseUrl}/hospitals/${sector}`);
-    setHospitals(response.data);
-  } catch (error) {
-    console.error(`Error: ${error}`);
-    
-  }
-};
-
-const getDoctorsByHospital = async(hospitalName) => {
-  let formattedName = hospitalName.replace(/ /g, '_');
-  try {
-    const response = await axios.get(`${baseUrl}/hospitals/doctors/name?hostpitalName=${formattedName}`);
-    console.log(response.data);
-    setDoctors(response.data);
-  } catch (error) {
-    console.error(`Error: ${error}`);
-  }
-};
-
-
-// get list of hospitals names
-const hospitalsNameList = hospitals.map((hospital) =>{
-  let name = hospital.name
-  let hospitalName = name.replace(/_/g, ' ');
-  return hospitalName;
-});
-console.log(hospitals);
-// console.log(hospitalsNameList);
-
-// get list of doctors names
-const doctorsNameList = doctors.map((doctor) => doctor.name);
-
-
-
+  const convertHospitalName = (name) => {
+    return name.replace(/_/g, ' ');
+  };
 
   const navigate = useNavigate();
-
   const [showSummary, setShowSummary] = useState(false); 
 
   const sectors = ["Government", "Private"];
-  // const hospitalsBySector = {
-  //   Government: ["National Hospital of Sri Lanka", "Teaching Hospital Karapitiya", "Lady Ridgeway Hospital"],
-  //   Private: ["Asiri Central Hospital", "Nawaloka Hospital", "Durdans Hospital", "Lanka Hospitals"],
-  // };
-
-
-
-
-
-  // const specializations = ["Cardiology", "Dermatology", "Pediatrics", "Oncology"];
-  
   const serviceTypes = [
     "General Checkup",
     "Surgery",
     "Consultation",
     "Emergency",
   ];
-
-  const consultantsBySpecialization = {
-    Cardiology: ["Dr. Ranjith Perera", "Dr. Saman Abeysekera", "Dr. Anura Fernando"],
-    Dermatology: ["Dr. Chathura Senanayake", "Dr. Kumudu Gamage", "Dr. Dilhan Samarasinghe"],
-    Pediatrics: ["Dr. Nuwan Jayasooriya", "Dr. Shehan Senevirathne", "Dr. Nirmal Cooray"],
-    Oncology: ["Dr. Hasitha Peiris", "Dr. Sudesh Rathnayake", "Dr. Udara Chandradasa"],
-  };
 
   const appointmentTimes = [
     "09:00 AM",
@@ -108,21 +79,40 @@ const doctorsNameList = doctors.map((doctor) => doctor.name);
     e.preventDefault();
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  
+
     if (name === "sector") {
-      setFormData({ ...formData, hospital: "", [name]: value });
+      setFormData({ ...formData, hospital: "", consultant: "", [name]: value });
       getHospitalsBySector(value);
     }
 
     if (name === "hospital") {
       setFormData({ ...formData, consultant: "", [name]: value });
-      console.log(value);
-      getDoctorsByHospital(value);
+      setChoosenHospital(value);
+      const selectedHospital = hospitals.find(hospital => hospital.name === value);
+      if (selectedHospital) {
+        setServiceCharge(selectedHospital.serviceCharge);
+        getDoctorsByHospital(selectedHospital.name);
+      }
     }
 
-
+    if (name === "consultant") {
+      setFormData({ ...formData, [name]: value });
+      const selectedDoctor = doctors.find(doctor => doctor.name === value);
+      if (selectedDoctor) {
+        setConsultationFee(selectedDoctor.consultationFee);
+        setDoctorId(selectedDoctor._id);
+      }
+    }
   };
-  
+
+  useEffect(() => {
+    console.log("Chosen Hospital:", choosenHospital);
+  }, [choosenHospital]);
+
+  useEffect(() => {
+    console.log("Chosen Doctor:", choosenDoctor);
+  }, [choosenDoctor]);
+
   const handleDateChange = (date) => {
     setFormData({ ...formData, appointmentDate: date });
   };
@@ -131,87 +121,69 @@ const doctorsNameList = doctors.map((doctor) => doctor.name);
   const [paymentError, setPaymentError] = useState(null);
   const [paymentSuccess, setPaymentSuccess] = useState(null);
 
-  // Calculate charges
-  const consultationFee = 50; // Example fee
-  const channelingCharge = 10; // Example charge
-  const vatTaxRate = 0.18;
-  const subtotal = consultationFee + channelingCharge;
-  const vatTax = subtotal * vatTaxRate;
-  const totalCharges = subtotal + vatTax;
-
   const handlePayment = async () => {
-      setIsLoading(true);
-      setPaymentError(null);
-      setPaymentSuccess(null);
+    setIsLoading(true);
+    setPaymentError(null);
+    setPaymentSuccess(null);
 
-      try {
-          // Create a Checkout Session on the server
-          const { data } = await axios.post(`${baseUrl}/payment/create-checkout-session`, {
-              amount: totalCharges
-          });
+    try {
+      const { data } = await axios.post(`${baseUrl}/payment/create-checkout-session`, {
+        serviceCharge,
+        consultationFee,
+        totalCharges,
+      });
 
-          // Redirect to Stripe Checkout using the session URL
-          if (data.url) {
-              window.location.href = data.url;
-          } else {
-              throw new Error('No URL returned for Checkout session');
-          }
-      } catch (error) {
-          console.error('Error creating Checkout session:', error);
-          setPaymentError('Payment failed. Please try again.');
-      } finally {
-          setIsLoading(false);
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No URL returned for Checkout session');
       }
+    } catch (error) {
+      console.error('Error creating Checkout session:', error);
+      setPaymentError('Payment failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-const dataSubmit = async () => {
-  try{
-    const response = await axios.post(`${baseUrl}/appointments`, formData,{ withCredentials: true });
-    console.log(response.data);
-  
-   
-    // set the form data to empty
-    setFormData({
-      name: "",
-      email: "",
-      sector: "",
-      hospital: "",
-      specialization: "",
-      consultant: "",
-      appointmentDate: null,
-      appointmentTime: "",
-      serviceType: "",
-    });
+  const dataSubmit = async () => {
+    try {
 
+      const formWithDoctorId = {
+        ...formData,
+        doctorId, 
+      };
 
+      const response = await axios.post(`${baseUrl}/appointments`,formWithDoctorId, { withCredentials: true });
+      console.log(response.data);
 
-  }catch(error){
-    console.error(`Error: ${error}`);
-  }
-};
-
+      setFormData({
+        name: "",
+        email: "",
+        sector: "",
+        hospital: "",
+        consultant: "",
+        appointmentDate: null,
+        appointmentTime: "",
+        serviceType: "",
+      });
+    } catch (error) {
+      console.error(`Error: ${error}`);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setShowSummary(true); 
+    setShowSummary(true);
   };
 
   const handleClose = () => setShowSummary(false);
   const handleProceedToPayment = () => {
-    // const appointmentDetails = {
-    //   name: formData.name,
-    //   email: formData.email,
-    //   hospital: formData.hospital,
-    //   specialization: formData.specialization,
-    //   consultant: formData.consultant,
-    //   appointmentDate: formData.appointmentDate,
-    //   appointmentTime: formData.appointmentTime,
-    //   serviceType: formData.serviceType, 
-    // };
-
     dataSubmit();
-    // handlePayment();
+    handlePayment();
   };
+
+ 
 
   return (
     <div className={`container mt-5 ${style.container}`}>
@@ -285,38 +257,17 @@ const dataSubmit = async () => {
               required
             >
               <option value="">Choose a hospital...</option>
-              {hospitalsNameList.map((hospital, index) => (
-                <option key={index} value={hospital}>
-                  {hospital}
+              {hospitals.map((hospital, index) => (
+                <option key={index} value={hospital.name}>
+                  {convertHospitalName(hospital.name)}
                 </option>
               ))}
             </select>
           </div>
         )}
 
-        {/* <div className={`mb-3 ${style.formGroup}`}>
-          <label htmlFor="specialization" className={`form-label ${style.label}`}>
-            Select Specialization
-          </label>
-          <select
-            className={`form-select ${style.select}`}
-            id="specialization"
-            name="specialization"
-            value={formData.specialization}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Choose a specialization...</option>
-            {specializations.map((spec, index) => (
-              <option key={index} value={spec}>
-                {spec}
-              </option>
-            ))}
-          </select>
-        </div> */}
-
         {/* Select Consultant */}
-        
+        {formData.hospital && (
           <div className={`mb-3 ${style.formGroup}`}>
             <label htmlFor="consultant" className={`form-label ${style.label}`}>
               Select Consultant
@@ -330,14 +281,14 @@ const dataSubmit = async () => {
               required
             >
               <option value="">Choose a consultant...</option>
-              {doctorsNameList.map((doctor, index) => (
-                <option key={index} value={doctor}>
-                  {doctor}
+              {doctors.map((doctor, index) => (
+                <option key={index} value={doctor.name}>
+                  {doctor.name}
                 </option>
               ))}
             </select>
           </div>
-       
+        )}
 
         {/* Appointment Date */}
         <div className={`mb-3 ${style.formGroup}`}>
@@ -355,7 +306,7 @@ const dataSubmit = async () => {
             dateFormat="yyyy/MM/dd"
             required
             placeholderText="Select a date"
-            minDate={new Date()} 
+            minDate={new Date()}
           />
         </div>
 
@@ -422,12 +373,13 @@ const dataSubmit = async () => {
           <p><strong>Appointment Date:</strong> {formData.appointmentDate?.toLocaleDateString()}</p>
           <p><strong>Appointment Time:</strong> {formData.appointmentTime}</p>
           <p><strong>Service Type:</strong> {formData.serviceType}</p>
+          <p><strong>Total Charges:</strong> ${totalCharges}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleProceedToPayment} >
+          <Button variant="primary" onClick={handleProceedToPayment}>
             Proceed to Payment
           </Button>
         </Modal.Footer>
