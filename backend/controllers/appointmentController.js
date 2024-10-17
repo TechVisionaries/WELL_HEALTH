@@ -148,6 +148,8 @@ export const findAppointmentsByDoctor = async (req, res) => {
 
     const appointments = await Appointment.find({
       doctorId: doctor._id,
+      deletedOn: null,
+
     });
 
     return res.status(200).json(appointments);

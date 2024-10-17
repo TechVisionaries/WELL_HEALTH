@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import style from '../../styles/scheduleAppointment.module.css'; // Using module CSS
 import { Modal, Button } from "react-bootstrap"; 
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ScheduleAppointment = () => {
 
@@ -130,7 +131,6 @@ const ScheduleAppointment = () => {
       const { data } = await axios.post(`${baseUrl}/payment/create-checkout-session`, {
         serviceCharge,
         consultationFee,
-        totalCharges,
       });
 
       if (data.url) {
@@ -145,6 +145,8 @@ const ScheduleAppointment = () => {
       setIsLoading(false);
     }
   };
+
+
 
   const dataSubmit = async () => {
     try {
@@ -181,6 +183,7 @@ const ScheduleAppointment = () => {
   const handleProceedToPayment = () => {
     dataSubmit();
     handlePayment();
+  
   };
 
  

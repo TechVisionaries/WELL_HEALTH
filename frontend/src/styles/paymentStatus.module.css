@@ -1,4 +1,4 @@
-.payment-status-container {
+.paymentStatusContainer {
   text-align: center;
   height: fit-content;
   padding: 2rem;
@@ -19,16 +19,16 @@
   color: #dc3545;
 }
 
-.status-icon {
+.statusIcon {
   font-size: 4rem;
   margin-bottom: 1rem;
 }
 
-.success-icon {
+.successIcon {
   color: #28a745;
 }
 
-.failure-icon {
+.failureIcon {
   color: #dc3545;
 }
 
@@ -51,12 +51,12 @@ p {
   text-decoration: none;
 }
 
-.btn-primary {
+.btnPrimary {
   background-color: #007bff;
   color: #fff;
 }
 
-.btn-primary:hover {
+.btnPrimary:hover {
   background-color: #0056b3;
 }
 

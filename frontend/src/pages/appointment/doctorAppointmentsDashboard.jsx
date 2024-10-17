@@ -1,30 +1,47 @@
-import { useEffect, useState } from 'react';
-import { Button, InputGroup, FormControl, Table, Modal, Badge } from 'react-bootstrap';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import style from '../../styles/doctorAppointmentsDashboard.module.css'; // Assuming you'll add custom CSS here
-import Sidebar from '../../components/sideBar';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import {
+  Button,
+  InputGroup,
+  FormControl,
+  Table,
+  Modal,
+  Badge,
+  Card,
+} from "react-bootstrap";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import style from "../../styles/doctorAppointmentsDashboard.module.css"; // Assuming you'll add custom CSS here
+import Sidebar from "../../components/sideBar";
+import axios from "axios";
 
 const AppointmentStatus = {
-  SCHEDULED: 'Scheduled',
-  IN_PROGRESS: 'In Progress',
-  COMPLETED: 'Completed',
-  CANCELLED: 'Cancelled',
+  SCHEDULED: "Scheduled",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
+};
+
+const cardHeadingStyle = {
+  background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
+  borderRadius: "10px",
+  color: "white",
+  textAlign: "center",
+  marginTop: "20px",
+  marginBottom: "20px",
+  padding: "15px", // Add padding as per your requirement
 };
 
 const DoctorAppointmentsDashboard = () => {
-
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [appointments, setAppointments] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
   const [currentAppointment, setCurrentAppointment] = useState(null);
-  const [newDate, setNewDate] = useState('');
-  const [newTime, setNewTime] = useState('');
+  const [newDate, setNewDate] = useState("");
+  const [newTime, setNewTime] = useState("");
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -36,14 +53,16 @@ const DoctorAppointmentsDashboard = () => {
 
   const handleModify = (appointment) => {
     setCurrentAppointment(appointment);
-    setNewDate(appointment.date || '');
-    setNewTime(appointment.time || '');
+    setNewDate(appointment.date || "");
+    setNewTime(appointment.time || "");
     setShowRescheduleModal(true);
   };
 
   const getDoctorAppointments = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/appointments/doctor`, { withCredentials: true });
+      const response = await axios.get(`${baseUrl}/appointments/doctor`, {
+        withCredentials: true,
+      });
       setAppointments(response.data);
     } catch (error) {
       console.error(`Error: ${error}`);
@@ -60,7 +79,9 @@ const DoctorAppointmentsDashboard = () => {
 
   const handleReschedule = () => {
     const updatedAppointments = appointments.map((app) =>
-      app.id === currentAppointment.id ? { ...app, date: newDate, time: newTime } : app
+      app.id === currentAppointment.id
+        ? { ...app, date: newDate, time: newTime }
+        : app
     );
     setAppointments(updatedAppointments);
     setShowRescheduleModal(false);
@@ -83,18 +104,16 @@ const DoctorAppointmentsDashboard = () => {
 
   // Function to compare if two dates are the same
   const isSameDate = (date1, date2) => {
-    return (
-      new Date(date1).toDateString() === new Date(date2).toDateString()
-    );
+    return new Date(date1).toDateString() === new Date(date2).toDateString();
   };
 
   const convertHospitalName = (name) => {
-    return name.replace(/_/g, ' ');
+    return name.replace(/_/g, " ");
   };
 
   // Function to parse the appointment date
   const parseAppointmentDate = (dateString) => {
-    const [day, month, year] = dateString.split('/');
+    const [day, month, year] = dateString.split("/");
     return new Date(`${year}-${month}-${day}`);
   };
 
@@ -103,8 +122,11 @@ const DoctorAppointmentsDashboard = () => {
       <Sidebar />
 
       <div className={`container-fluid mt-4 ${style.widerContainer}`}>
-        <h1 className="text-center mb-4">Appointment Dashboard</h1>
-
+        <div style={{ width: "100%" }}>
+          <Card className={`mt-3 py-3 text-center`} style={cardHeadingStyle}>
+            <h2>Doctor Appointments </h2>
+          </Card>
+        </div>
         <div className={`row mb-4 ${style.calendar}`}>
           <div className="col-12 col-md-6">
             <h5>Select Date</h5>
@@ -125,7 +147,9 @@ const DoctorAppointmentsDashboard = () => {
 
         <div className={style.tables}>
           <h5>Appointments for {selectedDate.toDateString()}</h5>
-          <div className="table-responsive"> {/* Makes the table scrollable on smaller screens */}
+          <div className="table-responsive">
+            {" "}
+            {/* Makes the table scrollable on smaller screens */}
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -140,8 +164,13 @@ const DoctorAppointmentsDashboard = () => {
                 {appointments
                   .filter(
                     (appointment) =>
-                      isSameDate(parseAppointmentDate(appointment.appointmentDate), selectedDate) &&
-                      appointment.name.toLowerCase().includes(searchTerm.toLowerCase())
+                      isSameDate(
+                        parseAppointmentDate(appointment.appointmentDate),
+                        selectedDate
+                      ) &&
+                      appointment.name
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
                   )
                   .map((appointment) => (
                     <tr key={appointment._id}>
@@ -149,11 +178,25 @@ const DoctorAppointmentsDashboard = () => {
                       <td>{appointment.name}</td>
                       <td>{convertHospitalName(appointment.hospital)}</td>
                       <td>{appointment.serviceType}</td>
-                      <td style={{ display: 'flex', justifyContent: "space-evenly" }}>
-                        <Button variant="outline-primary" size="sm" onClick={() => handleModify(appointment)} >
+                      <td
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          onClick={() => handleModify(appointment)}
+                        >
                           <FaEdit /> Modify
                         </Button>
-                        <Button variant="outline-danger" size="sm" className="ml-2" onClick={() => handleCancel(appointment._id)}>
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          className="ml-2"
+                          onClick={() => handleCancel(appointment._id)}
+                        >
                           <FaTrashAlt /> Cancel
                         </Button>
                       </td>
@@ -165,18 +208,32 @@ const DoctorAppointmentsDashboard = () => {
         </div>
 
         {/* Reschedule Modal */}
-        <Modal show={showRescheduleModal} onHide={() => setShowRescheduleModal(false)}>
+        <Modal
+          show={showRescheduleModal}
+          onHide={() => setShowRescheduleModal(false)}
+        >
           <Modal.Header closeButton>
             <Modal.Title>Reschedule Appointment</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <InputGroup className="mb-3">
-              <FormControl type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
-              <FormControl type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)} />
+              <FormControl
+                type="date"
+                value={newDate}
+                onChange={(e) => setNewDate(e.target.value)}
+              />
+              <FormControl
+                type="time"
+                value={newTime}
+                onChange={(e) => setNewTime(e.target.value)}
+              />
             </InputGroup>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowRescheduleModal(false)}>
+            <Button
+              variant="secondary"
+              onClick={() => setShowRescheduleModal(false)}
+            >
               Close
             </Button>
             <Button variant="primary" onClick={handleReschedule}>

@@ -5,6 +5,7 @@ import style from "../../styles/appointmentDashboard.module.css"; // Import cust
 import ScheduleAppointment from "../../components/appointmnt/scheduleAppointment";
 import Sidebar from "../../components/sideBar";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 
  const cardHeadingStyle = {
@@ -93,9 +94,11 @@ const handleCancelAppointment = async (e,id) => {
   try{
     const response = await axios.delete(`${baseUrl}/appointments/${id}`,{ withCredentials: true });    
     console.log("Response: ", response.data); 
+    toast.success("Appointment cancelled successfully");
     fetchUpcomingAppointments();
   }catch(error){
     console.error(`Error: ${error}`);
+    toast.error("Error cancelling appointment");
   }
 };
 
@@ -105,7 +108,7 @@ const handleCancelAppointment = async (e,id) => {
       <Sidebar />
       <div className={style.mainContainer}>
         <Card className={`mt-3 py-3 text-center`} style={cardHeadingStyle}>
-          <h2>Appointment Dashboard</h2>
+          <h2>Book Your Appointment</h2>
         </Card>
         <div className={style.appointmentDashboardContainer}>
           <ScheduleAppointment />
