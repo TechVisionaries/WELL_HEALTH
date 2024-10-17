@@ -28,6 +28,8 @@ import {
   HowToReg,
   MenuBook,
   Groups2,
+  CalendarViewMonth,
+  CalendarMonth,
 } from "@mui/icons-material";
 import { Button, Image } from "react-bootstrap";
 import { setSideBarStatus } from "../slices/customizeSlice";
@@ -372,14 +374,14 @@ export default function Sidebar() {
           )}
 
           {/* Manager Navigations */}
-          {/* {userInfo.userType == 'manager' ? */}
+          {userInfo.userType == 'manager' ?
           <>
             <Link
-              to="/staff"
+              to="/staff/shifts"
               style={{ textDecoration: "none", color: "black" }}
             >
               <ListItem disablePadding sx={{ display: "block" }}>
-                <Tooltip title={!open ? "Staff" : ""} placement="right" arrow>
+                <Tooltip title={!open ? "Shifts" : ""} placement="right" arrow>
                   <ListItemButton
                     sx={{
                       minHeight: 48,
@@ -387,7 +389,7 @@ export default function Sidebar() {
                       px: 2.5,
                     }}
                     className={`${sideBarStyles.itmBtn} ${
-                      activeRoute.startsWith("/staff")
+                      activeRoute.startsWith("/staff/shifts")
                         ? sideBarStyles.active
                         : ""
                     }`}
@@ -403,7 +405,7 @@ export default function Sidebar() {
                       <Groups2 />
                     </ListItemIcon>
                     <ListItemText
-                      primary={"Staff"}
+                      primary={"Shifts"}
                       sx={{ opacity: open ? 1 : 0 }}
                     />
                   </ListItemButton>
@@ -411,7 +413,49 @@ export default function Sidebar() {
               </ListItem>
             </Link>
           </>
-          {/* : <></>} */}
+          : <></>}
+
+          {/* Manager Navigations */}
+          {userInfo.userType == 'nurse' || userInfo.userType == 'trainee' ?
+          <>
+            <Link
+              to="/my/shifts"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <ListItem disablePadding sx={{ display: "block" }}>
+                <Tooltip title={!open ? "My Shifts" : ""} placement="right" arrow>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "initial",
+                      px: 2.5,
+                    }}
+                    className={`${sideBarStyles.itmBtn} ${
+                      activeRoute.startsWith("/my/shifts")
+                        ? sideBarStyles.active
+                        : ""
+                    }`}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                        color: "black",
+                      }}
+                    >
+                      <CalendarMonth />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={"My Shifts"}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </Tooltip>
+              </ListItem>
+            </Link>
+          </>
+          : <></>}
 
           {/* doctor navigation */}
           <Link

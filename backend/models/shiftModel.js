@@ -6,10 +6,6 @@ const shiftSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
-    role: {
-        type: String,
-        required: true
-    },
     location: {
         type: String,
         required: true
@@ -21,6 +17,11 @@ const shiftSchema = mongoose.Schema({
     shiftSlot: {
         type: String,
         required: true
+    },
+    status: {
+        type: String,
+        required: true,
+        default: 'Assigned'
     }
 }, {
     timestamps: true
