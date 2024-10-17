@@ -23,6 +23,17 @@ import { Col, Row } from "react-bootstrap";
 import { Badge } from "react-bootstrap";
 import dayjs from "dayjs";
 
+const cardHeadingStyle = {
+  background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
+  borderRadius: "10px",
+  color: "white",
+  textAlign: "center",
+  marginTop: "20px",
+  marginBottom: "20px",
+  padding: "15px", // Add padding as per your requirement
+};
+
+
 // Function to return badge based on status
 const getStatusBadge = (status) => {
   switch (status) {
@@ -135,16 +146,14 @@ const StaffPage = () => {
   return (
     <>
       <Sidebar />
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "2fr 1fr" },
-          width: "100%",
-          p: 2,
-          gap: 2,
-        }}
-      >
-        <Box className="left" sx={{ mr: { xs: 0, md: 2 } }}>
+      <div style={{display:"block", width:"80%",margin:"0px auto"}}>
+      <div>
+      <Card className={`mt-5 py-3 text-center`} style={cardHeadingStyle}>
+          <h2>Staff Manage Dashboard</h2>
+        </Card>
+      </div>
+
+        <Box sx={{ mr: { xs: 0, md: 2 } }}>
           <Card sx={{ p: 3, mb: 2 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Select Date and Schedule
@@ -153,6 +162,7 @@ const StaffPage = () => {
               <Col xs={12} md={6}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    sx={{width:"100%"}}
                     label="Select Date"
                     value={date}
                     onChange={handleDateChange}
@@ -161,7 +171,7 @@ const StaffPage = () => {
                         <params.TextField fullWidth />
                       </Box>
                     )}
-                  />
+                    />
                 </LocalizationProvider>
               </Col>
               <Col xs={12} md={6}>
@@ -236,13 +246,9 @@ const StaffPage = () => {
           </Card>
         </Box>
 
-        <Box className="right">
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6">Additional Information</Typography>
-            {/* You can place some additional cards or stats here */}
-          </Card>
-        </Box>
-      </Box>
+       
+        </div>
+
     </>
   );
 };

@@ -19,10 +19,7 @@ const AppointmentSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    specialization: {
-        type: String,
-        required: true,
-    },
+
     consultant: {
         type: String,
         required: true,

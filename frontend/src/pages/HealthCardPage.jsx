@@ -34,6 +34,17 @@ import { useSelector } from "react-redux";
 import { useMainContext } from "../context/hooks";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { Card } from "react-bootstrap";
+
+const cardHeadingStyle = {
+  background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
+  borderRadius: "10px",
+  color: "white",
+  textAlign: "center",
+  marginTop: "20px",
+  marginBottom: "20px",
+  padding: "15px", // Add padding as per your requirement
+};
 
 function HealthCardPage() {
   const { userInfo } = useSelector((state) => state.auth);
@@ -763,14 +774,20 @@ function HealthCardPage() {
   // }
 
   return (
+    <>
+      <Sidebar />
     <div>
+      <div style={{width:"80%", display:"block",margin:"auto" }}>
+      <Card className={`mt-3 py-3 text-center`} style={cardHeadingStyle}>
+          <h2>Patient Health Card</h2>
+        </Card>
+      </div>
       <Backdrop
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
         open={updateSubmit}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Sidebar />
       <div className={dashboardStyles.mainDiv}>
         {/* <Container className={dashboardStyles.container}> */}
         <Box sx={{ flexGrow: 1, p: 10 }}>
@@ -789,6 +806,8 @@ function HealthCardPage() {
         {/* </Container> */}
       </div>
     </div>
+    </>
+
   );
 }
 
