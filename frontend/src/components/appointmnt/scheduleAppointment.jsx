@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import style from '../../styles/scheduleAppointment.module.css'; // Using module CSS
 import { Modal, Button } from "react-bootstrap"; 
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ScheduleAppointment = () => {
 
@@ -130,10 +131,10 @@ const ScheduleAppointment = () => {
       const { data } = await axios.post(`${baseUrl}/payment/create-checkout-session`, {
         serviceCharge,
         consultationFee,
-        totalCharges,
       });
 
       if (data.url) {
+        localStorage.setItem('appointmentScheduled', 'true');
         window.location.href = data.url;
       } else {
         throw new Error('No URL returned for Checkout session');
@@ -145,6 +146,14 @@ const ScheduleAppointment = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const appointmentScheduled = localStorage.getItem('appointmentScheduled');
+    if (appointmentScheduled) {
+      toast.success('Appointment scheduled successfully.');
+      localStorage.removeItem('appointmentScheduled'); 
+    }
+  }, []);
 
   const dataSubmit = async () => {
     try {
@@ -181,6 +190,7 @@ const ScheduleAppointment = () => {
   const handleProceedToPayment = () => {
     dataSubmit();
     handlePayment();
+  
   };
 
  

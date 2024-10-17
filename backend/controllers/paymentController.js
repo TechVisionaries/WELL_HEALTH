@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Function to create a Checkout Session
 export const createCheckoutSession = async (req, res) => {
-  const { serviceCharge, consultationFee, totalCharges, appointmentId } = req.body; // Get the charges from the request body
+  const { serviceCharge, consultationFee, appointmentId } = req.body; 
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -17,9 +17,9 @@ export const createCheckoutSession = async (req, res) => {
       line_items: [
         {
           price_data: {
-            currency: 'usd',
+            currency: 'lkr',
             product_data: {
-              name: 'Service Charge', // Replace with your product/service name
+              name: 'Service Charge', 
             },
             unit_amount: serviceCharge * 100, // Amount in cents
           },
@@ -27,21 +27,11 @@ export const createCheckoutSession = async (req, res) => {
         },
         {
           price_data: {
-            currency: 'usd',
+            currency: 'lkr',
             product_data: {
-              name: 'Consultation Fee', // Replace with your product/service name
+              name: 'Consultation Fee', 
             },
             unit_amount: consultationFee * 100, // Amount in cents
-          },
-          quantity: 1,
-        },
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'Total Fee', // Replace with your product/service name
-            },
-            unit_amount: totalCharges * 100, // Amount in cents
           },
           quantity: 1,
         },
