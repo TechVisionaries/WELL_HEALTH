@@ -15,6 +15,7 @@ const ScheduleAppointment = () => {
 
   const [doctors, setDoctors] = useState([]);
   const [choosenDoctor, setChoosenDoctor] = useState("");
+  const [doctorId, setDoctorId] = useState("");
 
 
   const [serviceCharge, setServiceCharge] = useState(0);
@@ -99,6 +100,7 @@ const ScheduleAppointment = () => {
       const selectedDoctor = doctors.find(doctor => doctor.name === value);
       if (selectedDoctor) {
         setConsultationFee(selectedDoctor.consultationFee);
+        setDoctorId(selectedDoctor._id);
       }
     }
   };
@@ -146,7 +148,13 @@ const ScheduleAppointment = () => {
 
   const dataSubmit = async () => {
     try {
-      const response = await axios.post(`${baseUrl}/appointments`, formData, { withCredentials: true });
+
+      const formWithDoctorId = {
+        ...formData,
+        doctorId, 
+      };
+
+      const response = await axios.post(`${baseUrl}/appointments`,formWithDoctorId, { withCredentials: true });
       console.log(response.data);
 
       setFormData({

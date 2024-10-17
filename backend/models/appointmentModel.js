@@ -47,7 +47,12 @@ const AppointmentSchema = new mongoose.Schema({
     deletedOn: {
         type: Date,
         default: null,
-    }
+    },
+    doctorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Doctor',
+    },
+
 }, {
     timestamps: { createdAt: 'createdOn', updatedAt: 'modifiedOn' }
 });
