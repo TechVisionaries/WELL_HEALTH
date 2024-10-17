@@ -56,7 +56,7 @@ const getStatusBadge = (status) => {
   }
 };
 
-const StaffPage = () => {
+const ManageStaffPage = () => {
   const [shift, setShift] = useState({date: null, shift: "", status: "", location: ""});
   const [availableStaffData, setAvailableStaffData] = useState([]);
   const [filteredAvailableStaffData, setFilteredAvailableStaffData] = useState([]);
@@ -432,4 +432,4 @@ const StaffPage = () => {
   );
 };
 
-export default StaffPage;
+export default ManageStaffPage;
