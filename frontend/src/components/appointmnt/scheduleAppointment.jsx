@@ -134,7 +134,6 @@ const ScheduleAppointment = () => {
       });
 
       if (data.url) {
-        localStorage.setItem('appointmentScheduled', 'true');
         window.location.href = data.url;
       } else {
         throw new Error('No URL returned for Checkout session');
@@ -147,13 +146,7 @@ const ScheduleAppointment = () => {
     }
   };
 
-  useEffect(() => {
-    const appointmentScheduled = localStorage.getItem('appointmentScheduled');
-    if (appointmentScheduled) {
-      toast.success('Appointment scheduled successfully.');
-      localStorage.removeItem('appointmentScheduled'); 
-    }
-  }, []);
+
 
   const dataSubmit = async () => {
     try {
