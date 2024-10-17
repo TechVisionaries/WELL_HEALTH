@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/backend/server.js", // Update with your entry file
+            "envFile": "${workspaceFolder}/backend/.env", // Specify the .env file
+            "console": "integratedTerminal", // Change to "integratedTerminal" if you want to see logs
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}

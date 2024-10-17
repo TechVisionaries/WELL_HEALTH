@@ -37,7 +37,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/payment', paymentRoute);
 app.use('/api/health_card', healthCardRoutes);
 app.use('/api/appointments', appointmentRoutes);
-app.use('/api/shift', shiftRoutes);
+app.use('/api/shifts', shiftRoutes);
 app.use('/api/hospitals', getHospitalsBySector);
 
 

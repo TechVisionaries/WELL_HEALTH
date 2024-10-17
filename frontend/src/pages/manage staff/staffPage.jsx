@@ -10,6 +10,8 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Checkbox,
+  Button,
 } from "@mui/material";
 import Sidebar from "../../components/sideBar";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -19,9 +21,15 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { Col, Row } from "react-bootstrap";
-import { Badge } from "react-bootstrap";
+import { Badge, Col, Row } from "react-bootstrap";
 import dayjs from "dayjs";
+import { Locations, Shifts, Statuses } from "./data";
+import { useState } from "react";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import { AssignmentInd } from "@mui/icons-material";
+import { useRef } from "react";
+import { useAssignStaffMutation, useGetAvailableStaffMutation, useGetShiftsMutation } from "../../slices/shiftsApiSlice";
 
 const cardHeadingStyle = {
   background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
@@ -30,7 +38,7 @@ const cardHeadingStyle = {
   textAlign: "center",
   marginTop: "20px",
   marginBottom: "20px",
-  padding: "15px", // Add padding as per your requirement
+  padding: "15px",
 };
 
 
@@ -48,115 +56,220 @@ const getStatusBadge = (status) => {
   }
 };
 
-// Dummy staff data with date field
-const staffData = [
-  {
-    id: 1,
-    name: "John Doe",
-    shift: "6.00 am - 3 pm",
-    location: "Ward A",
-    status: "Available",
-    date: dayjs("2024-10-15"),
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    shift: "3.00 pm - 10.00 pm",
-    location: "Ward B",
-    status: "Unavailable",
-    date: dayjs("2024-10-15"),
-  },
-  {
-    id: 3,
-    name: "Emily Johnson",
-    shift: "10.00 pm - 6.00 am",
-    location: "Ward C",
-    status: "Available",
-    date: dayjs("2024-10-16"),
-  },
-  {
-    id: 4,
-    name: "Michael Brown",
-    shift: "6.00 am - 3 pm",
-    location: "Ward D",
-    status: "On Leave",
-    date: dayjs("2024-10-15"),
-  },
-  {
-    id: 5,
-    name: "Anna White",
-    shift: "3.00 pm - 10.00 pm",
-    location: "Ward E",
-    status: "Available",
-    date: dayjs("2024-10-16"),
-  },
-];
-
 const StaffPage = () => {
-  const [date, setDate] = React.useState(null);
-  const [schedule, setSchedule] = React.useState("");
-  const [status, setStatus] = React.useState("");
-  const [filteredStaffData, setFilteredStaffData] = React.useState(staffData);
+  const [shift, setShift] = useState({date: null, shift: "", status: "", location: ""});
+  const [availableStaffData, setAvailableStaffData] = useState([]);
+  const [filteredAvailableStaffData, setFilteredAvailableStaffData] = useState([]);
+  const [assignedStaffData, setAssignedStaffData] = useState([]);
+  const [filteredAssignedStaffData, setFilteredAssignedStaffData] = useState([]);
+  const [availableChecked, setAvilableChecked] = useState([]);
+  const [assignChecked, setAssignChecked] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleScheduleChange = (event) => {
-    setSchedule(event.target.value);
+  const locationRef = useRef(null);
+  const dateRef = useRef(null);
+  const shiftRef = useRef(null);
+
+  const [getAvailableStaff] = useGetAvailableStaffMutation();
+  const [getShifts] = useGetShiftsMutation();
+  const [assign] = useAssignStaffMutation();
+
+  const fetchAvailableStaff = async () => {
+    setIsLoading(true);    
+    try {
+      const res = await getAvailableStaff({date: shift.date?.format("YYYY-MM-DD") || ''}).unwrap();
+      
+      setAvailableStaffData(res)
+      setFilteredAvailableStaffData(res)
+    } catch (error) {
+      toast.error(error.data?.message || error.message);
+      setAvailableStaffData([])
+      setFilteredAvailableStaffData([])
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchAssignedStaff = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getShifts({date: shift.date?.format("YYYY-MM-DD") || '', shift: shift.shift, location: shift.location || ''}).unwrap();
+
+      setAssignedStaffData(res)
+      setFilteredAssignedStaffData(res)
+    } catch (error) {
+      toast.error(error.data?.message || error.message);
+      setAssignedStaffData([])
+      setFilteredAssignedStaffData([])
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const assignStaff = async () => {
+    setIsLoading(true);
+    try {
+      if(!shift.location){
+        if(locationRef.current){
+          locationRef.current.click();
+        }
+        throw new Error("Please select a location to assign staff");
+      }
+      if(!shift.date){
+        if(dateRef.current){
+          dateRef.current.click();
+        }
+        throw new Error("Please select a date to assign staff");
+      }
+      if(!shift.shift){
+        if(shiftRef.current){
+          shiftRef.current.click();
+        }
+        throw new Error("Please select a shift to assign staff");
+      }
+
+      const res = await assign({ staff: availableChecked, date: shift.date?.format("YYYY-MM-DD"), shift: shift.shift, location: shift.location}).unwrap();
+      toast.success('Staff Assigned Successfully');
+
+      await fetchAssignedStaff();
+      await fetchAvailableStaff();
+    } catch (error) {
+      toast.error(error.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }; 
+
+  const removeStaff = async () => {
+    setIsLoading(true);
+    try {
+      if(!shift.date){
+        if(dateRef.current){
+          dateRef.current.click();
+        }
+        throw new Error("Please select a date to remove staff");
+      }
+      if(!shift.shift){
+        if(shiftRef.current){
+          shiftRef.current.click();
+        }
+        throw new Error("Please select a shift to remove staff");
+      }
+
+      await fetchAssignedStaff();
+      await fetchAvailableStaff();
+    } catch (error) {
+      toast.error(error.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }; 
+
+  const handleAvailableToggle = (value, status) => {
+    if(status == "Unavailable" || status == "On Leave"){
+      return;
+    }
+    const currentIndex = availableChecked.indexOf(value);
+    const newChecked = [...availableChecked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setAvilableChecked(newChecked);
+  };
+
+  const handleAssignToggle = (value, status) => {
+    if(status == "Unavailable" || status == "On Leave"){
+      return;
+    }
+    const currentIndex = assignChecked.indexOf(value);
+    const newChecked = [...assignChecked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setAssignChecked(newChecked);
+  };
+
+  const handleShiftChange = (event) => {
+    setShift((prev) => ({...prev, shift:event.target.value}));
   };
 
   const handleStatusChange = (event) => {
-    setStatus(event.target.value);
+    setShift((prev) => ({...prev, status:event.target.value}));
   };
 
   const handleDateChange = (newDate) => {
-    setDate(newDate);
+    setShift((prev) => ({...prev, date:newDate}));
   };
 
-  const filterStaffData = () => {
-    let filteredData = staffData;
-
-    if (schedule) {
-      filteredData = filteredData.filter((staff) => {
-        switch (schedule) {
-          case 10:
-            return staff.shift === "6.00 am - 3 pm";
-          case 20:
-            return staff.shift === "3.00 pm - 10.00 pm";
-          case 30:
-            return staff.shift === "10.00 pm - 6.00 am";
-          default:
-            return true;
-        }
-      });
-    }
-
-    if (status) {
-      filteredData = filteredData.filter((staff) => staff.status === status);
-    }
-
-    if (date) {
-      filteredData = filteredData.filter((staff) => dayjs(staff.date).isSame(date, 'day'));
-    }
-
-    setFilteredStaffData(filteredData);
+  const handleLocationChange = (event) => {
+    setShift((prev) => ({...prev, location:event.target.value}));
   };
 
-  React.useEffect(() => {
-    filterStaffData();
-  }, [schedule, status, date]);
+  const filterStaffAvailability = () => {
+    let filteredAvailableData = availableStaffData;
+
+    if (shift.status) {
+      filteredAvailableData = filteredAvailableData.filter((staff) => staff.status === shift.status);
+    }
+
+    setFilteredAvailableStaffData(filteredAvailableData);
+  };
+
+  const filterStaffLocation = () => {
+    let filteredAssignedData = assignedStaffData;
+
+    if (shift.location) {
+      filteredAssignedData = filteredAssignedData.filter((staff) => staff.location === shift.location);
+    }
+
+    setFilteredAssignedStaffData(filteredAssignedData);
+  };
+
+  useEffect(() => {
+    filterStaffAvailability();
+  }, [shift.status]);
+
+  useEffect(() => {
+    filterStaffLocation();
+  }, [shift.location]);
+
+  useEffect(() => {
+    fetchAvailableStaff()
+  }, []);
+
+  useEffect(() => {
+    if(shift.date){
+      fetchAvailableStaff()
+    }
+    
+    if(shift.date && shift.shift){
+      fetchAssignedStaff()
+    }
+  }, [shift.date, shift.shift]);
 
   return (
     <>
       <Sidebar />
-      <div style={{display:"block", width:"80%",margin:"0px auto"}}>
-      <div>
-      <Card className={`mt-5 py-3 text-center`} style={cardHeadingStyle}>
-          <h2>Staff Manage Dashboard</h2>
-        </Card>
-      </div>
+      <div style={{ display: "block", width: "80%", margin: "0px auto", transition: "all 1s ease-in" }}>
+
+        <div>
+          <Card className={`mt-5 py-3 text-center`} style={cardHeadingStyle}>
+            <h2 style={{margin: 0}}>Manage Shifts</h2>
+          </Card>
+        </div>
 
         <Box sx={{ mr: { xs: 0, md: 2 } }}>
           <Card sx={{ p: 3, mb: 2 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
-              Select Date and Schedule
+              Select Date and Shift
             </Typography>
             <Row>
               <Col xs={12} md={6}>
@@ -164,7 +277,7 @@ const StaffPage = () => {
                   <DatePicker
                     sx={{width:"100%"}}
                     label="Select Date"
-                    value={date}
+                    value={shift.date}
                     onChange={handleDateChange}
                     renderInput={(params) => (
                       <Box sx={{ mb: 2 }}>
@@ -176,78 +289,144 @@ const StaffPage = () => {
               </Col>
               <Col xs={12} md={6}>
                 <FormControl fullWidth sx={{ mb: 2 }}>
-                  <InputLabel id="schedule-label">Schedules</InputLabel>
+                  <InputLabel id="shift-label">Shifts</InputLabel>
                   <Select
-                    labelId="schedule-label"
-                    id="schedule-select"
-                    value={schedule}
-                    label="Schedules"
-                    onChange={handleScheduleChange}
+                    labelId="shift-label"
+                    id="shift-select"
+                    value={shift.shift}
+                    label="Shifts"
+                    onChange={handleShiftChange}
                   >
-                    <MenuItem value={10}>Morning Shift</MenuItem>
-                    <MenuItem value={20}>Afternoon Shift</MenuItem>
-                    <MenuItem value={30}>Night Shift</MenuItem>
+                    {Shifts.map((shiftItem) => (
+                    <MenuItem value={shiftItem.value}>{shiftItem.label}</MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Col>
             </Row>
+          </Card>
 
-            <Row>
-              <Col xs={12}>
+          <Row>
+            <Col md={(shift.date && shift.shift) ? 6 : 12}>
+              <Card sx={{ p: 3 }}>
                 <FormControl fullWidth sx={{ mb: 2 }}>
                   <InputLabel id="status-label">Status</InputLabel>
                   <Select
                     labelId="status-label"
                     id="status-select"
-                    value={status}
+                    value={shift.status}
                     label="Status"
                     onChange={handleStatusChange}
                   >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="Available">Available</MenuItem>
-                    <MenuItem value="Unavailable">Unavailable</MenuItem>
-                    <MenuItem value="On Leave">On Leave</MenuItem>
+                  {Statuses.map((statuItem) => (
+                  <MenuItem value={statuItem.value}>{statuItem.label}</MenuItem>
+                  ))}
                   </Select>
                 </FormControl>
-              </Col>
-            </Row>
-          </Card>
-
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Available Staff
-            </Typography>
-            <TableContainer component={Paper}>
-              <Table aria-label="staff table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ fontWeight: "bold" }}>ID</TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>Name</TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>Shift</TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>Location</TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>Date</TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredStaffData.map((staff) => (
-                    <TableRow key={staff.id}>
-                      <TableCell>{staff.id}</TableCell>
-                      <TableCell>{staff.name}</TableCell>
-                      <TableCell>{staff.shift}</TableCell>
-                      <TableCell>{staff.location}</TableCell>
-                      <TableCell>{staff.date.format("YYYY-MM-DD")}</TableCell>
-                      <TableCell>{getStatusBadge(staff.status)}</TableCell>
-                    </TableRow>
+                <Row>
+                  <Col>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                      Available Staff
+                    </Typography>
+                  </Col>
+                  {shift.date && shift.shift && availableChecked.length > 0 && (<>
+                  <Col style={{textAlign: 'right'}}>
+                    <Button variant="contained" sx={{borderRadius: '50px', marginBottom: '5px'}} onClick={assignStaff}>Assign &nbsp; <AssignmentInd /></Button>
+                  </Col>
+                  </>)}
+                </Row>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell style={{ fontWeight: "bold" }}>ID</TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>Name</TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>Role</TableCell>
+                        {shift.date && shift.shift && (<>
+                        <TableCell style={{ fontWeight: "bold" }}>Status</TableCell>
+                        </>)}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredAvailableStaffData.map((staff) => (
+                        <TableRow key={staff.id} hover={staff.status != "Unavailable" && staff.status != "On Leave"} style={{cursor: 'pointer'}} onClick={() => handleAvailableToggle(staff.id, staff.status)}>
+                          <TableCell>
+                            <Checkbox
+                              checked={availableChecked.includes(staff.id)}
+                              tabIndex={-1}
+                              disableRipple
+                            />
+                          </TableCell>
+                          <TableCell>{staff.name}</TableCell>
+                          <TableCell>{staff.userType}</TableCell>
+                          {shift.date && shift.shift && (<>
+                          <TableCell>{getStatusBadge(staff.status)}</TableCell>
+                          </>)}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Card>
+            </Col>   
+            <Col hidden={!(shift.date && shift.shift)} md={(shift.date && shift.shift) ? 6 : 0}>
+              <Card sx={{ p: 3 }}>
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                  <InputLabel id="location-label">Locations</InputLabel>
+                  <Select
+                    labelId="location-label"
+                    id="location-select"
+                    value={shift.location}
+                    label="Locations"
+                    onChange={handleLocationChange}
+                    ref={locationRef}
+                  >
+                  {Locations.map((locationItem) => (
+                  <MenuItem value={locationItem.value}>{locationItem.label}</MenuItem>
                   ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Card>
+                  </Select>
+                </FormControl>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Assigned Staff
+                </Typography>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell style={{ fontWeight: "bold" }}>ID</TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>Name</TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>Role</TableCell>
+                        {shift.date && shift.shift && (<>
+                        <TableCell style={{ fontWeight: "bold" }}>Location</TableCell>
+                        </>)}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredAssignedStaffData.map((staff) => (
+                        <TableRow key={staff.id} hover={staff.status != "Unavailable" && staff.status != "On Leave"} style={{cursor: 'pointer'}} onClick={() => handleAssignToggle(staff.id, staff.status)}>
+                          <TableCell>
+                            <Checkbox
+                              checked={assignChecked.includes(staff.id)}
+                              tabIndex={-1}
+                              disableRipple
+                            />
+                          </TableCell>
+                          <TableCell>{staff.name}</TableCell>
+                          <TableCell>{staff.userType}</TableCell>
+                          {shift.date && shift.shift && (<>
+                          <TableCell>{staff.location}</TableCell>
+                          </>)}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Card>
+            </Col>
+          </Row>
         </Box>
-
-       
-        </div>
+        
+      </div>
 
     </>
   );
