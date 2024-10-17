@@ -372,7 +372,7 @@ export default function Sidebar() {
           )}
 
           {/* Manager Navigations */}
-          {/* {userInfo.userType == 'manager' ? */}
+          {userInfo.userType == 'manager' ?
           <>
             <Link
               to="/staff"
@@ -411,7 +411,7 @@ export default function Sidebar() {
               </ListItem>
             </Link>
           </>
-          {/* : <></>} */}
+          : <></>}
 
           {/* doctor navigation */}
           <Link
