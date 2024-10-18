@@ -70,7 +70,7 @@ const AdminHeader = () => {
   };
 
   useEffect(() => {
-    if (activeRoute == "/doctor-home") {
+    if (activeRoute == "/admin-home") {
       document.getElementById("main").addEventListener("scroll", handleScroll);
       if (document.getElementById("main").scrollTop > 10) {
         setIsSticky(true);
@@ -111,196 +111,99 @@ const AdminHeader = () => {
               <img
                 src="/logo3.png"
                 width="100px"
-                onClick={() => navigate("/doctor-home")}
+                onClick={() => navigate("/admin-home")}
               />
             ) : (
               <img
                 src="/logo2.png"
                 width="100px"
-                onClick={() => navigate("/doctor-home")}
+                onClick={() => navigate("/admin-home")}
               />
             )}
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={() => setShowDrawer(true)}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Offcanvas
-              show={showDrawer}
-              onHide={() => setShowDrawer(false)}
-              style={{ width: "200px" }}
-            >
-              <Offcanvas.Body>
-                <Button
-                  onClick={() => {
-                    navigate("/doctor-home");
-                    scrollToElement("top");
-                  }}
-                  sx={{
-                    my: 2,
-                    px: 1,
-                    mx: 1,
-                    color: "inherit",
-                    fontWeight: "inherit",
-                    display: "block",
-                  }}
-                  className={
-                    isSticky ? headerStyles.navBtns : headerStyles.navBtns2
-                  }
-                >
-                  Home
-                </Button>
-                <Button
-                  onClick={() => {
-                    navigate("/doctor-home");
-                    scrollToElement("animHeader");
-                  }}
-                  sx={{
-                    my: 2,
-                    px: 1,
-                    mx: 1,
-                    color: "inherit",
-                    fontWeight: "inherit",
-                    display: "block",
-                  }}
-                  className={
-                    isSticky ? headerStyles.navBtns : headerStyles.navBtns2
-                  }
-                >
-                  Our Services
-                </Button>
-              </Offcanvas.Body>
-            </Offcanvas>
-          </Box>
-          <Box
-            sx={{ display: { xs: "flex", md: "none", cursor: "pointer" } }}
-            style={{ width: "100%", justifyContent: "center" }}
-          >
-            {isSticky ? (
-              <img
-                src="/logoBig2.png"
-                width="150px"
-                onClick={() => navigate("/doctor-home")}
-              />
-            ) : (
-              <img
-                src="/logoBig1.png"
-                width="150px"
-                onClick={() => navigate("/doctor-home")}
-              />
-            )}
-          </Box>
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: { xs: "none", md: "flex" },
-              justifyContent: "center",
-            }}
-          >
-            <Button
-              onClick={() => {
-                navigate("/doctor-home");
-                scrollToElement("top");
-              }}
-              sx={{
-                my: 2,
-                px: 3,
-                mx: 2,
-                color: "inherit",
-                fontWeight: "inherit",
-                display: "block",
-              }}
-              className={
-                isSticky ? headerStyles.navBtns : headerStyles.navBtns2
-              }
-            >
-              Home
-            </Button>
-            <Button
-              onClick={() => {
-                navigate("/doctor-home");
-                scrollToElement("animHeader");
-              }}
-              sx={{
-                my: 2,
-                px: 3,
-                mx: 2,
-                color: "inherit",
-                fontWeight: "inherit",
-                display: "block",
-              }}
-              className={
-                isSticky ? headerStyles.navBtns : headerStyles.navBtns2
-              }
-            >
-              Our Services
-            </Button>
-            <Button
-              onClick={() => {
-                const userId = userInfo ? userInfo._id : "undefined";
-                window.open(`/add-prescription?userId=${userId}`, "_blank");
-              }}
-              sx={{
-                my: 2,
-                px: 3,
-                mx: 2,
-                color: "inherit",
-                fontWeight: "inherit",
-                display: "block",
-              }}
-              className={
-                isSticky ? headerStyles.navBtns : headerStyles.navBtns2
-              }
-            >
-              New Patient
-            </Button>
-            <Button
-              onClick={() => {
-                navigate("/doctor-home");
-                scrollToElement("contactUs");
-              }}
-              sx={{
-                my: 2,
-                px: 3,
-                mx: 2,
-                color: "inherit",
-                fontWeight: "inherit",
-                display: "block",
-              }}
-              className={
-                isSticky ? headerStyles.navBtns : headerStyles.navBtns2
-              }
-            >
-              Chanelling
-            </Button>
-            <Button
-              onClick={() => {
-                navigate("/appointment");
-                scrollToElement("contactUs");
-              }}
-              sx={{
-                my: 2,
-                px: 3,
-                mx: 2,
-                color: "inherit",
-                fontWeight: "inherit",
-                display: "block",
-              }}
-              className={
-                isSticky ? headerStyles.navBtns : headerStyles.navBtns2
-              }
-            >
-              Schedules
-            </Button>
-          </Box>
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={() => setShowDrawer(true)}
+                            color="inherit"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Offcanvas show={showDrawer} onHide={() => setShowDrawer(false)} style={{width:'200px'}}>
+                            <Offcanvas.Body>
+                            <Button
+                                onClick={() => {navigate('/manager-home');scrollToElement('top')}}
+                                sx={{ my: 2, px: 1, mx: 1, color: "inherit", fontWeight:'inherit', display: "block" }}
+                                className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
+                            >
+                                Home
+                            </Button>
+                            <Button
+                                onClick={() => {navigate('/manager-home');scrollToElement('animHeader')}}
+                                sx={{ my: 2, px: 1, mx: 1, color: "inherit", fontWeight:'inherit', display: "block" }}
+                                className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
+                            >
+                                Our Services
+                            </Button>
+                            <Button
+                                onClick={() => {navigate('/manager-home');scrollToElement('contactUs')}}
+                                sx={{ my: 2, px: 1, mx: 1, color: "inherit", fontWeight:'inherit', display: "block" }}
+                                className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
+                            >
+                                Contact Us
+                            </Button>
+                            </Offcanvas.Body>
+                        </Offcanvas>
+                    </Box>
+                    <Box sx={{display: { xs: "flex", md: "none", cursor:'pointer' }}} style={{width:'100%', justifyContent:'center'}}>                        
+                        {isSticky? 
+                            <img src="/logoBig2.png" width='150px' onClick={() => navigate('/')}/> 
+                        :
+                            <img src="/logoBig1.png" width='150px' onClick={() => navigate('/')}/> 
+                        }
+                    </Box>
+                    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent:'center' }}>
+                            <Button
+                                onClick={() => {navigate('/manager-home');scrollToElement('top')}}
+                                sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
+                                className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
+                            >
+                                Home
+                            </Button>
+                            <Button
+                                onClick={() => {navigate('/manager-home');scrollToElement('animHeader')}}
+                                sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
+                                className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
+                            >
+                                Our Services
+                            </Button>
+                            <Button
+                                onClick={() => {navigate('/staff/shifts');scrollToElement('animHeader')}}
+                                sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
+                                className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
+                            >
+                                SHIFT Management
+                            </Button>
+                            <Button
+                                onClick={() => {navigate('/manage_users')}}
+                                sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
+                                className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
+                            >
+                                User Management
+                            </Button>
+                            <Button
+                                onClick={() => {navigate('/#');scrollToElement('contactUs')}}
+                                sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
+                                className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
+                            >
+                                Analytics
+                            </Button>
+                            
+                    </Box>
           {userInfo ? (
             <Box sx={{ flexGrow: 0 }}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
