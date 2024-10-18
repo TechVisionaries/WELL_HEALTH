@@ -280,6 +280,7 @@ const ManageUsersAdminPage = () => {
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
                         <RadioGroup row value={userTypeFilter} onChange={handleFilterChange}>
                             <FormControlLabel value="" control={<Radio />} label="All" />
+                            <FormControlLabel value="manager" control={<Radio />} label="Manager" />
                             <FormControlLabel value="doctor" control={<Radio />} label="Doctor" />
                             <FormControlLabel value="nurse" control={<Radio />} label="Nurse" />
                         </RadioGroup>

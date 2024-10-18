@@ -89,7 +89,7 @@ const router = createBrowserRouter(
 
         <Route path="/staff/shifts" element={<ManageShiftPage />} />
         <Route path="/my/shifts" element={<StaffShiftPage />} />
-        <Route path="admin/manage-users" element={<ManageUsersAdminPage />} />
+        <Route path="/admin/manage-users" element={<ManageUsersAdminPage />} />
       </Route>
 
       {/* Admin Routes */}
