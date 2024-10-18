@@ -1,4 +1,4 @@
-import DoctorHeader from "../components/doctorHeader";
+import ConditionalHeader from "../components/headers/conditionalHeader";
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Toast } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
@@ -54,7 +54,7 @@ const DoctorHomePage = () => {
   return (
     <>
       <div style={{ width: "100%" }} id="top">
-        <DoctorHeader />
+        <ConditionalHeader />
         <div style={{ minHeight: "100vh", height: "200vh" }}>
           <div className={homeStyles.homeBackDiv}>
             <img src={"images/homeBackground2.png"} width={"100%"} />
