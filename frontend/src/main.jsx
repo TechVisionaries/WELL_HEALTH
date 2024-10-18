@@ -14,6 +14,7 @@ import PatientHomePage from './pages/homePages/patientHomePage.jsx';
 import DoctorHomePage from './pages/homePages/doctorHomePage.jsx';
 import AdminHomePage from './pages/homePages/adminHomePage.jsx'
 import ManagerHomePage from './pages/homePages/managerHomePage.jsx';
+import ConditionalHome from './pages/homePages/conditionalHome.jsx';
 
 import LoginPage from './pages/loginPage.jsx';
 import RegisterPage from './pages/registerPage.jsx';
@@ -42,8 +43,7 @@ import ManageShiftPage from './pages/shift/manageShiftPage.jsx';
 import PrescriptionsPage from './pages/PrescriptionsPage.jsx';
 import ManageUsersPage from './pages/manageUsersPage.jsx';
 import StaffShiftPage from './pages/shift/staffShiftPage.jsx';
-import ConditionalHome from './pages/homePages/conditionalHome.jsx';
-
+import ManageUsersAdminPage from './pages/manageUsersAdminPage.jsx';
 
 
 const router = createBrowserRouter(
@@ -89,6 +89,7 @@ const router = createBrowserRouter(
 
         <Route path="/staff/shifts" element={<ManageShiftPage />} />
         <Route path="/my/shifts" element={<StaffShiftPage />} />
+        <Route path="admin/manage-users" element={<ManageUsersAdminPage />} />
       </Route>
 
       {/* Admin Routes */}
