@@ -1,5 +1,6 @@
 import Appointment from "../models/appointmentModel.js";
 import Doctor from "../models/doctorModel.js";
+import {sendMail} from "../utils/mailer.js";
 
 // Create a new appointment
 export const createAppointment = async (req, res) => {
@@ -181,6 +182,17 @@ export const deleteAppointmentById = async (req, res) => {
     appointment.status = "cancelled";
     await appointment.save();
 
+    // send email notification
+  //   const emailText = `
+  //   <p>Dear ${appointment.name},</p>
+  //   <p>Your appointment has been cancelled.</p>
+  //   <p>Thank you,</p>
+  //   <p>Your Healthcare Team</p>
+  // `;
+  // sendMail(appointment.email, emailText, "Appointment Cancelled");
+
+
+
     return res 
       .status(200)
       .json({ message: "Appointment deleted successfully" });
@@ -209,6 +221,17 @@ const { id } = req.params;
     if (!updatedAppointment) {
       return res.status(404).send('Appointment not found');
     }
+
+     // Send email notification
+     const emailText = `
+     <p>Dear ${updatedAppointment.name},</p>
+     <p>Your appointment has been rescheduled to:</p>
+     <p>Date: ${date}</p>
+     <p>Time: ${time}</p>
+     <p>Thank you,</p>
+     <p>Your Healthcare Team</p>
+   `;
+   sendMail(updatedAppointment.email, emailText, "Appointment Rescheduled");
 
     res.status(200).json(updatedAppointment);
   } catch (error) {

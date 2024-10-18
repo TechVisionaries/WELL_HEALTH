@@ -92,7 +92,6 @@ const DoctorAppointmentsDashboard = () => {
         date: newDate,
         time: newTime,
       });
-      toast.success("Appointment rescheduled successfully");
     } catch (error) {
       console.error(`Error: ${error}`);
       toast.error("Error rescheduling appointment");
@@ -230,16 +229,16 @@ const DoctorAppointmentsDashboard = () => {
                           size="sm"
                           onClick={() => handleModify(appointment)}
                         >
-                          <FaEdit /> Modify
+                          <FaEdit /> Reschedule
                         </Button>
-                        <Button
+                        {/* <Button
                           variant="outline-danger"
                           size="sm"
                           className="ml-2"
                           onClick={() => handleCancel(appointment._id)}
                         >
                           <FaTrashAlt /> Cancel
-                        </Button>
+                        </Button> */}
                       </td>
                     </tr>
                   ))}
