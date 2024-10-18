@@ -76,6 +76,7 @@ export const getMyUpcommingAppointments = async (req, res) => {
       user: userId,
       status: "pending",
       deletedOn: null,
+      payment: true,
     });
 
     return res.status(200).json(appointments);
@@ -149,6 +150,7 @@ export const findAppointmentsByDoctor = async (req, res) => {
     const appointments = await Appointment.find({
       doctorId: doctor._id,
       deletedOn: null,
+      payment: true,
 
     });
 
@@ -160,3 +162,59 @@ export const findAppointmentsByDoctor = async (req, res) => {
       
   }
 };
+
+//delete appointment by id
+export const deleteAppointmentById = async (req, res) => {
+
+  const appointmentId = req.params.id;
+
+  try {
+    const appointment = await Appointment.findOne({
+      _id: appointmentId,
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    appointment.deletedOn = new Date();
+    appointment.status = "cancelled";
+    await appointment.save();
+
+    return res 
+      .status(200)
+      .json({ message: "Appointment deleted successfully" });
+  }
+  catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error deleting appointment", error: error.message });
+  }
+}
+
+// update appointment by id
+
+export const updateAppointmentById = async (req, res) => {
+
+const { id } = req.params;
+  const { date, time } = req.body;
+
+  try {
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      id,
+      { appointmentDate: date, appointmentTime: time },
+      { new: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).send('Appointment not found');
+    }
+
+    res.status(200).json(updatedAppointment);
+  } catch (error) {
+    res.status(500).send(`Error: ${error.message}`);
+  }
+
+}
+
+
