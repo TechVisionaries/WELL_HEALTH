@@ -76,6 +76,7 @@ export const getMyUpcommingAppointments = async (req, res) => {
       user: userId,
       status: "pending",
       deletedOn: null,
+      payment: true,
     });
 
     return res.status(200).json(appointments);
@@ -149,6 +150,7 @@ export const findAppointmentsByDoctor = async (req, res) => {
     const appointments = await Appointment.find({
       doctorId: doctor._id,
       deletedOn: null,
+      payment: true,
 
     });
 

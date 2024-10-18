@@ -61,9 +61,14 @@ export const paymentSuccess = async (req, res) => {
 
 // update the appointment payment status
 if (session.payment_status === 'paid') {
-  // need to do 
-}
+  const appointmentId = session.metadata.appointmentId;
+  const appointment = await Appointment.findById(appointmentId);
+  if(appointment){
+    appointment.payment = true;
+  }
+  await appointment.save();
 
+}
 
   } catch (error) {
     console.error('Error retrieving checkout session:', error);

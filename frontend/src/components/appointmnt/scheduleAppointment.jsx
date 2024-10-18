@@ -122,7 +122,7 @@ const ScheduleAppointment = () => {
   const [paymentError, setPaymentError] = useState(null);
   const [paymentSuccess, setPaymentSuccess] = useState(null);
 
-  const handlePayment = async () => {
+  const handlePayment = async (appointmentId) => {
     setIsLoading(true);
     setPaymentError(null);
     setPaymentSuccess(null);
@@ -131,6 +131,7 @@ const ScheduleAppointment = () => {
       const { data } = await axios.post(`${baseUrl}/payment/create-checkout-session`, {
         serviceCharge,
         consultationFee,
+        appointmentId,
       });
 
       if (data.url) {
@@ -169,6 +170,8 @@ const ScheduleAppointment = () => {
         appointmentTime: "",
         serviceType: "",
       });
+
+      return response.data.appointment._id;
     } catch (error) {
       console.error(`Error: ${error}`);
     }
@@ -180,9 +183,14 @@ const ScheduleAppointment = () => {
   };
 
   const handleClose = () => setShowSummary(false);
-  const handleProceedToPayment = () => {
-    dataSubmit();
-    handlePayment();
+  const handleProceedToPayment = async() => {
+    try {
+      const appointmentId = await dataSubmit(); // Get the appointmentId
+      await handlePayment(appointmentId); // Pass the appointmentId to handlePayment
+    } catch (error) {
+      console.error('Error scheduling appointment:', error);
+      toast.error('Failed to schedule appointment.');
+    }
   
   };
 
