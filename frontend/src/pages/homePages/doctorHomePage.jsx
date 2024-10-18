@@ -1,13 +1,12 @@
-import ConditionalHeader from "../components/headers/conditionalHeader";
+import ConditionalHeader from "../../components/headers/conditionalHeader";
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Toast } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import CountUp from "react-countup";
-import homeStyles from "../styles/homePageStyles.module.css";
+import homeStyle from "../../styles/homePageStyles.module.css";
 import { Card, CardContent, IconButton } from "@mui/material";
 import { BsChevronDoubleDown } from "react-icons/bs";
-import HealthCard from "../components/HealthCard";
 
 const DoctorHomePage = () => {
   const [show, setShow] = useState(false);

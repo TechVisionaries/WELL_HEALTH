@@ -10,10 +10,10 @@ import { Provider } from 'react-redux';
 import App from './App.jsx';
 
 
-import PatientHomePage from './pages/patientHomePage.jsx';
-import DoctorHomePage from './pages/doctorHomePage.jsx';
-import AdminHomePage from './pages/adminHomePage.jsx'
-import ManagerHomePage from './pages/managerHomePage.jsx';
+import PatientHomePage from './pages/homePages/patientHomePage.jsx';
+import DoctorHomePage from './pages/homePages/doctorHomePage.jsx';
+import AdminHomePage from './pages/homePages/adminHomePage.jsx'
+import ManagerHomePage from './pages/homePages/managerHomePage.jsx';
 
 import LoginPage from './pages/loginPage.jsx';
 import RegisterPage from './pages/registerPage.jsx';
@@ -42,6 +42,7 @@ import ManageShiftPage from './pages/shift/manageShiftPage.jsx';
 import PrescriptionsPage from './pages/PrescriptionsPage.jsx';
 import ManageUsersPage from './pages/manageUsersPage.jsx';
 import StaffShiftPage from './pages/shift/staffShiftPage.jsx';
+import ConditionalHome from './pages/homePages/conditionalHome.jsx';
 
 
 
@@ -49,7 +50,8 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       {/* Public Routes */}
-      <Route index={true} path="/" element={<PatientHomePage />} />
+      <Route index={true} path="/" element={<ConditionalHome />} />
+      <Route index={true} path="/patient-home" element={<PatientHomePage />} />
       <Route index={true} path="/doctor-home" element={<DoctorHomePage />} />
       <Route index={true} path="/admin-home" element={<AdminHomePage />} />
       <Route index={true} path="/manager-home" element={<ManagerHomePage />} />

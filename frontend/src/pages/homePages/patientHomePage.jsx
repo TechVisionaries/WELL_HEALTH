@@ -1,15 +1,15 @@
-import ConditionalHeader from "../components/headers/conditionalHeader";
+import ConditionalHeader from "../../components/headers/conditionalHeader";
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Toast } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import CountUp from "react-countup";
-import homeStyles from "../styles/homePageStyles.module.css";
+import homeStyles from "../../styles/homePageStyles.module.css";
 import { Card, CardContent, IconButton } from "@mui/material";
 import { BsChevronDoubleDown } from "react-icons/bs";
-import HealthCard from "../components/HealthCard";
+import HealthCard from "../../components/HealthCard";
 import { useSelector } from "react-redux";
-import { useMainContext } from "../context/hooks";
+import { useMainContext } from "../../context/hooks";
 
 const PatientHomePage = () => {
   const { userInfo } = useSelector((state) => state.auth);
