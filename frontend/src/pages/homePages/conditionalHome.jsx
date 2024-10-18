@@ -17,7 +17,6 @@ const ConditionalHome = () => {
     return <AdminHomePage />;
   }
 
-  // You can add other cases for different user types if necessary
   return null;
 };
 
