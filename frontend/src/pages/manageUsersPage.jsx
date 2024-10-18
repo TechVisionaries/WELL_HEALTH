@@ -157,7 +157,6 @@ const ManageUsersPage = () => {
                                                     required
                                                 >
                                                     <MenuItem value="doctor">Doctor</MenuItem>
-                                                    <MenuItem value="manager">Manager</MenuItem>
                                                     <MenuItem value="nurse">Nurse</MenuItem>
                                                 </Select>
                                             </FormControl>
