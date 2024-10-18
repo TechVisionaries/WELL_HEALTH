@@ -19,10 +19,7 @@ const AppointmentSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    specialization: {
-        type: String,
-        required: true,
-    },
+
     consultant: {
         type: String,
         required: true,
@@ -50,7 +47,12 @@ const AppointmentSchema = new mongoose.Schema({
     deletedOn: {
         type: Date,
         default: null,
-    }
+    },
+    doctorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Doctor',
+    },
+
 }, {
     timestamps: { createdAt: 'createdOn', updatedAt: 'modifiedOn' }
 });

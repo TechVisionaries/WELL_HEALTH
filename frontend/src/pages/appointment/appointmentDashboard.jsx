@@ -5,11 +5,27 @@ import style from "../../styles/appointmentDashboard.module.css"; // Import cust
 import ScheduleAppointment from "../../components/appointmnt/scheduleAppointment";
 import Sidebar from "../../components/sideBar";
 import axios from "axios";
+import { toast } from "react-toastify";
+
+
+ const cardHeadingStyle = {
+  background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
+  borderRadius: "10px",
+  color: "white",
+  textAlign: "center",
+  marginTop: "20px",
+  marginBottom: "20px",
+  padding: "15px", // Add padding as per your requirement
+};
 
 const AppointmentDashboard = () => {
 
 // base url
 const baseUrl = import.meta.env.VITE_BASE_URL;
+
+const convertHospitalName = (name) => {
+  return name.replace(/_/g, ' ');
+};
 
 
   // const upcomingAppointments = [
@@ -47,15 +63,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
   // ];
 
 
-  const cardHeadingStyle = {
-    background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
-    borderRadius: "10px",
-    color: "white",
-    textAlign: "center",
-    marginTop: "20px",
-    marginBottom: "20px",
-    padding: "15px", // Add padding as per your requirement
-  };
+ 
 
 
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -70,19 +78,37 @@ const fetchUpcomingAppointments = async () => {
   }
 };
 
+
+
+
   useEffect(() => {
     // Fetch upcoming appointments from the server
     fetchUpcomingAppointments();
     console.log("Upcoming Appointments: ", upcomingAppointments);
   }, []);
 
+const handleCancelAppointment = async (e,id) => {
+  e.preventDefault();
+  console.log("Cancel appointment clicked");
+
+  try{
+    const response = await axios.delete(`${baseUrl}/appointments/${id}`,{ withCredentials: true });    
+    console.log("Response: ", response.data); 
+    toast.success("Appointment cancelled successfully");
+    fetchUpcomingAppointments();
+  }catch(error){
+    console.error(`Error: ${error}`);
+    toast.error("Error cancelling appointment");
+  }
+};
+
+
   return (
     <>
       <Sidebar />
-
       <div className={style.mainContainer}>
         <Card className={`mt-3 py-3 text-center`} style={cardHeadingStyle}>
-          <h2>Appointment Dashboard</h2>
+          <h2>Book Your Appointment</h2>
         </Card>
         <div className={style.appointmentDashboardContainer}>
           <ScheduleAppointment />
@@ -104,13 +130,13 @@ const fetchUpcomingAppointments = async () => {
                     </thead>
                     <tbody>
                       {upcomingAppointments.map((appointment) => (
-                        <tr key={appointment.id}>
+                        <tr key={appointment._id}>
                           <td>{appointment.appointmentDate}</td>
-                          <td>{appointment.hospital}</td>
+                          <td>{convertHospitalName(appointment.hospital)}</td>
                           <td>{appointment.appointmentTime}</td>
                           <td>{appointment.consultant}</td>
-                          <td style={{display:"grid", justifyItems:"end",gap:"1em"}}>
-                            <button
+                          <td>
+                            {/* <button
                               style={{
                                 padding: "0.25rem 0.5rem",
                                 fontSize: "0.8rem",
@@ -123,7 +149,7 @@ const fetchUpcomingAppointments = async () => {
                               }}
                             >
                               Modify
-                            </button>
+                            </button> */}
                             <button
                               className="ml-2"
                               style={{
@@ -135,9 +161,9 @@ const fetchUpcomingAppointments = async () => {
                                 marginLeft: "1em",
                                 borderRadius: "0.2rem",
                                 cursor: "pointer",
-                                width:"100%"
 
                               }}
+                              onClick={(e) => handleCancelAppointment(e, appointment._id)}
                             >
                               Cancel
                             </button>

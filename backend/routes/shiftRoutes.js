@@ -1,12 +1,12 @@
 import express from 'express';
-import { protect } from '../middleware/authMiddleware.js'
-import { createShift, getAllShifts, getAVailableStaff } from '../controllers/shiftController.js';
+import { createShift, getAvailableStaff, getAllShifts, deleteShift } from '../controllers/shiftController.js';
 
 const router = express.Router();
 
 router.post('/', createShift)
-router.get('/:date', getAllShifts)
-router.get('/available/staff/:date', getAVailableStaff)
+router.delete('/', deleteShift)
+router.get('/available-staff', getAvailableStaff)
+router.get('/all', getAllShifts)
 
 
 export default router;

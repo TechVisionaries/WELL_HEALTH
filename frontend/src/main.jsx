@@ -38,9 +38,10 @@ import AppointmentDashboard from './pages/appointment/appointmentDashboard.jsx';
 import PaymentSuccess from './pages/appointment/paymentSuccess.jsx';
 import PaymentFailure from './pages/appointment/paymentFailure.jsx';
 import DoctorAppointmentsDashboard from './pages/appointment/doctorAppointmentsDashboard.jsx';
-import StaffPage from './pages/manage staff/staffPage.jsx';
+import ManageShiftPage from './pages/shift/manageShiftPage.jsx';
 import PrescriptionsPage from './pages/PrescriptionsPage.jsx';
 import ManageUsersPage from './pages/manageUsersPage.jsx';
+import StaffShiftPage from './pages/shift/staffShiftPage.jsx';
 
 
 
@@ -84,7 +85,8 @@ const router = createBrowserRouter(
           element={<DoctorAppointmentsDashboard />}
         />
 
-        <Route path="/staff" element={<StaffPage />} />
+        <Route path="/staff/shifts" element={<ManageShiftPage />} />
+        <Route path="/my/shifts" element={<StaffShiftPage />} />
       </Route>
 
       {/* Admin Routes */}

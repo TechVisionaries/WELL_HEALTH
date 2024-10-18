@@ -13,7 +13,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         }),
         verifyEmail: builder.mutation({
             query: (data) => ({
-                url: `${USERS_URL}/`,
+                url: `${USERS_URL}/register`,
                 method: 'GET',
                 params: data
             }),
@@ -79,8 +79,17 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: data,
             }),
-        })
+        }),
+        getAllUsers: builder.query({
+            query: () => `${USERS_URL}/all-users`,
+        }),
+        deleteUser: builder.mutation({
+            query: (id) => ({
+                url: `${USERS_URL}/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
-export const { useLoginMutation, useGoogleLoginMutation, useRegisterMutation, useVerifyEmailMutation, useLogoutMutation, useUpdateUserMutation, useGenerateOTPMutation, useVerifyOTPMutation, useGenerateSMSOTPMutation, useVerifySMSOTPMutation, useResetPasswordMutation } = usersApiSlice;
+export const { useLoginMutation, useGoogleLoginMutation, useRegisterMutation, useVerifyEmailMutation, useLogoutMutation, useUpdateUserMutation, useGenerateOTPMutation, useVerifyOTPMutation, useGenerateSMSOTPMutation, useVerifySMSOTPMutation, useResetPasswordMutation, useGetAllUsersQuery, useDeleteUserMutation } = usersApiSlice;
