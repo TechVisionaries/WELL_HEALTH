@@ -35,15 +35,7 @@ const LoginPage = () => {
     useEffect(() => {
         dispatch(destroyResetSession());
         if (userInfo) {
-            if (userInfo.userType === "doctor") {
-                navigate('/doctor-home');
-            } else if (userInfo.userType === "admin") {
-                navigate('/admin-home');
-            } else if (userInfo.userType === "manager") {
-                navigate('/manager-home');
-            } else {
                 navigate('/'); // Default to home page if no userType
-            }
         }
     }, [navigate, userInfo, dispatch]);
 
