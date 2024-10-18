@@ -189,7 +189,7 @@ const AdminHeader = () => {
                                 SHIFT Management
                             </Button>
                             <Button
-                                onClick={() => {navigate('/manage_users')}}
+                                onClick={() => {navigate('/admin/manage-users')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
