@@ -1,4 +1,4 @@
-import Header from '../components/header';
+import ConditionalHeader from "../components/headers/conditionalHeader";
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Toast } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
@@ -60,7 +60,7 @@ const AdminHomePage = () => {
     return (
         <>
             <div style={{ width: '100%' }} id='top'>
-                <Header />
+                <ConditionalHeader />
                 <HealthCard/>
                 <div style={{ minHeight: '100vh', height: '200vh' }}>
                     <div className={homeStyles.homeBackDiv}>

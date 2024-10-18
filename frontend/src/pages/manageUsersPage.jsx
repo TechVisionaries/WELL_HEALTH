@@ -6,7 +6,7 @@ import { Card, CardContent, TextField, FormControl, RadioGroup, FormControlLabel
 import { Container, Row, Col } from 'react-bootstrap';
 import Sidebar from '../components/sideBar';
 import dashboardStyles from '../styles/dashboardStyles.module.css';
-import ManagerHeader from '../components/managerHeader';
+import ConditionalHeader from '../components/headers/conditionalHeader';
 import { ImageToBase64 } from "../utils/ImageToBase64";
 import styles from '../styles/loginStyles.module.css';
 import { Delete, Sync, Visibility, VisibilityOff } from '@mui/icons-material';
@@ -90,7 +90,7 @@ const ManageUsersPage = () => {
 
     return (
         <>
-            <ManagerHeader />
+            <ConditionalHeader />
             <div className={dashboardStyles.mainDiv}>
                 <Container className={dashboardStyles.container}>
                     <Row>

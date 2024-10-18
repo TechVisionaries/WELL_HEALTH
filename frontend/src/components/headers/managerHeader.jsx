@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, } from "@mui/material";
 import {Offcanvas} from 'react-bootstrap';
 import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
-import { useLogoutMutation } from "../slices/usersApiSlice";
-import { clearUserInfo } from "../slices/authSlice";
+import { useLogoutMutation } from "../../slices/usersApiSlice";
+import { clearUserInfo } from "../../slices/authSlice";
 import { toast } from "react-toastify";
-import { StringToAvatar } from "../utils/StringToAvatar";
+import { StringToAvatar } from "../../utils/StringToAvatar";
 import MenuIcon from "@mui/icons-material/Menu";
 import AdbIcon from "@mui/icons-material/Adb";
 
-import headerStyles from "../styles/headerStyles.module.css";
+import headerStyles from "../../styles/headerStyles.module.css";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -58,7 +58,7 @@ const ManagerHeader = () => {
     };
 
     useEffect(() => {
-        if(activeRoute == '/'){
+        if(activeRoute == '/manager-home'){
             document.getElementById("main").addEventListener("scroll", handleScroll);
             if (document.getElementById("main").scrollTop > 10) {
                 setIsSticky(true);
@@ -92,9 +92,9 @@ const ManagerHeader = () => {
                 <Toolbar disableGutters>
                     <Box sx={{display: { xs: "none", md: "flex", cursor:'pointer' }}}>
                         {isSticky? 
-                            <img src="/logo3.png" width='100px' onClick={() => navigate('/')}/> 
+                            <img src="/logo3.png" width='100px' onClick={() => navigate('/manager-home')}/> 
                         :
-                            <img src="/logo2.png" width='100px' onClick={() => navigate('/')}/> 
+                            <img src="/logo2.png" width='100px' onClick={() => navigate('/manager-home')}/> 
                         }
                     </Box>
 
@@ -112,21 +112,21 @@ const ManagerHeader = () => {
                         <Offcanvas show={showDrawer} onHide={() => setShowDrawer(false)} style={{width:'200px'}}>
                             <Offcanvas.Body>
                             <Button
-                                onClick={() => {navigate('/doctor-home');scrollToElement('top')}}
+                                onClick={() => {navigate('/manager-home');scrollToElement('top')}}
                                 sx={{ my: 2, px: 1, mx: 1, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
                                 Home
                             </Button>
                             <Button
-                                onClick={() => {navigate('/doctor-home');scrollToElement('animHeader')}}
+                                onClick={() => {navigate('/manager-home');scrollToElement('animHeader')}}
                                 sx={{ my: 2, px: 1, mx: 1, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
                                 Our Services
                             </Button>
                             <Button
-                                onClick={() => {navigate('/doctor-home');scrollToElement('contactUs')}}
+                                onClick={() => {navigate('/manager-home');scrollToElement('contactUs')}}
                                 sx={{ my: 2, px: 1, mx: 1, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
@@ -151,18 +151,18 @@ const ManagerHeader = () => {
                                 Home
                             </Button>
                             <Button
-                                onClick={() => {navigate('/doctor-home');scrollToElement('animHeader')}}
+                                onClick={() => {navigate('/manager-home');scrollToElement('animHeader')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
                                 Our Services
                             </Button>
                             <Button
-                                onClick={() => {navigate('/doctor-home');scrollToElement('animHeader')}}
+                                onClick={() => {navigate('/staff/shifts');scrollToElement('animHeader')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
-                                Appoinments
+                                SHIFT Management
                             </Button>
                             <Button
                                 onClick={() => {navigate('/manage_users')}}
@@ -172,7 +172,7 @@ const ManagerHeader = () => {
                                 User Management
                             </Button>
                             <Button
-                                onClick={() => {navigate('/appointment');scrollToElement('contactUs')}}
+                                onClick={() => {navigate('/#');scrollToElement('contactUs')}}
                                 sx={{ my: 2, px: 3, mx: 2, color: "inherit", fontWeight:'inherit', display: "block" }}
                                 className={isSticky? headerStyles.navBtns : headerStyles.navBtns2} 
                             >
@@ -207,7 +207,7 @@ const ManagerHeader = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            <span style={{margin:'10px 20px', fontSize:'20px'}}>{userInfo.firstName}</span>
+                            <span style={{margin:'10px 20px', fontSize:'20px'}}>{userInfo.firstName+" "+userInfo.lastName}</span>
                             <MenuItem onClick={() => navigate('/profile')} style={{justifyContent:'center', marginTop:'5px'}}>
                                 <Typography textAlign="center">Profile</Typography>
                             </MenuItem>

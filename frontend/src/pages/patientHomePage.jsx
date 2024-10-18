@@ -1,4 +1,4 @@
-import Header from "../components/header";
+import ConditionalHeader from "../components/headers/conditionalHeader";
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Toast } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
@@ -64,7 +64,7 @@ const PatientHomePage = () => {
   return (
     <>
       <div style={{ width: "100%" }} id="top">
-        <Header />
+        <ConditionalHeader />
         {userInfo && !userInfo?.healthCard && !health_card_state?.success && (
           <HealthCard />
         )}
