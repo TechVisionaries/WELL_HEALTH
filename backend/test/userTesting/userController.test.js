@@ -5,6 +5,8 @@ import userRoutes from '../../routes/userRoutes';
 import { sendMail } from '../../utils/mailer';
 import jwt from 'jsonwebtoken';
 import User from '../../models/userModel';
+import { protect } from '../../middleware/authMiddleware';
+import passport from 'passport';
 
 // Set up an Express app for testing
 const app = express();
@@ -16,6 +18,7 @@ jest.mock('jsonwebtoken');
 jest.mock('../../utils/mailer', () => ({
   sendMail: jest.fn(() => Promise.resolve()), // Mock a resolved promise to simulate success
 }));
+jest.mock('../../middleware/authMiddleware');
 
 // Increase the timeout globally for the test suite
 jest.setTimeout(30000); // Set global timeout to 30 seconds
@@ -265,31 +268,94 @@ describe('User Management API', () => {
 
   // Test for getting user profile
   describe('GET /api/users/profile', () => {
-    let token;
-
-    beforeAll(async () => {
-      const res = await request(app).post('/api/users/auth').send({
-        email: 'test@example.com',
-        password: 'Password123',
+    const userMock = {
+        _id: 'user-id',
+        email: 'user@example.com',
+        image: 'http://example.com/image.png',
+        firstName: 'John',
+        lastName: 'Doe',
+        accType: 'normal',
+        password: 'Password123', // Ensure passwords are not returned
+        userType: 'patient',
+        phoneNo: '1234567890',
+        gender: 'male',
+        specialization: 'Cardiology',
+        healthCard: true,
+        nic: 'NIC12345',
+        department: 'Cardiology',
+        occupation: 'Doctor',
+        birthday: '1990-01-01',
+        age: 34,
+        address: '123 Main St',
+        workPlace: 'General Hospital',
+        martialState: 'Single',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    
+      beforeEach(() => {
+        // Mock the protect middleware to simulate authentication
+        protect.mockImplementation((req, res, next) => {
+          req.user = userMock; // Simulate a user being set on the request
+          next();
+        });
       });
-      token = res.body.token; // Adjust according to your response structure
-    });
+    
+      afterEach(() => {
+        jest.restoreAllMocks(); // Restore all mocks after each test
+      });
 
-    it('should get the user profile if authenticated', async () => {
-      const res = await request(app)
-        .get('/api/users/profile')
-        .set('Authorization', `Bearer ${token}`);
-
-      expect(res.statusCode).toBe(500);
-      // expect(res.body).toHaveProperty('email', 'test@example.com');
-    });
-
-    it('should return 401 for unauthorized access', async () => {
-      const res = await request(app).get('/api/users/profile');
-
-      expect(res.statusCode).toBe(500);
-      // expect(res.body).toHaveProperty('message', 'Not Authorized, Session Expired');
-    });
+      it('should return user profile details', async () => {
+        const res = await request(app).get('/api/users/profile').set('Cookie', 'jwt=some-token');
+  
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual({
+          _id: userMock._id,
+          email: userMock.email,
+          image: userMock.image,
+          firstName: userMock.firstName,
+          lastName: userMock.lastName,
+          accType: userMock.accType,
+          userType: userMock.userType,
+          phoneNo: userMock.phoneNo,
+          gender: userMock.gender,
+          specialization: userMock.specialization,
+          healthCard: userMock.healthCard,
+          nic: userMock.nic,
+          department: userMock.department,
+          occupation: userMock.occupation,
+          password: userMock.password,
+          birthday: userMock.birthday,
+          age: userMock.age,
+          address: userMock.address,
+          workPlace: userMock.workPlace,
+          martialState: userMock.martialState,
+          createdAt: userMock.createdAt,
+          updatedAt: userMock.updatedAt,
+        });
+      });
+  
+      it('should return 401 if no token is provided', async () => {
+        protect.mockImplementation((req, res) => {
+          res.status(401).json({ message: 'Not Authorized, no token' });
+        });
+  
+        const res = await request(app).get('/api/users/profile');
+  
+        expect(res.statusCode).toBe(401);
+        expect(res.body.message).toBe('Not Authorized, no token');
+      });
+  
+      it('should return 401 if token is invalid', async () => {
+        protect.mockImplementation((req, res) => {
+          res.status(401).json({ message: 'Not Authorized, invalid token' });
+        });
+  
+        const res = await request(app).get('/api/users/profile').set('Cookie', 'jwt=invalid-token');
+  
+        expect(res.statusCode).toBe(401);
+        expect(res.body.message).toBe('Not Authorized, invalid token');
+      });
   });
 
 
@@ -318,10 +384,15 @@ describe('User Management API', () => {
           phoneNo: '1234567890',
         });
 
-      expect(res.statusCode).toBe(500);
+      expect(res.statusCode).toBe(401);
       // expect(res.body).toHaveProperty('firstName', 'UpdatedName');
     });
   });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
   // Test for logging out
   describe('POST /api/users/logout', () => {
