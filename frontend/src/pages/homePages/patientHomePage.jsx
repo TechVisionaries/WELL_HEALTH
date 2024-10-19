@@ -1,18 +1,25 @@
-import DoctorHeader from "../components/doctorHeader";
+import ConditionalHeader from "../../components/headers/conditionalHeader";
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Toast } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import CountUp from "react-countup";
-import homeStyles from "../styles/homePageStyles.module.css";
+import homeStyles from "../../styles/homePageStyles.module.css";
 import { Card, CardContent, IconButton } from "@mui/material";
 import { BsChevronDoubleDown } from "react-icons/bs";
-import HealthCard from "../components/HealthCard";
+import HealthCard from "../../components/HealthCard";
+import { useSelector } from "react-redux";
+import { useMainContext } from "../../context/hooks";
 
-const DoctorHomePage = () => {
+const PatientHomePage = () => {
+  const { userInfo } = useSelector((state) => state.auth);
+  const { health_card_state } = useMainContext();
+  console.log(userInfo);
+
   const [show, setShow] = useState(false);
-  const [channelingcount, setChannelingCount] = useState(0);
-  const [totalpatientcount, setTotalPatientCount] = useState(0);
+  const [hopitalcount, setHospitalCount] = useState(0);
+  const [doctorcount, setDoctorCount] = useState(0);
+  const [userCount, setUserCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -32,12 +39,14 @@ const DoctorHomePage = () => {
     timeout = setTimeout(() => {
       if (document.getElementById("main").scrollTop > 500) {
         setShow(false);
-        setTotalPatientCount(0);
-        setChannelingCount(0);
+        setDoctorCount(0);
+        setHospitalCount(0);
+        setUserCount(0);
       } else {
         setShow(true);
-        setTotalPatientCount(347);
-        setChannelingCount(26);
+        setDoctorCount(347);
+        setHospitalCount(26);
+        setUserCount(1987);
       }
     }, 10);
   };
@@ -46,20 +55,25 @@ const DoctorHomePage = () => {
     document.getElementById("main").addEventListener("scroll", handleScroll);
     setTimeout(() => {
       setShow(true);
-      setTotalPatientCount(347);
-      setChannelingCount(26);
+      setDoctorCount(347);
+      setHospitalCount(26);
+      setUserCount(1987);
     }, 1);
   }, []);
 
   return (
     <>
       <div style={{ width: "100%" }} id="top">
-        <DoctorHeader />
+        <ConditionalHeader />
+        {userInfo && !userInfo?.healthCard && !health_card_state?.success && (
+          <HealthCard />
+        )}
+
         <div style={{ minHeight: "100vh", height: "200vh" }}>
           <div className={homeStyles.homeBackDiv}>
             <img src={"images/homeBackground2.png"} width={"100%"} />
             <img
-              src={"images/doctor_home_bg.png"}
+              src={"images/hospital_staff_bg.png"}
               width={"50%"}
               style={{ position: "absolute", right: 0, top: "110px" }}
             />
@@ -74,6 +88,14 @@ const DoctorHomePage = () => {
             >
               <center>
                 <h2>
+                  A safe and secure place to keep
+                  <br />
+                  your key health information, available to you
+                  <br />
+                  and your healthcare providers anytime,
+                  <br />
+                  including in an emergency
+                  <br />
                   <span
                     style={{
                       fontFamily: "Papyrus",
@@ -82,49 +104,76 @@ const DoctorHomePage = () => {
                       color: "#f5427e",
                     }}
                   >
-                    ...Welcome Back Doctor...
+                    WellHealth.LK
                   </span>
-                  A safe and secure place to keep
-                  <br />
-                  your appointment information and
-                  <br /> prescriptions data, available to you and
-                  <br /> your patients anytime,
-                  <br />
-                  including in an emergency
-                  <br />
                 </h2>
+                <Button
+                  onClick={() => navigate("/login")}
+                  variant="contained"
+                  color="info"
+                  className={homeStyles.welcBtns}
+                  style={{
+                    clipPath: "polygon(95% 0%, 80% 100%, 0% 100%, 0% 0%)",
+                    padding: "15px",
+                  }}
+                >
+                  &nbsp;&nbsp;&nbsp;&nbsp;LOGIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </Button>
+                <Button
+                  onClick={() => navigate("/register")}
+                  variant="contained"
+                  color="warning"
+                  className={homeStyles.welcBtns}
+                  style={{
+                    clipPath: "polygon(100% 0%, 100% 100%, 5% 100%, 20% 0%)",
+                    marginLeft: "-45px",
+                    padding: "15px",
+                  }}
+                >
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REGISTER
+                </Button>
               </center>
             </Col>
             <Card
               style={{
                 position: "absolute",
                 top: "450px",
-                marginLeft: "6.5%",
+                marginLeft: "7.5%",
                 width: "500px",
                 background: "#e3f2ff",
               }}
             >
               <CardContent style={{ display: "flex", padding: "16px" }}>
                 <Row style={{ width: "100%" }}>
-                  <Col style={{ textAlign: "center", color: "#042f80" }}>
+                  <Col style={{ textAlign: "center" }}>
                     <h1>
                       <CountUp
                         duration={1}
                         className="counter"
-                        end={channelingcount}
+                        end={hopitalcount}
                       />
                     </h1>
-                    Channeling
+                    Hopitals
                   </Col>
-                  <Col style={{ textAlign: "center", color: "#ed773b" }}>
+                  <Col style={{ textAlign: "center" }}>
                     <h1>
                       <CountUp
                         duration={1}
                         className="counter"
-                        end={totalpatientcount}
+                        end={doctorcount}
                       />
                     </h1>
-                    Total Patients
+                    Doctors
+                  </Col>
+                  <Col style={{ textAlign: "center" }}>
+                    <h1>
+                      <CountUp
+                        duration={1}
+                        className="counter"
+                        end={userCount}
+                      />
+                    </h1>
+                    Users
                   </Col>
                 </Row>
               </CardContent>
@@ -279,4 +328,4 @@ const DoctorHomePage = () => {
   );
 };
 
-export default DoctorHomePage;
+export default PatientHomePage;

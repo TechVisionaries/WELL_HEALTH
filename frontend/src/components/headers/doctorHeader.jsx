@@ -16,14 +16,14 @@ import {
 } from "@mui/material";
 import { Offcanvas } from "react-bootstrap";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
-import { useLogoutMutation } from "../slices/usersApiSlice";
-import { clearUserInfo } from "../slices/authSlice";
+import { useLogoutMutation } from "../../slices/usersApiSlice";
+import { clearUserInfo } from "../../slices/authSlice";
 import { toast } from "react-toastify";
-import { StringToAvatar } from "../utils/StringToAvatar";
+import { StringToAvatar } from "../../utils/StringToAvatar";
 import MenuIcon from "@mui/icons-material/Menu";
 import AdbIcon from "@mui/icons-material/Adb";
 
-import headerStyles from "../styles/headerStyles.module.css";
+import headerStyles from "../../styles/headerStyles.module.css";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -70,7 +70,7 @@ const DoctorHeader = () => {
   };
 
   useEffect(() => {
-    if (activeRoute == "/") {
+    if (activeRoute == "/doctor-home") {
       document.getElementById("main").addEventListener("scroll", handleScroll);
       if (document.getElementById("main").scrollTop > 10) {
         setIsSticky(true);
@@ -111,13 +111,13 @@ const DoctorHeader = () => {
               <img
                 src="/logo3.png"
                 width="100px"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/doctor-home")}
               />
             ) : (
               <img
                 src="/logo2.png"
                 width="100px"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/doctor-home")}
               />
             )}
           </Box>
@@ -177,25 +177,6 @@ const DoctorHeader = () => {
                 >
                   Our Services
                 </Button>
-                <Button
-                  onClick={() => {
-                    navigate("/doctor-home");
-                    scrollToElement("contactUs");
-                  }}
-                  sx={{
-                    my: 2,
-                    px: 1,
-                    mx: 1,
-                    color: "inherit",
-                    fontWeight: "inherit",
-                    display: "block",
-                  }}
-                  className={
-                    isSticky ? headerStyles.navBtns : headerStyles.navBtns2
-                  }
-                >
-                  Contact Us
-                </Button>
               </Offcanvas.Body>
             </Offcanvas>
           </Box>
@@ -207,13 +188,13 @@ const DoctorHeader = () => {
               <img
                 src="/logoBig2.png"
                 width="150px"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/doctor-home")}
               />
             ) : (
               <img
                 src="/logoBig1.png"
                 width="150px"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/doctor-home")}
               />
             )}
           </Box>
@@ -365,7 +346,7 @@ const DoctorHeader = () => {
                 onClose={handleCloseUserMenu}
               >
                 <span style={{ margin: "10px 20px", fontSize: "20px" }}>
-                  {userInfo.firstName}
+                  {userInfo.firstName +" "+userInfo.lastName}
                 </span>
                 <MenuItem
                   onClick={() => navigate("/profile")}

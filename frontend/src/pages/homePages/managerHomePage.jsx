@@ -1,13 +1,12 @@
-import ManagerHeader from '../components/managerHeader';
+import ConditionalHeader from "../../components/headers/conditionalHeader";
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Toast } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import CountUp from "react-countup";
-import homeStyles from '../styles/homePageStyles.module.css'
+import homeStyles from "../../styles/homePageStyles.module.css";
 import { Card, CardContent, IconButton } from '@mui/material';
 import { BsChevronDoubleDown } from 'react-icons/bs';
-import HealthCard from '../components/HealthCard';
 
 
 const ManagerHomePage = () => {
@@ -60,8 +59,7 @@ const ManagerHomePage = () => {
     return (
         <>
             <div style={{ width: '100%' }} id='top'>
-                <ManagerHeader />
-                <HealthCard/>
+                <ConditionalHeader />
                 <div style={{ minHeight: '100vh', height: '200vh' }}>
                     <div className={homeStyles.homeBackDiv}>
                         <img src={'images/homeBackground2.png'} width={"100%"} />

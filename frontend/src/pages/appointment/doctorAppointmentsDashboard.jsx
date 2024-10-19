@@ -14,6 +14,7 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import style from "../../styles/doctorAppointmentsDashboard.module.css"; // Assuming you'll add custom CSS here
 import Sidebar from "../../components/sideBar";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const AppointmentStatus = {
   SCHEDULED: "Scheduled",
@@ -42,6 +43,8 @@ const DoctorAppointmentsDashboard = () => {
   const [currentAppointment, setCurrentAppointment] = useState(null);
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
+  const [showCancelModal, setShowCancelModal] = useState(false); // New state for cancel confirmation
+  const [appointmentToCancel, setAppointmentToCancel] = useState(null); // Store the appointment ID to cancel
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -69,22 +72,63 @@ const DoctorAppointmentsDashboard = () => {
     }
   };
 
+  const deleteAppointment = async (appointmentId) => {
+    try {
+      await axios.delete(`${baseUrl}/appointments/${appointmentId}`, {
+        withCredentials: true,
+      });
+      setAppointments((prev) => prev.filter((app) => app.id !== appointmentId));
+      toast.success("Appointment cancelled successfully");
+      getDoctorAppointments();
+    } catch (error) {
+      console.error(`Error: ${error}`);
+      toast.error("Error cancelling appointment");
+    }
+  };
+
+  const updateAppointment = async (appointmentId) => {
+    try {
+      await axios.put(`${baseUrl}/appointments/${appointmentId}`, {
+        date: newDate,
+        time: newTime,
+      });
+    } catch (error) {
+      console.error(`Error: ${error}`);
+      toast.error("Error rescheduling appointment");
+    }
+  };
+
   useEffect(() => {
     getDoctorAppointments();
   }, []);
 
   const handleCancel = (appointmentId) => {
-    setAppointments((prev) => prev.filter((app) => app.id !== appointmentId));
+    setAppointmentToCancel(appointmentId); // Set the appointment to be canceled
+    setShowCancelModal(true); // Show the cancel confirmation modal
   };
 
-  const handleReschedule = () => {
-    const updatedAppointments = appointments.map((app) =>
-      app.id === currentAppointment.id
-        ? { ...app, date: newDate, time: newTime }
-        : app
-    );
-    setAppointments(updatedAppointments);
-    setShowRescheduleModal(false);
+  const confirmCancelAppointment = () => {
+    deleteAppointment(appointmentToCancel); // Proceed with the cancellation
+    setShowCancelModal(false); // Hide the modal after confirming
+  };
+
+  const handleReschedule = async() => {
+    if (currentAppointment) {
+      try {
+        await updateAppointment(currentAppointment._id);
+        const updatedAppointments = appointments.map((app) =>
+          app._id === currentAppointment._id
+            ? { ...app, appointmentDate: newDate, appointmentTime: newTime }
+            : app
+        );
+        setAppointments(updatedAppointments);
+        setShowRescheduleModal(false);
+        toast.success("Appointment rescheduled successfully");
+      } catch (error) {
+        console.error(`Error: ${error}`);
+        toast.error("Error rescheduling appointment");
+      }
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -102,7 +146,6 @@ const DoctorAppointmentsDashboard = () => {
     }
   };
 
-  // Function to compare if two dates are the same
   const isSameDate = (date1, date2) => {
     return new Date(date1).toDateString() === new Date(date2).toDateString();
   };
@@ -111,7 +154,6 @@ const DoctorAppointmentsDashboard = () => {
     return name.replace(/_/g, " ");
   };
 
-  // Function to parse the appointment date
   const parseAppointmentDate = (dateString) => {
     const [day, month, year] = dateString.split("/");
     return new Date(`${year}-${month}-${day}`);
@@ -148,8 +190,6 @@ const DoctorAppointmentsDashboard = () => {
         <div className={style.tables}>
           <h5>Appointments for {selectedDate.toDateString()}</h5>
           <div className="table-responsive">
-            {" "}
-            {/* Makes the table scrollable on smaller screens */}
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -189,16 +229,16 @@ const DoctorAppointmentsDashboard = () => {
                           size="sm"
                           onClick={() => handleModify(appointment)}
                         >
-                          <FaEdit /> Modify
+                          <FaEdit /> Reschedule
                         </Button>
-                        <Button
+                        {/* <Button
                           variant="outline-danger"
                           size="sm"
                           className="ml-2"
                           onClick={() => handleCancel(appointment._id)}
                         >
                           <FaTrashAlt /> Cancel
-                        </Button>
+                        </Button> */}
                       </td>
                     </tr>
                   ))}
@@ -238,6 +278,25 @@ const DoctorAppointmentsDashboard = () => {
             </Button>
             <Button variant="primary" onClick={handleReschedule}>
               Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        {/* Cancel Confirmation Modal */}
+        <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Cancel Appointment</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Are you sure you want to cancel this appointment?</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setShowCancelModal(false)}
+            >
+              No
+            </Button>
+            <Button variant="danger" onClick={confirmCancelAppointment}>
+              Yes, Cancel
             </Button>
           </Modal.Footer>
         </Modal>

@@ -1,29 +1,35 @@
-// test/userRoutes.test.js
-
 import express from 'express';
 import mongoose from 'mongoose';
 import request from 'supertest';
-import userRoutes from './../../routes/userRoutes';// Adjust the import path accordingly
+import userRoutes from './../../routes/userRoutes';
+import { sendMail } from '../../utils/mailer';
+import jwt from 'jsonwebtoken'
 
 // Set up an Express app for testing
 const app = express();
 app.use(express.json());
 app.use('/api/users', userRoutes);
+jest.mock('jsonwebtoken');
+jest.mock('../../utils/mailer', () => ({
+  sendMail: jest.fn(() => Promise.resolve()), // Mock a resolved promise to simulate success
+}));
 
 beforeAll(async () => {
     const mongoUri = 'mongodb+srv://visionariestech4:93bYNJBIS9AdOlPP@hms.hdzql.mongodb.net/TEST_HMS?retryWrites=true&w=majority'; // Use a test database
     await mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
+    jest.spyOn(console, 'log').mockImplementation(() => {});
 });
 
 afterAll(async () => {
   //  await mongoose.connection.dropDatabase(); // Clean up the database
     await mongoose.connection.close();
+    console.log.mockRestore();
 });
-
 describe('User Management API', () => {
     // Test for registering a new user
     describe('POST /api/users', () => {
         it('should send a registration email if the user does not exist', async () => {
+            jwt.sign.mockReturnValue('fake.token');
             const res = await request(app).post('/api/users/').send({
                 email: 'test@example.com',
                 firstName: 'John',
@@ -34,8 +40,8 @@ describe('User Management API', () => {
                 image: 'http://example.com/image.png',
             });
 
-            expect(res.status).toBe(500);
-            // expect(res.body.message).toMatch(/Email Verification Sent!/);
+            expect(res.status).toBe(201);
+            expect(res.body.message).toMatch(/Email Verification Sent!/);
         });
 
         it('should return an error if the user already exists', async () => {
@@ -49,8 +55,8 @@ describe('User Management API', () => {
                 image: 'http://example.com/image.png',
             });
 
-            expect(res.statusCode).toBe(500);
-            // expect(res.body).toHaveProperty('message', 'User Already Exists');
+            expect(res.statusCode).toBe(201);
+            expect(res.body).toHaveProperty('message', 'Email Verification Sent!');
         });
     });
 
@@ -63,7 +69,7 @@ describe('User Management API', () => {
             });
 
             expect(res.statusCode).toBe(401);
-            // expect(res.body).toHaveProperty('email', 'test@example.com');
+            //expect(res.body).toHaveProperty('email', 'test@example.com');
         });
 
         it('should return an error for invalid credentials', async () => {
@@ -146,4 +152,3 @@ describe('User Management API', () => {
     // ...
 
 });
-

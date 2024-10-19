@@ -15,7 +15,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useRegisterMutation, useGetAllUsersQuery, useDeleteUserMutation } from '../slices/usersApiSlice'; // Added custom hooks
 import { toast } from 'react-toastify';
 
-const ManageUsersPage = () => {
+const ManageUsersAdminPage = () => {
     const [imagePath, setImagePath] = useState('./images/addProfile.png');
     const [image, setImage] = useState('');
 
@@ -157,6 +157,7 @@ const ManageUsersPage = () => {
                                                     required
                                                 >
                                                     <MenuItem value="doctor">Doctor</MenuItem>
+                                                    <MenuItem value="manager">Manager</MenuItem>
                                                     <MenuItem value="nurse">Nurse</MenuItem>
                                                 </Select>
                                             </FormControl>
@@ -279,6 +280,7 @@ const ManageUsersPage = () => {
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
                         <RadioGroup row value={userTypeFilter} onChange={handleFilterChange}>
                             <FormControlLabel value="" control={<Radio />} label="All" />
+                            <FormControlLabel value="manager" control={<Radio />} label="Manager" />
                             <FormControlLabel value="doctor" control={<Radio />} label="Doctor" />
                             <FormControlLabel value="nurse" control={<Radio />} label="Nurse" />
                         </RadioGroup>
@@ -329,4 +331,4 @@ const ManageUsersPage = () => {
     );
 };
 
-export default ManageUsersPage;
+export default ManageUsersAdminPage;
