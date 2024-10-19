@@ -118,4 +118,42 @@ describe("Health Card API", () => {
   //       expect(res.body.message).toMatch(/Health card not found for the user/);
   //     });
   //   });
+
+  // Test for adding a prescription
+  describe("POST /api/health_card/add_prescription", () => {
+    it("should add a prescription for a patient", async () => {
+      const res = await request(app)
+        .post("/api/health_card/add_prescription")
+        .send({
+          userId: "62a1c6e08bbed00110c5b9e7", // Example userId
+          doctorId: "62b1f5e9b8e121001e3a9d8e", // Example doctorId
+          medicines: [
+            {
+              name: "Paracetamol",
+              dosage: "500mg",
+              frequency: "Twice a day",
+              duration: "7 days",
+              instructions: "After food",
+            },
+          ],
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toMatch(/Prescription saved successfully/);
+    });
+
+    it("should return an error if prescription data is invalid", async () => {
+      const res = await request(app)
+        .post("/api/health_card/add_prescription")
+        .send({
+          userId: "",
+          medicines: [],
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+      expect(res.body.message).toMatch(/Invalid prescription data/);
+    });
+  });
 });
