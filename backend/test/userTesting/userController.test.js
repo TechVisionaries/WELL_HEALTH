@@ -209,12 +209,52 @@ describe('User Management API', () => {
     });
 
     it('should return an error for invalid account type', async () => {
+        jwt.sign.mockReturnValue('fake.token');
         const res = await request(app).post('/api/users/auth').send({
             email: 'test2@example.com',
             password: 'Password123',
           });
     
           expect(res.statusCode).toBe(500);
+      });
+  });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  // Test for user authentication
+  describe('POST /api/users/googleAuth', () => {
+    it('should authenticate user and set token', async () => {
+        jwt.sign.mockReturnValue('fake.token');
+      const res = await request(app).post('/api/users/googleAuth').send({
+        email: 'test2@example.com',
+        password: 'Password123',
+      });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('email', 'test2@example.com');
+    });
+
+    it('should return an error for invalid credentials', async () => {
+        jwt.sign.mockReturnValue('fake.token');
+      const res = await request(app).post('/api/users/googleAuth').send({
+        email: 'test1@example.com',
+        password: 'WrongPassword',
+      });
+
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('should return an error for invalid account type', async () => {
+        jwt.sign.mockReturnValue('fake.token');
+        const res = await request(app).post('/api/users/googleAuth').send({
+            email: 'test1@example.com',
+            password: 'Password123',
+          });
+    
+          expect(res.statusCode).toBe(400);
       });
   });
 
@@ -251,6 +291,11 @@ describe('User Management API', () => {
       // expect(res.body).toHaveProperty('message', 'Not Authorized, Session Expired');
     });
   });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
   // Test for updating user profile
   describe('PUT /api/users/profile', () => {
