@@ -4,6 +4,7 @@ import request from 'supertest';
 import userRoutes from '../../routes/userRoutes';
 import { sendMail } from '../../utils/mailer';
 import jwt from 'jsonwebtoken';
+import User from '../../models/userModel';
 
 // Set up an Express app for testing
 const app = express();
@@ -28,7 +29,6 @@ beforeAll(async () => {
 afterAll(async () => {
   //await mongoose.connection.dropDatabase();
   await mongoose.connection.close();
-  console.log.mockRestore();
 });
 
 describe('User Management API', () => {
@@ -52,8 +52,8 @@ describe('User Management API', () => {
         image: 'http://example.com/image.png',
       });
 
-      expect(res.status).toBe(201);
-      expect(res.body.message).toMatch(/Email Verification Sent!/);
+        expect(res.status).toBe(201);
+        expect(res.body.message).toMatch(/Email Verification Sent!/);
     });
 
     it('should return an error if the user already exists', async () => {
@@ -67,7 +67,7 @@ describe('User Management API', () => {
         image: 'http://example.com/image.png',
       });
 
-      expect(res.statusCode).toBe(400);
+        expect(res.statusCode).toBe(400);
     });
 
     it('should return an error if the email not found', async () => {
@@ -82,7 +82,7 @@ describe('User Management API', () => {
             image: 'http://example.com/image.png',
       });
 
-    expect(res.status).toBe(400);
+        expect(res.status).toBe(400);
     });
   });
 
@@ -90,16 +90,113 @@ describe('User Management API', () => {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+  describe('GET /api/users/register', () => {
+
+    beforeEach(() => {
+        jest.spyOn(User, 'findOne').mockResolvedValue(null); // Default behavior, no user found
+        jest.spyOn(User, 'create').mockResolvedValue({
+          _id: 'user-id',
+          email: 'newuser@example.com',
+          firstName: 'John',
+          lastName: 'Doe',
+          userType: 'patient',
+        });
+      });
+    
+      afterEach(() => {
+        jest.restoreAllMocks(); // Restore all mocks after each test
+      });
+      
+      it('should register a new patient user successfully', async () => {
+        // Mock JWT token decode to return user data
+        jwt.decode.mockReturnValue({
+          user: {
+            email: 'newuser@example.com',
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'Password123',
+            userType: 'patient',
+            gender: 'male',
+            image: 'http://example.com/image.png',
+          },
+        });
+  
+        // Mock User.create to simulate user creation
+        User.create.mockResolvedValue({
+          _id: 'user-id',
+          email: 'newuser@example.com',
+          firstName: 'John',
+          lastName: 'Doe',
+          userType: 'patient',
+        });
+  
+        const res = await request(app).get('/api/users/register').query({
+          token: 'valid.token', // Assuming token is passed in query
+        });
+  
+        expect(res.statusCode).toBe(201);
+        expect(res.body.user).toHaveProperty('email', 'newuser@example.com');
+        expect(User.create).toHaveBeenCalledWith(expect.objectContaining({
+          email: 'newuser@example.com',
+          firstName: 'John',
+          lastName: 'Doe',
+          userType: 'patient',
+        }));
+      });
+  
+      it('should return 401 if the user already exists', async () => {
+        jwt.decode.mockReturnValue({
+          user: {
+            email: 'existinguser@example.com',
+            firstName: 'Jane',
+            lastName: 'Doe',
+            password: 'Password123',
+            userType: 'patient',
+            gender: 'female',
+            image: 'http://example.com/image.png',
+          },
+        });
+  
+        User.findOne.mockResolvedValue({ email: 'existinguser@example.com' });
+  
+        const res = await request(app).get('/api/users/register').query({
+          token: 'valid.token',
+        });
+  
+        expect(res.statusCode).toBe(401);
+        expect(User.create).not.toHaveBeenCalled(); // User creation should not be called
+      });
+  
+      it('should return 401 if token is invalid', async () => {
+        jwt.decode.mockImplementation(() => {
+          throw new Error('Invalid token');
+        });
+  
+        const res = await request(app).get('/api/users/register').query({
+          token: 'invalid.token',
+        });
+  
+        expect(res.statusCode).toBe(401);
+        expect(User.create).not.toHaveBeenCalled();
+      });
+  });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
   // Test for user authentication
   describe('POST /api/users/auth', () => {
     it('should authenticate user and set token', async () => {
       const res = await request(app).post('/api/users/auth').send({
-        email: 'test@example.com',
+        email: 'test1@example.com',
         password: 'Password123',
       });
 
-      expect(res.statusCode).toBe(401);
-      // expect(res.body).toHaveProperty('email', 'test@example.com');
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('email', 'test1@example.com');
     });
 
     it('should return an error for invalid credentials', async () => {
@@ -109,8 +206,16 @@ describe('User Management API', () => {
       });
 
       expect(res.statusCode).toBe(401);
-      // expect(res.body).toHaveProperty('message', 'Invalid Credentials');
     });
+
+    it('should return an error for invalid account type', async () => {
+        const res = await request(app).post('/api/users/auth').send({
+            email: 'test2@example.com',
+            password: 'Password123',
+          });
+    
+          expect(res.statusCode).toBe(500);
+      });
   });
 
   // Test for getting user profile
