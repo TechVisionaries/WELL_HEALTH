@@ -1,9 +1,7 @@
-// test/healthCardRoutes.test.js
-
 import express from "express";
 import mongoose from "mongoose";
 import request from "supertest";
-import healthCardRoutes from "./../../routes/healthCardRoutes"; // Adjust the import path accordingly
+import healthCardRoutes from "./../../routes/healthCardRoutes"; 
 
 // Set up an Express app for testing
 const app = express();
@@ -12,7 +10,7 @@ app.use("/api/health_card", healthCardRoutes);
 
 beforeAll(async () => {
   const mongoUri =
-    "mongodb+srv://visionariestech4:93bYNJBIS9AdOlPP@hms.hdzql.mongodb.net/TEST_HMS?retryWrites=true&w=majority"; // Use a test database
+    "mongodb+srv://visionariestech4:93bYNJBIS9AdOlPP@hms.hdzql.mongodb.net/TEST_HMS?retryWrites=true&w=majority"; 
   await mongoose.connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -65,7 +63,7 @@ describe("Health Card API", () => {
   // Test for retrieving a health card by patient ID
   describe("GET /api/health_card/get_hralth_card_by_patient_id/:userId", () => {
     it("should retrieve a health card for a given user", async () => {
-      const userId = "62a1c6e08bbed00110c5b9e7"; // Example userId
+      const userId = "62a1c6e08bbed00110c5b9e7"; 
       const res = await request(app).get(
         `/api/health_card/get_hralth_card_by_patient_id/${userId}`
       );
@@ -80,7 +78,7 @@ describe("Health Card API", () => {
         "/api/health_card/get_hralth_card_by_patient_id/"
       );
 
-      expect(res.status).toBe(404); // Expecting 404 as no userId is passed
+      expect(res.status).toBe(404); 
     });
   });
 
@@ -125,8 +123,8 @@ describe("Health Card API", () => {
       const res = await request(app)
         .post("/api/health_card/add_prescription")
         .send({
-          userId: "62a1c6e08bbed00110c5b9e7", // Example userId
-          doctorId: "62b1f5e9b8e121001e3a9d8e", // Example doctorId
+          userId: "62a1c6e08bbed00110c5b9e7", 
+          doctorId: "62b1f5e9b8e121001e3a9d8e", 
           medicines: [
             {
               name: "Paracetamol",
@@ -160,7 +158,7 @@ describe("Health Card API", () => {
   // Test for retrieving prescriptions by patient ID
   describe("GET /api/health_card/get_all_prescriptions/:userId", () => {
     it("should retrieve prescriptions for a given user", async () => {
-      const userId = "62a1c6e08bbed00110c5b9e7"; // Example userId
+      const userId = "62a1c6e08bbed00110c5b9e7"; 
       const res = await request(app).get(
         `/api/health_card/get_all_prescriptions/${userId}`
       );
@@ -175,7 +173,7 @@ describe("Health Card API", () => {
         "/api/health_card/get_all_prescriptions/"
       );
 
-      expect(res.status).toBe(404); // Expecting 404 as no userId is passed
+      expect(res.status).toBe(404);
     });
   });
 
