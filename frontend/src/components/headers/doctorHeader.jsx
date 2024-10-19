@@ -281,7 +281,7 @@ const DoctorHeader = () => {
             >
               Chanelling
             </Button>
-            <Button
+            {/* <Button
               onClick={() => {
                 navigate("/appointment");
                 scrollToElement("contactUs");
@@ -299,7 +299,7 @@ const DoctorHeader = () => {
               }
             >
               Schedules
-            </Button>
+            </Button> */}
           </Box>
           {userInfo ? (
             <Box sx={{ flexGrow: 0 }}>
