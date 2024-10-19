@@ -15,16 +15,14 @@ const createShift = asyncHandler(async (req, res) => {
     } = req.body;
 
     if(new Date(date) < new Date()){
-        res.status(400);
-        throw new Error('Invalid Date!');
+        return res.status(400).json({ message: "Invalid Date!" });
     }
 
     let shiftList = []
     for (const staff of staffList) {  
         const shiftExist = await Shift.findOne({ staffMember: staff, date, shiftSlot });
         if (shiftExist) {
-            res.status(400);
-            throw new Error('Shift already created for this staff member');
+            return res.status(400).json({ message: "Shift already created for this staff member" });
         }
     
         const shift = await Shift.create({
@@ -42,8 +40,7 @@ const createShift = asyncHandler(async (req, res) => {
         res.status(201).json({shiftList});
     }
     else {
-        res.status(400);
-        throw new Error('Error creating shift');
+        return res.status(400).json({ message: "Error creating shift" });
     }
 });
 
@@ -59,14 +56,13 @@ const createLeave = asyncHandler(async (req, res) => {
     } = req.body;
 
     if(new Date(date) < new Date()){
-        res.status(400);
-        throw new Error('Invalid Date!');
+        return res.status(400).json({ message: 'Invalid Date!' });
     }
 
     const shiftExist = await Shift.findOne({ staffMember: id, date, shiftSlot });
     if (shiftExist) {
         res.status(400);
-        throw new Error('You already have a shift assigned. Please contact your supervisor!');
+        return res.status(400).json({ message: 'You already have a shift assigned. Please contact your supervisor!' });
     }
 
     const shift = await Shift.create({
@@ -81,8 +77,7 @@ const createLeave = asyncHandler(async (req, res) => {
         res.status(201).json({shift});
     }
     else {
-        res.status(400);
-        throw new Error('Error applying leave');
+        return res.status(400).json({ message: 'Error applying leave' });
     }
 });
 
@@ -95,8 +90,7 @@ const updateLeave = asyncHandler(async (req, res) => {
     // Find the shift by ID
     const shiftExist = await Shift.findById(id).populate('staffMember');
     if (!shiftExist) {
-        res.status(400);
-        throw new Error('Leave Not Found');
+        return res.status(400).json({ message: 'Leave Not Found' });
     }
 
     let shift;
@@ -105,21 +99,39 @@ const updateLeave = asyncHandler(async (req, res) => {
         // Update the shift status to 'On Leave'
         shift = await Shift.findByIdAndUpdate(id, { status: "On Leave" }, { new: true });
         if(shift){
-            sendMail(shiftExist.staffMember.email, `Your leave request made on ${shiftExist.date?.toLocalString()} ${shiftExist.shiftSlot} has been accepted!`, "Leave Request")
+            const leaveAcceptedHtml = `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2 style="color: #4CAF50;">Leave Request Accepted</h2>
+                    <p>Dear ${shiftExist.staffMember.firstName},</p>
+                    <p>Your leave request made on <strong>${new Date(shiftExist.date).toLocaleDateString()}</strong> for the <strong>${shiftExist.shiftSlot}</strong> shift has been <strong style="color: #4CAF50;">accepted</strong>!</p>
+                    <p>Feel free to reach out if you have any questions.</p>
+                    <p>Best regards,<br>Your Company</p>
+                </div>
+            `;
+            sendMail(shiftExist.staffMember.email, leaveAcceptedHtml, "Leave Request");
         }
     } else {
         // Delete the shift
         shift = await Shift.findByIdAndDelete(id);
         if(shift){
-            sendMail(shiftExist.staffMember.email, `Your leave request made on ${shiftExist.date} ${shiftExist.shiftSlot} has been Rejected!`, "Leave Request")
+            const leaveRejectedHtml = `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2 style="color: #F44336;">Leave Request Rejected</h2>
+                    <p>Dear ${shiftExist.staffMember.firstName},</p>
+                    <p>Your leave request made on <strong>${new Date(shiftExist.date).toLocaleDateString()}</strong> for the <strong>${shiftExist.shiftSlot}</strong> shift has been <strong style="color: #F44336;">rejected</strong>.</p>
+                    <p>If you have any concerns, feel free to contact us for more information.</p>
+                    <p>Best regards,<br>Your Company</p>
+                </div>
+            `;
+            sendMail(shiftExist.staffMember.email, leaveRejectedHtml, "Leave Request");
         }
     }
+    
 
     if (shift) {
         res.status(201).json({ shift });
     } else {
-        res.status(400);
-        throw new Error('Error updating leave');
+        return res.status(400).json({ message: 'Error updating leave' });
     }
 });
 
@@ -134,10 +146,9 @@ const deleteShift = asyncHandler(async (req, res) => {
         for (const shiftId of shiftList) {
             await Shift.findByIdAndDelete(shiftId);
         }
-        res.status(200).send({ status: "Shift removed" });;
+        res.status(200).json({ status: "Shift removed" });
     } catch (error) {
-        res.status(400);
-        throw new Error('Error Deleting shift');
+        return res.status(400).json({ message: 'Error Deleting shift' });
     }
 });
 
@@ -176,8 +187,7 @@ const getAllShifts = asyncHandler(async (req, res) => {
         }));
     }
     else {
-        res.status(400);
-        throw new Error('No Shifts found');
+        return res.status(400).json({ message: 'No Shifts found' });
     }
 
 });
@@ -245,8 +255,7 @@ const getAvailableStaff = asyncHandler(async (req, res) => {
     if (finalResponseUsers.length > 0) {
         res.status(200).json(finalResponseUsers); // Return the filtered list of users
     } else {
-        res.status(400);
-        throw new Error('No Staff available');
+        return res.status(400).json({ message: 'No Staff available' });
     }
 });
 
@@ -271,8 +280,7 @@ const getStaffShifts = asyncHandler(async (req, res) => {
     if (shifts && shifts.length > 0) {
         res.status(200).json(shifts); // Return the filtered list of users
     } else {
-        res.status(400);
-        throw new Error('No Shifts available');
+        return res.status(400).json({ message: 'No Shifts available' });
     }
 });
 
