@@ -458,6 +458,7 @@ export default function Sidebar() {
           : <></>}
 
           {/* doctor navigation */}
+          {userInfo.userType == "doctor" ? (
           <Link
             to="/doctor/appointments"
             style={{ textDecoration: "none", color: "black" }}
@@ -499,6 +500,11 @@ export default function Sidebar() {
               </Tooltip>
             </ListItem>
           </Link>
+          ) : (
+            <></>
+          )}
+
+          {/* doctor navigation */}
         </List>
       </Drawer>
       {open ? (
