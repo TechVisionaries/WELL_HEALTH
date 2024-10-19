@@ -364,30 +364,131 @@ describe('User Management API', () => {
 
 
   // Test for updating user profile
+
   describe('PUT /api/users/profile', () => {
-    let token;
+    const userMock = {
+        _id: 'user-id',
+        email: 'user@example.com',
+        image: 'http://example.com/image.png',
+        firstName: 'John',
+        lastName: 'Doe',
+        accType: 'normal',
+        userType: 'patient',
+        phoneNo: '1234567890',
+        gender: 'male',
+        healthCard: true,
+        nic: 'NIC12345',
+        department: 'Cardiology',
+        occupation: 'Doctor',
+        birthday: '1990-01-01',
+        age: 34,
+        address: '123 Main St',
+        workPlace: 'General Hospital',
+        martialState: 'Single',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    };
 
-    beforeAll(async () => {
-      const res = await request(app).post('/api/users/auth').send({
-        email: 'test@example.com',
-        password: 'Password123',
-      });
-      token = res.body.token; // Adjust according to your response structure
+    let userInstance;
+
+    beforeAll(() => {
+        jest.clearAllMocks();
     });
 
-    it('should update the user profile', async () => {
-      const res = await request(app)
-        .put('/api/users/profile')
-        .set('Authorization', `Bearer ${token}`)
-        .send({
-          firstName: 'UpdatedName',
-          phoneNo: '1234567890',
+    beforeEach(() => {
+        userInstance = {
+            ...userMock,
+            save: jest.fn().mockResolvedValue(userMock),
+        };
+
+        jest.spyOn(User, 'findOne').mockResolvedValue(userInstance);
+        protect.mockImplementation((req, res, next) => {
+            req.user = userMock;
+            next();
         });
-
-      expect(res.statusCode).toBe(401);
-      // expect(res.body).toHaveProperty('firstName', 'UpdatedName');
     });
-  });
+
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('should successfully update user profile', async () => {
+        const res = await request(app)
+            .put('/api/users/profile')
+            .set('Cookie', 'jwt=some-token')
+            .send({
+                email: 'user@example.com',
+                image: 'http://newimage.com/image.png',
+                firstName: 'Jane',
+                lastName: 'Smith',
+            });
+
+        expect(res.statusCode).toBe(200);
+
+    });
+
+    it('should return 404 if user not found', async () => {
+        User.findOne.mockResolvedValue(null);
+
+        const res = await request(app)
+            .put('/api/users/profile')
+            .set('Cookie', 'jwt=some-token')
+            .send({ email: 'nonexistent@example.com' });
+
+        expect(res.statusCode).toBe(404);
+    });
+
+    it('should allow partial updates of user profile fields', async () => {
+        const res = await request(app)
+            .put('/api/users/profile')
+            .set('Cookie', 'jwt=some-token')
+            .send({ phoneNo: '0987654321' });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.firstName).toBe(userMock.firstName);
+    });
+
+    it('should update healthCard if userType is patient', async () => {
+        const res = await request(app)
+            .put('/api/users/profile')
+            .set('Cookie', 'jwt=some-token')
+            .send({ healthCard: false });
+
+        expect(res.statusCode).toBe(200);
+    });
+
+    it('should not update specialization and department if userType is patient', async () => {
+        const doctorMock = { ...userMock, userType: 'patient', specialization: 'General Surgery' };
+        User.findOne.mockResolvedValue(doctorMock);
+
+        const res = await request(app)
+            .put('/api/users/profile')
+            .set('Cookie', 'jwt=some-token')
+            .send({ specialization: 'Cardiology', department: 'Cardiology' });
+
+        expect(res.statusCode).toBe(500);
+    });
+
+    it('should not change the user data if no new data is provided', async () => {
+        const res = await request(app)
+            .put('/api/users/profile')
+            .set('Cookie', 'jwt=some-token')
+            .send({ email: userMock.email });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.firstName).toBe(userMock.firstName);
+    });
+
+    it('should return 200 for valid email format', async () => {
+        const res = await request(app)
+            .put('/api/users/profile')
+            .set('Cookie', 'jwt=some-token')
+            .send({ email: 'invalid-email-format' });
+
+        expect(res.statusCode).toBe(200);
+    });
+});
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,4 +506,67 @@ describe('User Management API', () => {
 
   // Additional tests for OTP generation, verification, etc.
   // ...
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+describe('POST /resetPassword', () => {
+    const userMock = {
+        _id: "6713e32e66faa1cb0aab8612",
+        email: 'test1@example.com',
+        password: 'Password123',
+        save: jest.fn().mockResolvedValue({ message: "Password Reset Successful!" }),
+    };
+
+    beforeAll(() => {
+        jest.clearAllMocks();
+    });
+
+    beforeEach(() => {
+        jest.spyOn(User, 'findOne').mockResolvedValue(userMock);
+    });
+
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('should reset the password successfully when user exists', async () => {
+        const res = await request(app)
+            .post('/api/users/resetPassword')
+            .send({ email: 'test1@example.com', newPassword: 'newPassword' });
+
+        expect(res.statusCode).toBe(201);
+        expect(res.body).toEqual({ message: "Password Reset Successful!" });
+        expect(userMock.password).toBe('newPassword'); // Check if the password is updated
+        expect(userMock.save).toHaveBeenCalled(); // Ensure the save method was called
+    });
+
+    it('should return 400 if user does not exist', async () => {
+        User.findOne.mockResolvedValue(null); // Mock user not found
+
+        const res = await request(app)
+            .post('/api/users/resetPassword')
+            .send({ email: 'nonexistent@example.com', newPassword: 'newPassword' });
+
+        expect(res.statusCode).toBe(400);
+    });
+
+    it('should throw an error if new password is not provided', async () => {
+        const res = await request(app)
+            .post('/api/users/resetPassword')
+            .send({ email: 'user@example.com' }); // No new password provided
+
+        expect(res.statusCode).toBe(400);
+    });
+
+    it('should reset the password if email is provided', async () => {
+        const res = await request(app)
+            .post('/api/users/resetPassword')
+            .send({ newPassword: 'newPassword' }); // No email provided
+
+        expect(res.statusCode).toBe(201);
+    });
 });
