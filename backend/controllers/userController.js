@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
-import generateToken from '../utils/generateToken.js';
+import JWTTokenGenerator from '../utils/generateToken.js';
 import otpGenerator from 'otp-generator';
 import jwt from 'jsonwebtoken';
 import { sendMail } from '../utils/mailer.js'
@@ -200,7 +200,7 @@ const authUser = asyncHandler(async (req, res) => {
             throw new Error('Invalid Credentials');
         }
 
-        generateToken(res, user.email);
+        JWTTokenGenerator.generateToken(res, user.email);
         res.status(200).json({
             _id: user._id,
             email: user.email,  
@@ -246,7 +246,7 @@ const googleAuthUser = asyncHandler(async (req, res) => {
             res.status(400);
             throw new Error('User Already Exists! Please login using your password');
         }
-        generateToken(res, user.email);
+        JWTTokenGenerator.generateToken(res, user.email);
         res.status(200).json({
             _id: user._id,
             email: user.email,  
@@ -291,7 +291,7 @@ const googleAuthUser = asyncHandler(async (req, res) => {
             })
         
         if(user){
-            generateToken(res, user.email);
+            JWTTokenGenerator.generateToken(res, user.email);
             res.status(200).json({
                 _id: user._id,
                 email: user.email,  
