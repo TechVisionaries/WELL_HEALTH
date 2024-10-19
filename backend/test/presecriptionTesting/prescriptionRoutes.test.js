@@ -83,4 +83,39 @@ describe("Health Card API", () => {
       expect(res.status).toBe(404); // Expecting 404 as no userId is passed
     });
   });
+
+  // Test for updating a health card
+  //   describe("POST /api/health_card/update_health_card/:userId/:health_card_id", () => {
+  //     it("should update the health card information", async () => {
+  //       const res = await request(app)
+  //         .post(
+  //           "/api/health_card/update_health_card/62a1c6e08bbed00110c5b9e7/63b1f5e9b8e121001e3a9d8d"
+  //         )
+  //         .send({
+  //           fullName: "Updated Name",
+  //           hospital: "Updated Hospital",
+  //           contact: "9876543210",
+  //           emergency: "911",
+  //           diabetes: true,
+  //         });
+
+  //       expect(res.status).toBe(200);
+  //       expect(res.body.success).toBe(true);
+  //       expect(res.body.message).toMatch(/Health card updated successfully/);
+  //     });
+
+  //     it("should return an error if the health card is not found", async () => {
+  //       const res = await request(app)
+  //         .post(
+  //           "/api/health_card/update_health_card/62a1c6e08bbed00110c5b9e7/invalidHealthCardId"
+  //         )
+  //         .send({
+  //           fullName: "Test Name",
+  //         });
+
+  //       expect(res.status).toBe(404);
+  //       expect(res.body.success).toBe(false);
+  //       expect(res.body.message).toMatch(/Health card not found for the user/);
+  //     });
+  //   });
 });
