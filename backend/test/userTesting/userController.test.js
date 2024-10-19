@@ -689,4 +689,32 @@ describe('POST /generateOTP - generateOTP', () => {
     });
 });
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+describe('POST /verifyOTP - verifyOTP', () => {
+    beforeEach(() => {
+        app.locals.OTP = '123456'; // Mock OTP in the app's local storage
+    });
+
+    it('should verify OTP successfully', async () => {
+        const res = await request(app)
+            .post('/api/users/verifyOTP')
+            .send({ otp: '123456' });
+
+        expect(res.statusCode).toBe(201);
+        expect(res.body).toEqual({ code: '123456' });
+    });
+
+    it('should return 400 if OTP is invalid', async () => {
+        const res = await request(app)
+            .post('/api/users/verifyOTP')
+            .send({ otp: '654321' });
+
+        expect(res.statusCode).toBe(400);
+    });
+});
+
 });
