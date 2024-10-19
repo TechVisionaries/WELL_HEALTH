@@ -167,8 +167,8 @@ function HealthCardPage() {
           backgroundColor: "#f9f9f9",
           borderRadius: 2,
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          p: 4,
-          maxWidth: "800px",
+          p: { xs: 2, sm: 4, md: 6 },
+          maxWidth: { xs: "100%", sm: "100%", md: "100%" },
           margin: "auto",
         }}
       >
@@ -181,6 +181,7 @@ function HealthCardPage() {
                 color: "#333",
                 textAlign: "center",
                 mb: 3,
+                fontSize: { xs: "1.2rem", sm: "1.5rem" },
               }}
             >
               {`Hello ${
@@ -203,6 +204,7 @@ function HealthCardPage() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                width: { xs: "100%", sm: "75%", md: "50%" },
               }}
             >
               <QRCode
@@ -289,9 +291,7 @@ function HealthCardPage() {
               sx={{
                 backgroundColor: "#4caf50",
                 "&:hover": { backgroundColor: "#45a049" },
-                borderRadius: 2,
-                textTransform: "none",
-                padding: "10px 20px",
+                width: "100%",
               }}
             >
               Save Changes
@@ -312,7 +312,7 @@ function HealthCardPage() {
           borderRadius: 2,
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
           p: 4,
-          maxWidth: "800px",
+          maxWidth: { xs: "100%", sm: "100%", md: "100%" },
           margin: "auto",
         }}
       >
@@ -518,17 +518,21 @@ function HealthCardPage() {
           backgroundColor: "#f9f9f9",
           borderRadius: 2,
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          p: 4,
+          p: { xs: 2, md: 4 }, // Responsive padding: smaller for mobile
           maxWidth: "900px",
           margin: "auto",
         }}
       >
         <Grid container spacing={3}>
           {/* Header */}
-          <Grid item xs={12} sx={{ textAlign: "center", mb: 3 }}>
+          <Grid item xs={12} sx={{ textAlign: "center", mb: { xs: 2, md: 3 } }}>
             <Typography
               variant="h5"
-              sx={{ fontWeight: "bold", color: "#333", fontSize: "1.75rem" }}
+              sx={{
+                fontWeight: "bold",
+                color: "#333",
+                fontSize: { xs: "1.5rem", md: "1.75rem" }, // Smaller font on mobile
+              }}
             >
               Most Recent Medical Records
             </Typography>
@@ -538,13 +542,13 @@ function HealthCardPage() {
           <Grid
             item
             xs={12}
-            sx={{ display: "flex", alignItems: "center", mb: 2 }}
+            sx={{ display: "flex", alignItems: "center", mb: { xs: 1, md: 2 } }}
           >
             <Typography
               variant="body1"
               sx={{
                 fontWeight: "bold",
-                fontSize: "1rem",
+                fontSize: { xs: "0.9rem", md: "1rem" }, // Smaller font for mobile
                 color: "#333",
                 mr: 1,
               }}
@@ -553,7 +557,7 @@ function HealthCardPage() {
             </Typography>
             <Typography
               variant="body1"
-              sx={{ fontSize: "1rem", color: "#666" }}
+              sx={{ fontSize: { xs: "0.9rem", md: "1rem" }, color: "#666" }}
             >
               {lastMedical
                 ? new Date(lastMedical.createdAt).toISOString().split("T")[0]
@@ -565,13 +569,13 @@ function HealthCardPage() {
           <Grid
             item
             xs={12}
-            sx={{ display: "flex", alignItems: "center", mb: 2 }}
+            sx={{ display: "flex", alignItems: "center", mb: { xs: 1, md: 2 } }}
           >
             <Typography
               variant="body1"
               sx={{
                 fontWeight: "bold",
-                fontSize: "1rem",
+                fontSize: { xs: "0.9rem", md: "1rem" },
                 color: "#333",
                 mr: 1,
               }}
@@ -580,7 +584,7 @@ function HealthCardPage() {
             </Typography>
             <Typography
               variant="body1"
-              sx={{ fontSize: "1rem", color: "#666" }}
+              sx={{ fontSize: { xs: "0.9rem", md: "1rem" }, color: "#666" }}
             >
               {lastMedical
                 ? `${lastMedical.doctorId?.firstName} ${lastMedical.doctorId?.lastName}`
@@ -595,17 +599,17 @@ function HealthCardPage() {
                 backgroundColor: "#fff",
                 borderRadius: 2,
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                p: 3,
+                p: { xs: 2, md: 3 }, // Adjust padding for mobile
               }}
             >
               <Typography
                 variant="h6"
                 sx={{
                   fontWeight: "bold",
-                  fontSize: "1.5rem",
+                  fontSize: { xs: "1.25rem", md: "1.5rem" }, // Responsive font
                   color: "#333",
                   textAlign: "center",
-                  mb: 2,
+                  mb: { xs: 1, md: 2 },
                 }}
               >
                 Medicines List
@@ -619,6 +623,7 @@ function HealthCardPage() {
                     sx={{
                       fontWeight: "bold",
                       textAlign: "center",
+                      fontSize: { xs: "0.85rem", md: "1rem" },
                       color: "#555",
                     }}
                   >
@@ -631,6 +636,7 @@ function HealthCardPage() {
                     sx={{
                       fontWeight: "bold",
                       textAlign: "center",
+                      fontSize: { xs: "0.85rem", md: "1rem" },
                       color: "#555",
                     }}
                   >
@@ -643,6 +649,7 @@ function HealthCardPage() {
                     sx={{
                       fontWeight: "bold",
                       textAlign: "center",
+                      fontSize: { xs: "0.85rem", md: "1rem" },
                       color: "#555",
                     }}
                   >
@@ -655,6 +662,7 @@ function HealthCardPage() {
                     sx={{
                       fontWeight: "bold",
                       textAlign: "center",
+                      fontSize: { xs: "0.85rem", md: "1rem" },
                       color: "#555",
                     }}
                   >
@@ -677,7 +685,11 @@ function HealthCardPage() {
                   <Grid item xs={3}>
                     <Typography
                       variant="body1"
-                      sx={{ textAlign: "center", color: "#444" }}
+                      sx={{
+                        textAlign: "center",
+                        fontSize: { xs: "0.85rem", md: "1rem" }, // Responsive font
+                        color: "#444",
+                      }}
                     >
                       {medicine.name}
                     </Typography>
@@ -685,7 +697,11 @@ function HealthCardPage() {
                   <Grid item xs={3}>
                     <Typography
                       variant="body1"
-                      sx={{ textAlign: "center", color: "#444" }}
+                      sx={{
+                        textAlign: "center",
+                        fontSize: { xs: "0.85rem", md: "1rem" },
+                        color: "#444",
+                      }}
                     >
                       {medicine.dosage}
                     </Typography>
@@ -693,7 +709,11 @@ function HealthCardPage() {
                   <Grid item xs={3}>
                     <Typography
                       variant="body1"
-                      sx={{ textAlign: "center", color: "#444" }}
+                      sx={{
+                        textAlign: "center",
+                        fontSize: { xs: "0.85rem", md: "1rem" },
+                        color: "#444",
+                      }}
                     >
                       {medicine.frequency}
                     </Typography>
@@ -701,7 +721,11 @@ function HealthCardPage() {
                   <Grid item xs={3}>
                     <Typography
                       variant="body1"
-                      sx={{ textAlign: "center", color: "#444" }}
+                      sx={{
+                        textAlign: "center",
+                        fontSize: { xs: "0.85rem", md: "1rem" },
+                        color: "#444",
+                      }}
                     >
                       {medicine.duration}
                     </Typography>
@@ -720,95 +744,53 @@ function HealthCardPage() {
 
 
 
-
-
-  // function most_recent_test_reports(){
-
-  //   return(
-  //     <Box sx={{ flexGrow: 1 }}>
-  //       <Grid container spacing={2} >
-  //         <Grid item xs={12} sx={{p:2}}>
-  //           {/* <Item> */}
-  //             <Typography variant='h6'>
-  //               Most Recent Test Reports
-  //             </Typography>
-  //           {/* </Item> */}
-  //         </Grid>
-
-  //         <Grid item xs={12} sx={{display:'flex',alignItems:'center', justifyContent:'flex-start'}}>
-  //             <Typography variant='h7'xs={6} sx={{fontWeight:'bold'}}>
-  //               Date :
-  //             </Typography>
-  //             <Typography variant='h7' xs={6}>
-  //               {` 24-09-2025`}
-  //             </Typography>
-  //         </Grid>
-
-  //         <Grid item xs={12} sx={{display:'flex',alignItems:'center', justifyContent:'space-around'}}>
-  //           <div>
-  //             <Avatar >
-  //               <AssignmentIcon />
-  //             </Avatar>
-  //             <span>FBC</span>
-  //           </div>
-
-  //           <div>
-  //             <Avatar >
-  //               <AssignmentIcon />
-  //             </Avatar>
-  //             <span>RBS</span>
-  //           </div>
-
-  //           <div>
-  //             <Avatar >
-  //               <AssignmentIcon />
-  //             </Avatar>
-  //             <span>CRP</span>
-  //           </div>
-
-  //         </Grid>
-
-  //       </Grid>
-  //     </Box>
-  //   )
-  // }
-
   return (
     <>
       <Sidebar />
-    <div>
-      <div style={{width:"80%", display:"block",margin:"auto" }}>
-      <Card className={`mt-3 py-3 text-center`} style={cardHeadingStyle}>
-          <h2>Patient Health Card</h2>
-        </Card>
-      </div>
-      <Backdrop
-        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-        open={updateSubmit}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      <div className={dashboardStyles.mainDiv}>
-        {/* <Container className={dashboardStyles.container}> */}
-        <Box sx={{ flexGrow: 1, p: 10 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <Item>{render_profile_card()}</Item>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Item>{render_medical_card()}</Item>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Item>{most_recent_medical_records()}</Item>
-            </Grid>
-          </Grid>
-        </Box>
-        {/* </Container> */}
-      </div>
-    </div>
-    </>
+      <div>
+        <div style={{ width: "90%", display: "block", margin: "auto" }}>
+          <Card className={`mt-3 py-3 text-center`} style={cardHeadingStyle}>
+            <h2>Patient Health Card</h2>
+          </Card>
+        </div>
 
+        <Backdrop
+          sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+          open={updateSubmit}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+
+        <div className={dashboardStyles.mainDiv}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              p: { xs: 2, sm: 4, md: 6 }, // Adjust padding based on screen size
+              width: "100%",
+            }}
+          >
+            <Grid container spacing={2}>
+              {/* Profile card */}
+              <Grid item xs={12} sm={6} md={4}>
+                <Item>{render_profile_card()}</Item>
+              </Grid>
+
+              {/* Medical card */}
+              <Grid item xs={12} sm={6} md={4}>
+                <Item>{render_medical_card()}</Item>
+              </Grid>
+
+              {/* Most recent medical record */}
+              <Grid item xs={12} md={4}>
+                <Item>{most_recent_medical_records()}</Item>
+              </Grid>
+            </Grid>
+          </Box>
+        </div>
+      </div>
+    </>
   );
+
 }
 
 export default HealthCardPage;
