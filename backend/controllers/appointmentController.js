@@ -1,6 +1,7 @@
 import Appointment from "../models/appointmentModel.js";
 import Doctor from "../models/doctorModel.js";
 import {sendMail} from "../utils/mailer.js";
+import Hospital from "../models/hospitalModel.js";
 
 // Create a new appointment
 export const createAppointment = async (req, res) => {
@@ -178,18 +179,30 @@ export const deleteAppointmentById = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
+    // find hospital 
+
+    const hospital = await Hospital.findOne({
+      name: appointment.hospital
+    });
+
+    if (!hospital) {
+      return res.status(404).json({ message: "Hospital not found" });
+    }
+
     appointment.deletedOn = new Date();
     appointment.status = "cancelled";
     await appointment.save();
 
     // send email notification
-  //   const emailText = `
-  //   <p>Dear ${appointment.name},</p>
-  //   <p>Your appointment has been cancelled.</p>
-  //   <p>Thank you,</p>
-  //   <p>Your Healthcare Team</p>
-  // `;
-  // sendMail(appointment.email, emailText, "Appointment Cancelled");
+    const emailText = `
+    <p>Dear ${appointment.name},</p>
+    <p>Your appointment has been cancelled.</p>
+    <p>Contact us for more information.</p>
+    <p>Phone: ${hospital.phone}</p>
+    <p>Thank you,</p>
+    <p>Your Healthcare Team</p>
+  `;
+  sendMail(appointment.email, emailText, "Appointment Cancelled");
 
 
 

@@ -231,14 +231,14 @@ const DoctorAppointmentsDashboard = () => {
                         >
                           <FaEdit /> Reschedule
                         </Button>
-                        {/* <Button
+                        <Button
                           variant="outline-danger"
                           size="sm"
                           className="ml-2"
                           onClick={() => handleCancel(appointment._id)}
                         >
                           <FaTrashAlt /> Cancel
-                        </Button> */}
+                        </Button>
                       </td>
                     </tr>
                   ))}
