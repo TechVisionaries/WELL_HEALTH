@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import User from '../../models/userModel';
 import { protect } from '../../middleware/authMiddleware';
 import passport from 'passport';
+import otpGenerator from 'otp-generator'; 
 
 // Set up an Express app for testing
 const app = express();
@@ -651,6 +652,41 @@ describe('User Management API', () => {
       });
    });
 
-   
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+describe('POST /generateOTP - generateOTP', () => {
+    const mockUser = {
+        email: 'test@example.com',
+        firstName: 'John',
+        accType: 'normal',
+    };
+
+    it('should generate OTP and send email if user exists', async () => {
+        jest.spyOn(User, 'findOne').mockResolvedValue(mockUser); // Mock DB call
+        jest.spyOn(otpGenerator, 'generate').mockReturnValue('123456'); // Mock OTP generation
+        sendMail.mockImplementation(() => {}); // Mock sendMail
+
+        const res = await request(app)
+            .post('/api/users/generateOTP')
+            .send({ email: mockUser.email });
+
+        expect(res.statusCode).toBe(201);
+        expect(res.body).toEqual({ message: 'OTP Sent' });
+        expect(sendMail).toHaveBeenCalledWith(mockUser.email, expect.any(String), 'Your OTP');
+    });
+
+    it('should return 400 if email not found', async () => {
+        jest.spyOn(User, 'findOne').mockResolvedValue(null); // Mock DB call returning null
+
+        const res = await request(app)
+            .post('/api/users/generateOTP')
+            .send({ email: 'nonexistent@example.com' });
+
+        expect(res.statusCode).toBe(400);// Ensure error message is returned
+    });
+});
 
 });
