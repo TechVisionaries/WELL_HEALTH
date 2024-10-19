@@ -189,4 +189,15 @@ describe("Health Card API", () => {
       expect(res.body.message).toMatch(/Doctors list/);
     });
   });
+
+  // Test for retrieving all patients
+  describe("GET /api/health_card/get_all_patients", () => {
+    it("should retrieve a list of all patients", async () => {
+      const res = await request(app).get("/api/health_card/get_all_patients");
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toMatch(/Patient list/);
+    });
+  });
 });
