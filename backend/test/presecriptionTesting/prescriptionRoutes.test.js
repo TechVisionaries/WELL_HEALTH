@@ -178,4 +178,15 @@ describe("Health Card API", () => {
       expect(res.status).toBe(404); // Expecting 404 as no userId is passed
     });
   });
+
+  // Test for retrieving all doctors
+  describe("GET /api/health_card/get_all_doctors", () => {
+    it("should retrieve a list of all doctors", async () => {
+      const res = await request(app).get("/api/health_card/get_all_doctors");
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toMatch(/Doctors list/);
+    });
+  });
 });
