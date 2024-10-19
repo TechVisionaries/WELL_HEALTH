@@ -12,6 +12,12 @@ import {
   Paper,
   Checkbox,
   Button,
+  Backdrop,
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import Sidebar from "../../components/sideBar";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -29,7 +35,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { AssignmentInd, GroupRemove } from "@mui/icons-material";
 import { useRef } from "react";
-import { useAssignStaffMutation, useGetAvailableStaffMutation, useGetShiftsMutation, useRemoveStaffMutation } from "../../slices/shiftsApiSlice";
+import { useAssignStaffMutation, useGetAvailableStaffMutation, useGetShiftsMutation, useRemoveStaffMutation, useUpdateLeaveMutation } from "../../slices/shiftsApiSlice";
 
 const cardHeadingStyle = {
   background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
@@ -58,6 +64,7 @@ const getStatusBadge = (status) => {
 
 const ManageShiftPage = () => {
   const [shift, setShift] = useState({date: null, shift: "", status: "", location: ""});
+  const [leave, setLeave] = useState({date: null, shift: "", reason: "", name: "", id: ""});
   const [availableStaffData, setAvailableStaffData] = useState([]);
   const [filteredAvailableStaffData, setFilteredAvailableStaffData] = useState([]);
   const [assignedStaffData, setAssignedStaffData] = useState([]);
@@ -65,6 +72,7 @@ const ManageShiftPage = () => {
   const [availableChecked, setAvilableChecked] = useState([]);
   const [assignChecked, setAssignChecked] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const locationRef = useRef(null);
   const dateRef = useRef(null);
@@ -74,6 +82,7 @@ const ManageShiftPage = () => {
   const [getShifts] = useGetShiftsMutation();
   const [assign] = useAssignStaffMutation();
   const [remove] = useRemoveStaffMutation();
+  const [update] = useUpdateLeaveMutation();
 
   const fetchAvailableStaff = async () => {
     setIsLoading(true);    
@@ -159,8 +168,36 @@ const ManageShiftPage = () => {
     }
   }; 
 
-  const handleAvailableToggle = (value, status) => {
-    if(status == "Unavailable" || status == "On Leave"){
+  const updateLeave = async (status) => {
+    handleClose();
+    setIsLoading(true);
+    try {
+      if(!leave.id){
+        if(locationRef.current){
+          locationRef.current.click();
+        }
+        throw new Error("Please select a location to assign staff");
+      }
+
+      const res = await update({ id: leave.id, status: status}).unwrap();
+      toast.success('Leave Updated Successfully');
+
+      await fetchAssignedStaff();
+      await fetchAvailableStaff();
+    } catch (error) {
+      toast.error(error.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
+      setAvilableChecked([])
+    }
+  }; 
+
+  const handleAvailableToggle = (value, status, data) => {
+    if(status.includes("Leave Pending")){
+      setLeave({date: shift.date?.format("YYYY-MM-DD"), shift: shift.shift, reason: data.location, name: data.name, id: data.apptId})
+      setOpen(true)
+    }
+    if(status != "Available"){
       return;
     }
     const currentIndex = availableChecked.indexOf(value);
@@ -176,9 +213,6 @@ const ManageShiftPage = () => {
   };
 
   const handleAssignToggle = (value, status) => {
-    if(status == "Unavailable" || status == "On Leave"){
-      return;
-    }
     const currentIndex = assignChecked.indexOf(value);
     const newChecked = [...assignChecked];
 
@@ -226,6 +260,11 @@ const ManageShiftPage = () => {
 
     setFilteredAssignedStaffData(filteredAssignedData);
   };
+
+  const handleClose = () => {
+    setOpen(false)
+    setLeave({date: null, shift: "", reason: "", name: "", id:""})
+  }
 
   useEffect(() => {
     filterStaffAvailability();
@@ -340,7 +379,7 @@ const ManageShiftPage = () => {
                     </TableHead>
                     <TableBody>
                       {filteredAvailableStaffData.map((staff) => (
-                        <TableRow key={staff.id} hover={staff.status != "Unavailable" && staff.status != "On Leave"} style={{cursor: 'pointer'}} onClick={() => handleAvailableToggle(staff.id, staff.status)}>
+                        <TableRow key={staff.id} hover={staff.status === "Available"} style={{cursor: 'pointer'}} onClick={() => handleAvailableToggle(staff.id, staff.status, staff)}>
                           <TableCell>
                             <Checkbox
                               checked={availableChecked.includes(staff.id)}
@@ -403,7 +442,7 @@ const ManageShiftPage = () => {
                     </TableHead>
                     <TableBody>
                       {filteredAssignedStaffData.map((staff) => (
-                        <TableRow key={staff.id} hover={staff.status != "Unavailable" && staff.status != "On Leave"} style={{cursor: 'pointer'}} onClick={() => handleAssignToggle(staff.id, staff.status)}>
+                        <TableRow key={staff.id} hover style={{cursor: 'pointer'}} onClick={() => handleAssignToggle(staff.id, staff.status)}>
                           <TableCell>
                             <Checkbox
                               checked={assignChecked.includes(staff.id)}
@@ -425,6 +464,33 @@ const ManageShiftPage = () => {
             </Col>
           </Row>
         </Box>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          fullWidth
+        >
+          <DialogTitle>
+            Leave Application
+          </DialogTitle>
+          <DialogContent>
+              Name: {leave.name} <br />
+              Date: {leave.date} <br />
+              Shift: {leave.shift} <br />
+              Reason: {leave.reason} <br />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={()=>{updateLeave('reject')}} color="error">Reject</Button>
+            <Button onClick={()=>{updateLeave('confirm')}} autoFocus color="success">
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: 10000 }}
+          open={isLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         
       </div>
 

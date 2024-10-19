@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import Shift from '../models/shiftModel.js';
+import { sendMail } from '../utils/mailer.js';
 
 // @desc    Create Shift
 // route    POST /api/shift/
@@ -46,6 +47,83 @@ const createShift = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Create Leave
+// route    POST /api/shift/leave
+// @access  Private
+const createLeave = asyncHandler(async (req, res) => {
+    const {
+        staff: id, 
+        date,
+        shift: shiftSlot,
+        reason
+    } = req.body;
+
+    if(new Date(date) < new Date()){
+        res.status(400);
+        throw new Error('Invalid Date!');
+    }
+
+    const shiftExist = await Shift.findOne({ staffMember: id, date, shiftSlot });
+    if (shiftExist) {
+        res.status(400);
+        throw new Error('You already have a shift assigned. Please contact your supervisor!');
+    }
+
+    const shift = await Shift.create({
+        staffMember: id,
+        location: reason,
+        date: date,
+        shiftSlot: shiftSlot,
+        status: 'Leave Pending'
+    });
+
+    if(shift){
+        res.status(201).json({shift});
+    }
+    else {
+        res.status(400);
+        throw new Error('Error applying leave');
+    }
+});
+
+// @desc    Update Leave
+// route    PUT /api/shift/leave
+// @access  Private
+const updateLeave = asyncHandler(async (req, res) => {
+    const { id, status } = req.body;
+
+    // Find the shift by ID
+    const shiftExist = await Shift.findById(id).populate('staffMember');
+    if (!shiftExist) {
+        res.status(400);
+        throw new Error('Leave Not Found');
+    }
+
+    let shift;
+
+    if (status === "confirm") {
+        // Update the shift status to 'On Leave'
+        shift = await Shift.findByIdAndUpdate(id, { status: "On Leave" }, { new: true });
+        if(shift){
+            sendMail(shiftExist.staffMember.email, `Your leave request made on ${shiftExist.date?.toLocalString()} ${shiftExist.shiftSlot} has been accepted!`, "Leave Request")
+        }
+    } else {
+        // Delete the shift
+        shift = await Shift.findByIdAndDelete(id);
+        if(shift){
+            sendMail(shiftExist.staffMember.email, `Your leave request made on ${shiftExist.date} ${shiftExist.shiftSlot} has been Rejected!`, "Leave Request")
+        }
+    }
+
+    if (shift) {
+        res.status(201).json({ shift });
+    } else {
+        res.status(400);
+        throw new Error('Error updating leave');
+    }
+});
+
+
 // @desc    Delete Shift
 // route    DELETE /api/shift/
 // @access  Private
@@ -79,11 +157,11 @@ const getAllShifts = asyncHandler(async (req, res) => {
 
     if(location){
         // Get all shifts for the given date and shiftSlot and location
-        shifts = await Shift.find({ date, shiftSlot, location }).populate('staffMember');
+        shifts = await Shift.find({ date, shiftSlot, location, status: "Assigned" }).populate('staffMember');
     } 
     else {
         // Get all shifts for the given date and shiftSlot and location
-        shifts = await Shift.find({ date, shiftSlot }).populate('staffMember');
+        shifts = await Shift.find({ date, shiftSlot, status: "Assigned" }).populate('staffMember');
     }
 
     if(shifts && shifts.length > 0){
@@ -140,18 +218,24 @@ const getAvailableStaff = asyncHandler(async (req, res) => {
 
         // Determine status based on shift assignment
         let status = 'Available'; // Default to Available
+        let location = '';
+        let apptId = '';
         if (hasAssignedShift) {
             status = 'Assigned';
         } else if (!hasNoShiftAtAll) {
             const userShift = shifts.find(shift => shift.staffMember.toString() === user._id.toString());
             status = userShift ? userShift.status : status; // Retain their status if they have a shift
+            location = userShift.location;
+            apptId = userShift._id
         }
 
         return {
             id: user._id,
             name: `${user.firstName} ${user.lastName}`,
             userType: user.userType,
-            status: status
+            status: status,
+            location: location,
+            apptId: apptId
         };
     });
 
@@ -166,10 +250,39 @@ const getAvailableStaff = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Get shifts for particular staff
+// route    GET /api/shift/my
+// @access  Private
+const getStaffShifts = asyncHandler(async (req, res) => {
+    const id = req.query.id || '';
+
+    let shifts = [];
+    
+    if (!id) {
+        res.status(400);
+        throw new Error('Staff Id not found');
+    }
+
+    // Get all shifts for the staff id
+    shifts = await Shift.find({ staffMember: id });
+
+    
+
+    if (shifts && shifts.length > 0) {
+        res.status(200).json(shifts); // Return the filtered list of users
+    } else {
+        res.status(400);
+        throw new Error('No Shifts available');
+    }
+});
+
 
 export { 
     createShift,
     deleteShift,
     getAvailableStaff,
-    getAllShifts
+    getAllShifts,
+    getStaffShifts,
+    createLeave,
+    updateLeave
 };

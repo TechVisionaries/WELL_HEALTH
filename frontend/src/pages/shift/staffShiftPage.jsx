@@ -1,35 +1,32 @@
-import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Card,
   Box,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Checkbox,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  InputLabel,
+  FormControl,
+  Select,
+  MenuItem,
+  Backdrop,
+  CircularProgress
 } from "@mui/material";
 import Sidebar from "../../components/sideBar";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import MyCalendar from "./calendar";
+import dayjs from "dayjs";
+import { shiftsApiSlice, useApplyLeaveMutation, useGetStaffShiftsMutation } from "../../slices/shiftsApiSlice";
+import { useSelector } from "react-redux";
+import { Shifts } from "./data";
+import { ExitToApp } from "@mui/icons-material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { Badge, Col, Row } from "react-bootstrap";
-import dayjs from "dayjs";
-import { Locations, Shifts, Statuses } from "./data";
-import { useState } from "react";
-import { useEffect } from "react";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Col, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { AssignmentInd, GroupRemove } from "@mui/icons-material";
-import { useRef } from "react";
-import { useAssignStaffMutation, useGetAvailableStaffMutation, useGetShiftsMutation, useRemoveStaffMutation } from "../../slices/shiftsApiSlice";
 
 const cardHeadingStyle = {
   background: "linear-gradient(135deg, #ea3367df, #ff8eaedf,#ea3367df)",
@@ -41,210 +38,137 @@ const cardHeadingStyle = {
   padding: "15px",
 };
 
-
-// Function to return badge based on status
-const getStatusBadge = (status) => {
-  switch (status) {
-    case "Available":
-      return <Badge bg="success">{status}</Badge>;
-    case "Unavailable":
-      return <Badge bg="danger">{status}</Badge>;
-    case "On Leave":
-      return <Badge bg="warning">{status}</Badge>;
-    default:
-      return <Badge bg="secondary">{status}</Badge>;
-  }
-};
-
 const StaffShiftPage = () => {
-  const [shift, setShift] = useState({date: null, shift: "", status: "", location: ""});
-  const [availableStaffData, setAvailableStaffData] = useState([]);
-  const [filteredAvailableStaffData, setFilteredAvailableStaffData] = useState([]);
-  const [assignedStaffData, setAssignedStaffData] = useState([]);
-  const [filteredAssignedStaffData, setFilteredAssignedStaffData] = useState([]);
-  const [availableChecked, setAvilableChecked] = useState([]);
-  const [assignChecked, setAssignChecked] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [leave, setLeave] = useState({date: null, shift: "", reason: ""});
+  const { userInfo } = useSelector((state) => state.auth);
 
-  const locationRef = useRef(null);
+  const reasonRef = useRef(null);
   const dateRef = useRef(null);
   const shiftRef = useRef(null);
 
-  const [getAvailableStaff] = useGetAvailableStaffMutation();
-  const [getShifts] = useGetShiftsMutation();
-  const [assign] = useAssignStaffMutation();
-  const [remove] = useRemoveStaffMutation();
+  const[getShifts] = useGetStaffShiftsMutation();
+  const[aplyLeave] = useApplyLeaveMutation();
 
-  const fetchAvailableStaff = async () => {
-    setIsLoading(true);    
+  const fetchStaffShifts = async() => {
+    setIsLoading(true)
     try {
-      const res = await getAvailableStaff({date: shift.date?.format("YYYY-MM-DD") || '', shift: shift.shift}).unwrap();
-      
-      setAvailableStaffData(res)
-      setFilteredAvailableStaffData(res)
-    } catch (error) {
-      toast.error(error.data?.message || error.message);
-      setAvailableStaffData([])
-      setFilteredAvailableStaffData([])
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      const res = await getShifts(userInfo._id).unwrap();
 
-  const fetchAssignedStaff = async () => {
-    setIsLoading(true);
-    try {
-      const res = await getShifts({date: shift.date?.format("YYYY-MM-DD") || '', shift: shift.shift, location: shift.location || ''}).unwrap();
+      let evnts = [];
+      let i = 0
+      let title = ""
+      let start, end;
+      res.forEach(shift => {
+        i++;
+        title = shift.status == "Assigned" ? shift.location : shift.status; //Shifts.find((shiftItm) => shift.shiftSlot == shiftItm.value).displayName;
+        start = getTimeForShift(shift.date, shift.shiftSlot?.split(" - ")[0])
+        end = getTimeForShift(shift.date, shift.shiftSlot?.split(" - ")[1])
 
-      setAssignedStaffData(res)
-      setFilteredAssignedStaffData(res)
-    } catch (error) {
-      toast.error(error.data?.message || error.message);
-      setAssignedStaffData([])
-      setFilteredAssignedStaffData([])
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const assignStaff = async () => {
-    setIsLoading(true);
-    try {
-      if(!shift.location){
-        if(locationRef.current){
-          locationRef.current.click();
+        if(shift.shiftSlot == "10.00 pm - 6.00 am"){
+          end = getTimeForShift(shift.date, "11.59 pm")
+          evnts.push({
+            id: i,
+            title: title,
+            start: start,
+            end: end,
+          })
+          let newDate = new Date(shift.date).setDate(new Date(shift.date).getDate()+1)
+          start = getTimeForShift(newDate, "12.00 am")
+          end = getTimeForShift(newDate, shift.shiftSlot?.split(" - ")[1])
+          i++;
         }
-        throw new Error("Please select a location to assign staff");
-      }
-      if(!shift.date){
+
+
+        evnts.push({
+          id: i,
+          title: title,
+          start: start,
+          end: end,
+        })
+      });
+      
+      setEvents(evnts)
+    } catch (error) {
+      toast.error(error.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  
+  const applyLeave = async () => {
+    handleClose();
+    setIsLoading(true);
+    try {
+      if(!leave.date){
         if(dateRef.current){
           dateRef.current.click();
         }
-        throw new Error("Please select a date to assign staff");
+        throw new Error("Please select a date to apply leave");
       }
-      if(!shift.shift){
+      if(!leave.shift){
         if(shiftRef.current){
           shiftRef.current.click();
         }
-        throw new Error("Please select a shift to assign staff");
+        throw new Error("Please select a shift to apply leave");
+      }
+      if(!leave.reason){
+        if(reasonRef.current){
+          reasonRef.current.focus();
+        }
+        throw new Error("Please enter a reasaon to apply leave");
       }
 
-      const res = await assign({ staff: availableChecked, date: shift.date?.format("YYYY-MM-DD"), shift: shift.shift, location: shift.location}).unwrap();
-      toast.success('Staff Assigned Successfully');
+      const res = await aplyLeave({ staff: userInfo._id, date: leave.date?.format("YYYY-MM-DD"), shift: leave.shift, reason: leave.reason}).unwrap();
+      toast.success('Leave Applied Successfully');
 
-      await fetchAssignedStaff();
-      await fetchAvailableStaff();
+      await fetchStaffShifts();
     } catch (error) {
       toast.error(error.data?.message || error.message);
     } finally {
       setIsLoading(false);
-      setAvilableChecked([])
     }
   }; 
 
-  const removeStaff = async () => {
-    setIsLoading(true);
-    try {
-      const res = await remove({ shift: assignChecked}).unwrap();
-      toast.success('Staff Unassigned Successfully');
-
-
-      await fetchAssignedStaff();
-      await fetchAvailableStaff();
-    } catch (error) {
-      toast.error(error.data?.message || error.message);
-    } finally {
-      setIsLoading(false);
-      setAssignChecked([])
+  function getTimeForShift(baseDate, timeStr) {
+    const [time, period] = timeStr.split(" ");
+    let [hours, minutes] = time.split(".");
+    
+    // Convert to 24-hour format
+    if (period.toLowerCase() === "pm" && hours !== "12") {
+      hours = parseInt(hours) + 12;
+    } else if (period.toLowerCase() === "am" && hours === "12") {
+      hours = 0;
     }
-  }; 
+  
+    const shiftDate = new Date(baseDate);
+    shiftDate.setHours(hours, minutes, 0, 0);
+    
+    return shiftDate;
+  }
 
-  const handleAvailableToggle = (value, status) => {
-    if(status == "Unavailable" || status == "On Leave"){
-      return;
-    }
-    const currentIndex = availableChecked.indexOf(value);
-    const newChecked = [...availableChecked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setAvilableChecked(newChecked);
-  };
-
-  const handleAssignToggle = (value, status) => {
-    if(status == "Unavailable" || status == "On Leave"){
-      return;
-    }
-    const currentIndex = assignChecked.indexOf(value);
-    const newChecked = [...assignChecked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setAssignChecked(newChecked);
+  const handleDateChange = (newDate) => {
+    setLeave((prev) => ({...prev, date:newDate}));
   };
 
   const handleShiftChange = (event) => {
-    setShift((prev) => ({...prev, shift:event.target.value}));
+    setLeave((prev) => ({...prev, shift:event.target.value}));
   };
 
-  const handleStatusChange = (event) => {
-    setShift((prev) => ({...prev, status:event.target.value}));
+  const handleReasonChange = (event) => {
+    setLeave((prev) => ({...prev, reason:event.target.value}));
   };
 
-  const handleDateChange = (newDate) => {
-    setShift((prev) => ({...prev, date:newDate}));
-  };
-
-  const handleLocationChange = (event) => {
-    setShift((prev) => ({...prev, location:event.target.value}));
-  };
-
-  const filterStaffAvailability = () => {
-    let filteredAvailableData = availableStaffData;
-
-    if (shift.status) {
-      filteredAvailableData = filteredAvailableData.filter((staff) => staff.status === shift.status);
-    }
-
-    setFilteredAvailableStaffData(filteredAvailableData);
-  };
-
-  const filterStaffLocation = () => {
-    let filteredAssignedData = assignedStaffData;
-
-    if (shift.location) {
-      filteredAssignedData = filteredAssignedData.filter((staff) => staff.location === shift.location);
-    }
-
-    setFilteredAssignedStaffData(filteredAssignedData);
-  };
+  const handleClose = () => {
+    setOpen(false)
+    setLeave({date: null, shift: "", reason: ""})
+  }
 
   useEffect(() => {
-    filterStaffAvailability();
-  }, [shift.status]);
-
-  useEffect(() => {
-    filterStaffLocation();
-  }, [shift.location]);
-
-  useEffect(() => {
-    fetchAvailableStaff()
-  }, []);
-
-  useEffect(() => {    
-    if(shift.date && shift.shift){
-      fetchAssignedStaff()
-      fetchAvailableStaff()
-    }
-  }, [shift.date, shift.shift]);
+    fetchStaffShifts()
+  }, [])
 
   return (
     <>
@@ -257,12 +181,82 @@ const StaffShiftPage = () => {
           </Card>
         </div>
 
-        <Box sx={{ mr: { xs: 0, md: 2 } }}>
-          
+        <Box sx={{ mr: { xs: 0, md: 2 }, textAlign: 'right' }}>
+          <Button variant="contained" sx={{borderRadius: '50px', marginBottom: '5px'}} onClick={() => setOpen(true)}>Apply Leave &nbsp; <ExitToApp /></Button>
+          <MyCalendar myEventsList={events} />
         </Box>
         
       </div>
-
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth
+      >
+        <DialogTitle>
+          Apply Leave
+        </DialogTitle>
+        <DialogContent>
+          <Row>
+            <Col xs={12} md={6}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker 
+                  sx={{width:"100%", mt: 1}}
+                  label="Select Date"
+                  value={leave.date}
+                  onChange={handleDateChange}
+                  renderInput={(params) => (
+                    <Box sx={{ mb: 2 }}>
+                      <params.TextField fullWidth />
+                    </Box>
+                  )}
+                  />
+              </LocalizationProvider>
+            </Col>
+            <Col xs={12} md={6}>
+              <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
+                <InputLabel id="shift-label">Shifts</InputLabel>
+                <Select
+                  labelId="shift-label"
+                  id="shift-select"
+                  value={leave.shift}
+                  label="Shifts"
+                  onChange={handleShiftChange}
+                >
+                  {/* <MenuItem value={'all'}>Full Day</MenuItem> */}
+                  {Shifts.map((shiftItem) => (
+                   shiftItem.value && <MenuItem value={shiftItem.value}>{shiftItem.label}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+            <TextField
+              label="Reason"
+              multiline
+              rows={4}
+              fullWidth
+              ref={reasonRef}
+              value={leave.reason}
+              onChange={handleReasonChange}
+            />
+            </Col>
+          </Row>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={applyLeave} autoFocus color="success">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: 10000 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };
