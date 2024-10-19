@@ -53,11 +53,9 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
         workPlace,
         gender 
     });
-
     var token = jwt.sign({ user }, process.env.JWT_SECRET, { 
         expiresIn: '1d' 
     });
-
     token = `${token.split('.')[0]}/${token.split('.')[1]}/${token.split('.')[2]}`;
 
     if(token){
@@ -68,7 +66,7 @@ const sendRegisterMail = asyncHandler(async (req, res) => {
                             Best wishes,<br>
                             The WellHealth Hospitals</p>`
         sendMail(email,message,"Activate Your Account");
-        res.status(201).json({ message: "Email Verification Sent! ", user, email, message});
+        res.status(201).json({ message: "Email Verification Sent!"});
     }
     else{
         res.status(400);
