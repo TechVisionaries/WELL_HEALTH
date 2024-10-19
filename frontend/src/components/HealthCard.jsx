@@ -22,6 +22,9 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const style = {
   position: "absolute",
@@ -104,12 +107,7 @@ function HealthCard() {
   useEffect(() => {
     if (health_card_state?.success) {
       setIsSubmit(false);
-
-      Swal.fire({
-        title: "Success",
-        text: "Health card created",
-        icon: "success",
-      });
+      toast.success("Health card created successfully!"); // Updated toast message
       setTimeout(() => {
         navigate("/health-card");
       }, 2000);
@@ -142,6 +140,7 @@ function HealthCard() {
       };
 
       await create_health_card?.(newHealthCard);
+      toast.success("Health card created successfully!");
     } catch (error) {
       console.error(error);
       Swal.fire({
@@ -154,6 +153,7 @@ function HealthCard() {
 
   return (
     <div>
+      <ToastContainer />
       <Modal
         open={open}
         onClose={handleClose}
