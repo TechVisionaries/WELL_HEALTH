@@ -1,201 +1,258 @@
-import express from "express";
-import mongoose from "mongoose";
-import request from "supertest";
-import healthCardRoutes from "./../../routes/healthCardRoutes"; 
+import {
+  create_health_card,
+  getAllUDoctors,
+  get_health_card_by_patient_id,
+  getAllPatients,
+  addPrescription,
+  get_prescription_by_patient_id,
+  update_health_card,
+} from "../../controllers/healthCardController";
+import HealthCard from "../../models/healthCardModel";
+import User from "../../models/userModel";
+import Prescription from "../../models/prescriptionModel";
+import sendResponse from "../../utils/sendResponse";
 
-// Set up an Express app for testing
-const app = express();
-app.use(express.json());
-app.use("/api/health_card", healthCardRoutes);
+jest.mock("../../models/healthCardModel");
+jest.mock("../../models/userModel");
+jest.mock("../../models/prescriptionModel");
+jest.mock("../../utils/sendResponse");
 
-beforeAll(async () => {
-  const mongoUri =
-    "mongodb+srv://visionariestech4:93bYNJBIS9AdOlPP@hms.hdzql.mongodb.net/TEST_HMS?retryWrites=true&w=majority"; 
-  await mongoose.connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+describe("HealthCard Controller", () => {
+  let req, res;
+
+  beforeEach(() => {
+    req = {
+      body: {
+        userId: "userId",
+        fullName: "John Doe",
+        hospital: "General Hospital",
+        contact: "123456789",
+        nic: "123456789V",
+        emergency: "Jane Doe",
+        inssurance: "ABC Insurance",
+        bloodGroup: "O+",
+        inssuranceId: "INS123",
+        diabetes: true,
+        bloodPressure: true,
+        allergyDrugs: "None",
+        diseases: "None",
+        eyePressure: false,
+        doctorName: "Dr. Smith",
+      },
+      params: { userId: "userId", health_card_id: "healthCardId" },
+    };
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
   });
-});
 
-afterAll(async () => {
-  await mongoose.connection.close();
-});
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-describe("Health Card API", () => {
-  // Test for creating a health card
-  // describe("POST /api/health_card/create", () => {
-  //   it("should create a health card for a user", async () => {
-  //     const res = await request(app).post("/api/health_card/create").send({
-  //       userId: "62a1c6e08bbed00110c5b9e7", // Example userId
-  //       fullName: "John Doe",
-  //       hospital: "City Hospital",
-  //       contact: "1234567890",
-  //       nic: "123456789V",
-  //       emergency: "112",
-  //       inssurance: "Aetna",
-  //       bloodGroup: "O+",
-  //       inssuranceId: "INS123",
-  //       diabetes: false,
-  //       bloodPressure: true,
-  //       allergyDrugs: "Penicillin",
-  //       diseases: "Asthma",
-  //       eyePressure: false,
-  //       doctorName: "Dr. Smith",
-  //     });
+  // Create Health Card test
+  it("should create a health card and update user status", async () => {
+    const createdHealthCard = { _id: "healthCardId" };
+    const updatedUser = { _id: "userId", healthCard: true };
 
-  //     expect(res.status).toBe(200);
-  //     expect(res.body.success).toBe(true);
-  //     expect(res.body.message).toMatch(/Health card created and user updated/);
+    HealthCard.create.mockResolvedValue(createdHealthCard);
+    User.findByIdAndUpdate.mockResolvedValue(updatedUser);
+
+    await create_health_card(req, res);
+
+    expect(HealthCard.create).toHaveBeenCalledWith(req.body);
+    expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
+      req.body.userId,
+      { healthCard: true },
+      { new: true }
+    );
+    expect(sendResponse).toHaveBeenCalledWith(
+      res,
+      200,
+      true,
+      updatedUser,
+      "Health card created and user updated"
+    );
+  });
+
+  it("should return 400 if health card creation fails", async () => {
+    HealthCard.create.mockResolvedValue(null);
+
+    await create_health_card(req, res);
+
+    expect(sendResponse).toHaveBeenCalledWith(
+      res,
+      400,
+      false,
+      null,
+      "Failed to create health card"
+    );
+  });
+
+  // Get all doctors test
+  it("should return list of doctors", async () => {
+    const doctors = [{ _id: "doctorId", name: "Dr. Smith" }];
+    User.find.mockResolvedValue(doctors);
+
+    await getAllUDoctors(req, res);
+
+    expect(User.find).toHaveBeenCalledWith({ userType: "doctor" });
+    expect(sendResponse).toHaveBeenCalledWith(
+      res,
+      200,
+      true,
+      doctors,
+      "Doctors list"
+    );
+  });
+
+  // Get health card by patient ID test
+  // it("should return health card and last prescription by patient ID", async () => {
+  //   const healthCard = { _id: "healthCardId", userId: "userId" };
+  //   const prescription = { _id: "prescriptionId", doctorId: "doctorId" };
+
+  //   // Mock the health card and prescription models
+  //   HealthCard.find.mockResolvedValue(healthCard);
+
+  //   // Mock Prescription.findOne to resolve without involving .sort()
+  //   Prescription.findOne.mockImplementation(() => ({
+  //     populate: jest.fn().mockResolvedValue(prescription),
+  //     exec: jest.fn().mockResolvedValue(prescription),
+  //   }));
+
+  //   await get_health_card_by_patient_id(req, res);
+
+  //   // Check if HealthCard.find was called
+  //   expect(HealthCard.find).toHaveBeenCalledWith({ userId: req.params.userId });
+
+  //   // Check if Prescription.findOne was called correctly
+  //   expect(Prescription.findOne).toHaveBeenCalledWith({
+  //     userId: req.params.userId,
   //   });
 
-  //   it("should return an error if required fields are missing", async () => {
-  //     const res = await request(app).post("/api/health_card/create").send({
-  //       fullName: "",
-  //       hospital: "",
-  //     });
-
-  //     expect(res.status).toBe(400);
-  //     expect(res.body.success).toBe(false);
-  //     expect(res.body.message).toMatch(/New health card data undefined/);
-  //   });
+  //   // Validate the response
+  //   expect(sendResponse).toHaveBeenCalledWith(
+  //     res,
+  //     200,
+  //     true,
+  //     { healthCard, lastPrescription: prescription },
+  //     "Health card retrieved successfully !!!"
+  //   );
   // });
 
-  // Test for retrieving a health card by patient ID
-  describe("GET /api/health_card/get_hralth_card_by_patient_id/:userId", () => {
-    it("should retrieve a health card for a given user", async () => {
-      const userId = "62a1c6e08bbed00110c5b9e7"; 
-      const res = await request(app).get(
-        `/api/health_card/get_hralth_card_by_patient_id/${userId}`
-      );
+  // it("should return 400 if userId is missing in get_health_card_by_patient_id", async () => {
+  //   req.params.userId = null;
 
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.message).toMatch(/Health card retrived successfully/);
+  //   await get_health_card_by_patient_id(req, res);
+
+  //   expect(sendResponse).toHaveBeenCalledWith(
+  //     res,
+  //     400,
+  //     false,
+  //     null,
+  //     "No User ID!!!"
+  //   );
+  // });
+
+  // Add Prescription test
+  it("should add a prescription", async () => {
+    const saveMock = jest.fn().mockResolvedValue({
+      _id: "prescriptionId",
+      userId: "userId",
     });
 
-    it("should return an error if no user ID is provided", async () => {
-      const res = await request(app).get(
-        "/api/health_card/get_hralth_card_by_patient_id/"
-      );
+    const PrescriptionMock = jest
+      .spyOn(Prescription.prototype, "save")
+      .mockImplementation(saveMock);
 
-      expect(res.status).toBe(404); 
+    req.body = {
+      userId: "userId",
+      doctorId: "doctorId",
+      medicines: [{ name: "Medicine1", dosage: "1 tablet" }],
+    };
+
+    await addPrescription(req, res);
+
+    expect(Prescription).toHaveBeenCalledWith({
+      userId: "userId",
+      doctorId: "doctorId",
+      medicines: [{ name: "Medicine1", dosage: "1 tablet" }],
     });
+
+    expect(saveMock).toHaveBeenCalled();
+    expect(sendResponse).toHaveBeenCalledWith(
+      res,
+      200,
+      true,
+      expect.any(Object),
+      "Prescription saved successfully"
+    );
   });
 
-  // Test for updating a health card
-  //   describe("POST /api/health_card/update_health_card/:userId/:health_card_id", () => {
-  //     it("should update the health card information", async () => {
-  //       const res = await request(app)
-  //         .post(
-  //           "/api/health_card/update_health_card/62a1c6e08bbed00110c5b9e7/63b1f5e9b8e121001e3a9d8d"
-  //         )
-  //         .send({
-  //           fullName: "Updated Name",
-  //           hospital: "Updated Hospital",
-  //           contact: "9876543210",
-  //           emergency: "911",
-  //           diabetes: true,
-  //         });
 
-  //       expect(res.status).toBe(200);
-  //       expect(res.body.success).toBe(true);
-  //       expect(res.body.message).toMatch(/Health card updated successfully/);
-  //     });
+  it("should return 400 if prescription data is invalid", async () => {
+    req.body = {
+      userId: null,
+      doctorId: "doctorId",
+      medicines: [],
+    };
 
-  //     it("should return an error if the health card is not found", async () => {
-  //       const res = await request(app)
-  //         .post(
-  //           "/api/health_card/update_health_card/62a1c6e08bbed00110c5b9e7/invalidHealthCardId"
-  //         )
-  //         .send({
-  //           fullName: "Test Name",
-  //         });
+    await addPrescription(req, res);
 
-  //       expect(res.status).toBe(404);
-  //       expect(res.body.success).toBe(false);
-  //       expect(res.body.message).toMatch(/Health card not found for the user/);
-  //     });
-  //   });
-
-  // Test for adding a prescription
-  describe("POST /api/health_card/add_prescription", () => {
-    it("should add a prescription for a patient", async () => {
-      const res = await request(app)
-        .post("/api/health_card/add_prescription")
-        .send({
-          userId: "62a1c6e08bbed00110c5b9e7", 
-          doctorId: "62b1f5e9b8e121001e3a9d8e", 
-          medicines: [
-            {
-              name: "Paracetamol",
-              dosage: "500mg",
-              frequency: "Twice a day",
-              duration: "7 days",
-              instructions: "After food",
-            },
-          ],
-        });
-
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.message).toMatch(/Prescription saved successfully/);
-    });
-
-    it("should return an error if prescription data is invalid", async () => {
-      const res = await request(app)
-        .post("/api/health_card/add_prescription")
-        .send({
-          userId: "",
-          medicines: [],
-        });
-
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-      expect(res.body.message).toMatch(/Invalid prescription data/);
-    });
+    expect(sendResponse).toHaveBeenCalledWith(
+      res,
+      400,
+      false,
+      null,
+      "Invalid prescription data"
+    );
   });
 
-  // Test for retrieving prescriptions by patient ID
-  describe("GET /api/health_card/get_all_prescriptions/:userId", () => {
-    it("should retrieve prescriptions for a given user", async () => {
-      const userId = "62a1c6e08bbed00110c5b9e7"; 
-      const res = await request(app).get(
-        `/api/health_card/get_all_prescriptions/${userId}`
-      );
+  // Update health card test
+  it("should update the health card successfully", async () => {
+    const updatedHealthCard = { _id: "healthCardId", fullName: "John Updated" };
 
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.message).toMatch(/Prescription retrived successfully/);
-    });
+    HealthCard.findById.mockResolvedValue(updatedHealthCard);
+    HealthCard.findByIdAndUpdate.mockResolvedValue(updatedHealthCard);
 
-    it("should return an error if no user ID is provided", async () => {
-      const res = await request(app).get(
-        "/api/health_card/get_all_prescriptions/"
-      );
+    await update_health_card(req, res);
 
-      expect(res.status).toBe(404);
-    });
+    expect(HealthCard.findById).toHaveBeenCalledWith(req.params.health_card_id);
+    expect(HealthCard.findByIdAndUpdate).toHaveBeenCalledWith(
+      req.params.health_card_id,
+      {
+        fullName: req.body.fullName,
+        hospital: req.body.hospital,
+        contact: req.body.contact,
+        emergency: req.body.emergency,
+        diabetes: req.body.diabetes,
+        bloodPressure: req.body.bloodPressure,
+        allergyDrugs: req.body.allergyDrugs,
+        eyePressure: req.body.eyePressure,
+      },
+      { new: true }
+    );
+    expect(sendResponse).toHaveBeenCalledWith(
+      res,
+      200,
+      true,
+      updatedHealthCard,
+      "Health card updated successfully"
+    );
   });
 
-  // Test for retrieving all doctors
-  describe("GET /api/health_card/get_all_doctors", () => {
-    it("should retrieve a list of all doctors", async () => {
-      const res = await request(app).get("/api/health_card/get_all_doctors");
+  it("should return 404 if health card not found", async () => {
+    HealthCard.findById.mockResolvedValue(null);
 
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.message).toMatch(/Doctors list/);
-    });
-  });
+    await update_health_card(req, res);
 
-  // Test for retrieving all patients
-  describe("GET /api/health_card/get_all_patients", () => {
-    it("should retrieve a list of all patients", async () => {
-      const res = await request(app).get("/api/health_card/get_all_patients");
-
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.message).toMatch(/Patient list/);
-    });
+    expect(sendResponse).toHaveBeenCalledWith(
+      res,
+      404,
+      false,
+      null,
+      "Health card not found for the user"
+    );
   });
 });

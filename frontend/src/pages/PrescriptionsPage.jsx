@@ -41,10 +41,9 @@ const renderCard = (prescription) => {
         container
         spacing={2}
         sx={{
-          fontWeight: "bold",
-          borderBottom: "2px solid #ccc",
-          pb: 1,
-          mb: 2,
+          color: "black", // Black text color
+          fontSize: 16, // Bigger font size
+          fontWeight: "bold", // Bold text
         }}
       >
         <Grid item xs={3}>
@@ -222,14 +221,10 @@ function PrescriptionsPage() {
           alignItems: "center",
         }}
       >
-        <div style={{width:"80%"}}>
-
-        <Card
-          className={`mt-3 py-3 text-center`}
-          style={cardHeadingStyle}
-        >
-          <h2>Patient Medical Records</h2>
-        </Card>
+        <div style={{ width: "80%" }}>
+          <Card className={`mt-3 py-3 text-center`} style={cardHeadingStyle}>
+            <h2>Patient Medical Records</h2>
+          </Card>
         </div>
 
         <div className={dashboardStyles.mainDiv}>
@@ -244,6 +239,11 @@ function PrescriptionsPage() {
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
+                    sx: {
+                      fontWeight: "bold", 
+                      color: "black", 
+                      fontSize: "20px", 
+                    },
                   }}
                   sx={{
                     minWidth: "50vw",
