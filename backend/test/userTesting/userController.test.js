@@ -504,69 +504,153 @@ describe('User Management API', () => {
     });
   });
 
-  // Additional tests for OTP generation, verification, etc.
-  // ...
-});
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  describe('POST /resetPassword', () => {
+      const userMock = {
+          _id: "6713e32e66faa1cb0aab8612",
+          email: 'test1@example.com',
+          password: 'Password123',
+          save: jest.fn().mockResolvedValue({ message: "Password Reset Successful!" }),
+      };
+  
+      beforeAll(() => {
+          jest.clearAllMocks();
+      });
+  
+      beforeEach(() => {
+          jest.spyOn(User, 'findOne').mockResolvedValue(userMock);
+      });
+  
+      afterEach(() => {
+          jest.resetAllMocks();
+      });
+  
+      it('should reset the password successfully when user exists', async () => {
+          const res = await request(app)
+              .post('/api/users/resetPassword')
+              .send({ email: 'test1@example.com', newPassword: 'newPassword' });
+  
+          expect(res.statusCode).toBe(201);
+          expect(res.body).toEqual({ message: "Password Reset Successful!" });
+          expect(userMock.password).toBe('newPassword'); // Check if the password is updated
+          expect(userMock.save).toHaveBeenCalled(); // Ensure the save method was called
+      });
+  
+      it('should return 400 if user does not exist', async () => {
+          User.findOne.mockResolvedValue(null); // Mock user not found
+  
+          const res = await request(app)
+              .post('/api/users/resetPassword')
+              .send({ email: 'nonexistent@example.com', newPassword: 'newPassword' });
+  
+          expect(res.statusCode).toBe(400);
+      });
+  
+      it('should throw an error if new password is not provided', async () => {
+          const res = await request(app)
+              .post('/api/users/resetPassword')
+              .send({ email: 'user@example.com' }); // No new password provided
+  
+          expect(res.statusCode).toBe(400);
+      });
+  
+      it('should reset the password if email is provided', async () => {
+          const res = await request(app)
+              .post('/api/users/resetPassword')
+              .send({ newPassword: 'newPassword' }); // No email provided
+  
+          expect(res.statusCode).toBe(201);
+      });
+  });
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-describe('POST /resetPassword', () => {
+  describe('GET /all-users', () => {
     const userMock = {
-        _id: "6713e32e66faa1cb0aab8612",
-        email: 'test1@example.com',
-        password: 'Password123',
-        save: jest.fn().mockResolvedValue({ message: "Password Reset Successful!" }),
-    };
+        _id: 'user-id',
+        email: 'user@example.com',
+        image: 'http://example.com/image.png',
+        firstName: 'John',
+        lastName: 'Doe',
+        accType: 'normal',
+        password: 'Password123', // Ensure passwords are not returned
+        userType: 'patient',
+        phoneNo: '1234567890',
+        gender: 'male',
+        specialization: 'Cardiology',
+        healthCard: true,
+        nic: 'NIC12345',
+        department: 'Cardiology',
+        occupation: 'Doctor',
+        birthday: '1990-01-01',
+        age: 34,
+        address: '123 Main St',
+        workPlace: 'General Hospital',
+        martialState: 'Single',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    
+      beforeEach(() => {
+        jest.spyOn(User, 'find').mockResolvedValue(userMock);
+        // Mock the protect middleware to simulate authentication
+        protect.mockImplementation((req, res, next) => {
+          req.user = userMock; // Simulate a user being set on the request
+          next();
+        });
+      });
+    
+      afterEach(() => {
+        jest.restoreAllMocks(); // Restore all mocks after each test
+      });
 
-    beforeAll(() => {
-        jest.clearAllMocks();
-    });
+      it('should return user details', async () => {
+        const res = await request(app).get('/api/users/profile').set('Cookie', 'jwt=some-token');
+  
+        expect(res.statusCode).toBe(200);
+      });
 
-    beforeEach(() => {
-        jest.spyOn(User, 'findOne').mockResolvedValue(userMock);
-    });
+      it('should return 500 if there is an error retrieving users', async () => {
+        User.find.mockRejectedValue(new Error('Database error')); // Simulate an error in User.find
 
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
-
-    it('should reset the password successfully when user exists', async () => {
         const res = await request(app)
-            .post('/api/users/resetPassword')
-            .send({ email: 'test1@example.com', newPassword: 'newPassword' });
+            .get('/api/users/all-users')
+            .set('Cookie', `jwt=some-token`); // Include a valid token in cookies
 
-        expect(res.statusCode).toBe(201);
-        expect(res.body).toEqual({ message: "Password Reset Successful!" });
-        expect(userMock.password).toBe('newPassword'); // Check if the password is updated
-        expect(userMock.save).toHaveBeenCalled(); // Ensure the save method was called
-    });
+        expect(res.statusCode).toBe(500);
+        expect(res.body).toEqual({ status: "Error with getting data" });
+        });
 
-    it('should return 400 if user does not exist', async () => {
-        User.findOne.mockResolvedValue(null); // Mock user not found
+      it('should return 401 if no token is provided', async () => {
+        protect.mockImplementation((req, res) => {
+          res.status(401).json({ message: 'Not Authorized, no token' });
+        });
+  
+        const res = await request(app).get('/api/users/all-users');
+  
+        expect(res.statusCode).toBe(401);
+        expect(res.body.message).toBe('Not Authorized, no token');
+      });
+  
+      it('should return 401 if token is invalid', async () => {
+        protect.mockImplementation((req, res) => {
+          res.status(401).json({ message: 'Not Authorized, invalid token' });
+        });
+  
+        const res = await request(app).get('/api/users/all-users').set('Cookie', 'jwt=invalid-token');
+  
+        expect(res.statusCode).toBe(401);
+        expect(res.body.message).toBe('Not Authorized, invalid token');
+      });
+   });
 
-        const res = await request(app)
-            .post('/api/users/resetPassword')
-            .send({ email: 'nonexistent@example.com', newPassword: 'newPassword' });
+   
 
-        expect(res.statusCode).toBe(400);
-    });
-
-    it('should throw an error if new password is not provided', async () => {
-        const res = await request(app)
-            .post('/api/users/resetPassword')
-            .send({ email: 'user@example.com' }); // No new password provided
-
-        expect(res.statusCode).toBe(400);
-    });
-
-    it('should reset the password if email is provided', async () => {
-        const res = await request(app)
-            .post('/api/users/resetPassword')
-            .send({ newPassword: 'newPassword' }); // No email provided
-
-        expect(res.statusCode).toBe(201);
-    });
 });
