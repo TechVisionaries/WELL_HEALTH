@@ -7,11 +7,14 @@ import {
   get_prescription_by_patient_id,
   update_health_card,
 } from "../../controllers/healthCardController";
-import HealthCard from "../../models/healthCardModel";
-import User from "../../models/userModel";
-import Prescription from "../../models/prescriptionModel";
+import ModelFactory from "../../models/modelFactory";
+
+import HealthCard from "../../models/healthCardModel.js";
+import User from "../../models/userModel.js";
+import Prescription from "../../models/prescriptionModel.js";
 import sendResponse from "../../utils/sendResponse";
 
+jest.mock("../../models/modelFactory");
 jest.mock("../../models/healthCardModel");
 jest.mock("../../models/userModel");
 jest.mock("../../models/prescriptionModel");
@@ -39,7 +42,7 @@ describe("HealthCard Controller", () => {
         eyePressure: false,
         doctorName: "Dr. Smith",
       },
-      params: { userId: "userId", health_card_id: "healthCardId" },
+      params: {},
     };
     res = {
       status: jest.fn().mockReturnThis(),
@@ -53,15 +56,50 @@ describe("HealthCard Controller", () => {
 
   // Create Health Card test
   it("should create a health card and update user status", async () => {
-    const createdHealthCard = { _id: "healthCardId" };
+    const createdHealthCard = {
+      _id: "healthCardId",
+      userId: "userId",
+      fullName: "John Doe",
+      hospital: "General Hospital",
+      contact: "123456789",
+      nic: "123456789V",
+      emergency: "Jane Doe",
+      inssurance: "ABC Insurance",
+      bloodGroup: "O+",
+      inssuranceId: "INS123",
+      diabetes: true,
+      bloodPressure: true,
+      allergyDrugs: "None",
+      diseases: "None",
+      eyePressure: false,
+      doctorName: "Dr. Smith",
+    };
     const updatedUser = { _id: "userId", healthCard: true };
 
-    HealthCard.create.mockResolvedValue(createdHealthCard);
+    ModelFactory.create.mockReturnValue({
+      save: jest.fn().mockResolvedValue(createdHealthCard),
+    });
     User.findByIdAndUpdate.mockResolvedValue(updatedUser);
 
     await create_health_card(req, res);
 
-    expect(HealthCard.create).toHaveBeenCalledWith(req.body);
+    expect(ModelFactory.create).toHaveBeenCalledWith("HealthCard", {
+      userId: "userId",
+      fullName: "John Doe",
+      hospital: "General Hospital",
+      contact: "123456789",
+      nic: "123456789V",
+      emergency: "Jane Doe",
+      inssurance: "ABC Insurance",
+      bloodGroup: "O+",
+      inssuranceId: "INS123",
+      diabetes: true,
+      bloodPressure: true,
+      allergyDrugs: "None",
+      diseases: "None",
+      eyePressure: false,
+      doctorName: "Dr. Smith",
+    });
     expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
       req.body.userId,
       { healthCard: true },
@@ -77,7 +115,9 @@ describe("HealthCard Controller", () => {
   });
 
   it("should return 400 if health card creation fails", async () => {
-    HealthCard.create.mockResolvedValue(null);
+    ModelFactory.create.mockReturnValue({
+      save: jest.fn().mockResolvedValue(null),
+    });
 
     await create_health_card(req, res);
 
@@ -108,63 +148,63 @@ describe("HealthCard Controller", () => {
   });
 
   // Get health card by patient ID test
-  // it("should return health card and last prescription by patient ID", async () => {
-  //   const healthCard = { _id: "healthCardId", userId: "userId" };
-  //   const prescription = { _id: "prescriptionId", doctorId: "doctorId" };
+  it("should return health card and last prescription by patient ID", async () => {
+    req.params.userId = "userId"; 
 
-  //   // Mock the health card and prescription models
-  //   HealthCard.find.mockResolvedValue(healthCard);
+    const healthCard = [{ _id: "healthCardId", userId: "userId" }];
+    const prescription = { _id: "prescriptionId", doctorId: "doctorId" };
 
-  //   // Mock Prescription.findOne to resolve without involving .sort()
-  //   Prescription.findOne.mockImplementation(() => ({
-  //     populate: jest.fn().mockResolvedValue(prescription),
-  //     exec: jest.fn().mockResolvedValue(prescription),
-  //   }));
+    HealthCard.find.mockResolvedValue(healthCard);
 
-  //   await get_health_card_by_patient_id(req, res);
+    const findOneMock = {
+      sort: jest.fn().mockReturnThis(),
+      populate: jest.fn().mockReturnThis(),
+      exec: jest.fn().mockResolvedValue(prescription),
+    };
+    Prescription.findOne.mockReturnValue(findOneMock);
 
-  //   // Check if HealthCard.find was called
-  //   expect(HealthCard.find).toHaveBeenCalledWith({ userId: req.params.userId });
+    await get_health_card_by_patient_id(req, res);
 
-  //   // Check if Prescription.findOne was called correctly
-  //   expect(Prescription.findOne).toHaveBeenCalledWith({
-  //     userId: req.params.userId,
-  //   });
+    expect(HealthCard.find).toHaveBeenCalledWith({ userId: req.params.userId });
+    expect(Prescription.findOne).toHaveBeenCalledWith({
+      userId: req.params.userId,
+    });
+    expect(findOneMock.sort).toHaveBeenCalledWith({ createdAt: -1 });
+    expect(findOneMock.populate).toHaveBeenCalledWith("doctorId");
+    expect(sendResponse).toHaveBeenCalledWith(
+      res,
+      200,
+      true,
+      { healthCard, lastPrescription: prescription },
+      "Health card retrived successfully !!!"
+    );
+  });
 
-  //   // Validate the response
-  //   expect(sendResponse).toHaveBeenCalledWith(
-  //     res,
-  //     200,
-  //     true,
-  //     { healthCard, lastPrescription: prescription },
-  //     "Health card retrieved successfully !!!"
-  //   );
-  // });
+  it("should return 400 if userId is missing in get_health_card_by_patient_id", async () => {
+    req.params.userId = null;
 
-  // it("should return 400 if userId is missing in get_health_card_by_patient_id", async () => {
-  //   req.params.userId = null;
+    await get_health_card_by_patient_id(req, res);
 
-  //   await get_health_card_by_patient_id(req, res);
-
-  //   expect(sendResponse).toHaveBeenCalledWith(
-  //     res,
-  //     400,
-  //     false,
-  //     null,
-  //     "No User ID!!!"
-  //   );
-  // });
+    expect(sendResponse).toHaveBeenCalledWith(
+      res,
+      400,
+      false,
+      null,
+      "No User ID!!!"
+    );
+  });
 
   // Add Prescription test
   it("should add a prescription", async () => {
-    const saveMock = jest.fn().mockResolvedValue({
-      _id: "prescriptionId",
+    const newPrescription = {
       userId: "userId",
-    });
+      doctorId: "doctorId",
+      medicines: [{ name: "Medicine1", dosage: "1 tablet" }],
+    };
 
-    const PrescriptionMock = jest
-      .spyOn(Prescription.prototype, "save")
-      .mockImplementation(saveMock);
+    ModelFactory.create.mockReturnValue({
+      save: jest.fn().mockResolvedValue(newPrescription),
+    });
 
     req.body = {
       userId: "userId",
@@ -174,22 +214,20 @@ describe("HealthCard Controller", () => {
 
     await addPrescription(req, res);
 
-    expect(Prescription).toHaveBeenCalledWith({
+    expect(ModelFactory.create).toHaveBeenCalledWith("Prescription", {
       userId: "userId",
       doctorId: "doctorId",
       medicines: [{ name: "Medicine1", dosage: "1 tablet" }],
     });
 
-    expect(saveMock).toHaveBeenCalled();
     expect(sendResponse).toHaveBeenCalledWith(
       res,
       200,
       true,
-      expect.any(Object),
+      newPrescription,
       "Prescription saved successfully"
     );
   });
-
 
   it("should return 400 if prescription data is invalid", async () => {
     req.body = {
@@ -211,10 +249,24 @@ describe("HealthCard Controller", () => {
 
   // Update health card test
   it("should update the health card successfully", async () => {
+    req.params.userId = "userId"; // Set userId for the request params
+    req.params.health_card_id = "healthCardId"; // Set health_card_id for the request params
+
     const updatedHealthCard = { _id: "healthCardId", fullName: "John Updated" };
 
     HealthCard.findById.mockResolvedValue(updatedHealthCard);
     HealthCard.findByIdAndUpdate.mockResolvedValue(updatedHealthCard);
+
+    req.body = {
+      fullName: "John Updated",
+      hospital: "General Hospital",
+      contact: "987654321",
+      emergency: "Jane Doe",
+      diabetes: false,
+      bloodPressure: false,
+      allergyDrugs: "None",
+      eyePressure: true,
+    };
 
     await update_health_card(req, res);
 
@@ -243,6 +295,8 @@ describe("HealthCard Controller", () => {
   });
 
   it("should return 404 if health card not found", async () => {
+    req.params.health_card_id = "healthCardId"; // Set health_card_id for the request params
+
     HealthCard.findById.mockResolvedValue(null);
 
     await update_health_card(req, res);

@@ -3,6 +3,7 @@ import sendResponse from "../utils/sendResponse.js";
 import HealthCard from "../models/healthCardModel.js";
 import User from "../models/userModel.js";
 import Prescription from "../models/prescriptionModel.js";
+import ModelFactory from "../models/modelFactory.js";
 
 // @desc    Create Health Card
 // route    POST /api/health_card/add
@@ -26,7 +27,7 @@ const create_health_card = asyncHandler(async (req, res) => {
     doctorName,
   } = req.body;
 
-  const newHealthCard = {
+  const newHealthCardData = {
     userId,
     fullName,
     hospital,
@@ -44,7 +45,10 @@ const create_health_card = asyncHandler(async (req, res) => {
     doctorName,
   };
 
-  if (!newHealthCard) {
+  // Create HealthCard instance using the Factory
+  const healthCard = ModelFactory.create("HealthCard", newHealthCardData);
+
+  if (!healthCard) {
     return sendResponse(
       res,
       400,
@@ -54,16 +58,16 @@ const create_health_card = asyncHandler(async (req, res) => {
     );
   }
 
-  const healthCard = await HealthCard.create(newHealthCard);
+  const savedHealthCard = await healthCard.save();
 
-  if (!healthCard) {
+  if (!savedHealthCard) {
     return sendResponse(res, 400, false, null, "Failed to create health card");
   }
 
   const updatedUser = await User.findByIdAndUpdate(
     userId,
     { healthCard: true },
-    { new: true } // Return the updated user object
+    { new: true } 
   );
 
   if (!updatedUser) {
@@ -139,18 +143,25 @@ const getAllPatients = asyncHandler(async (req, res) => {
     });
 });
 
+
 const addPrescription = asyncHandler(async (req, res) => {
-  const { userId, doctorId, medicines } = req.body; // Expecting the necessary data from the request body
+  const { userId, doctorId, medicines } = req.body; 
 
   if (!userId || !medicines || medicines.length === 0) {
     sendResponse(res, 400, false, null, "Invalid prescription data");
   }
 
-  const newPrescription = new Prescription({
+  const newPrescriptionData = {
     userId,
     medicines,
     doctorId,
-  });
+  };
+
+  // Create Prescription instance using the Factory
+  const newPrescription = ModelFactory.create(
+    "Prescription",
+    newPrescriptionData
+  );
 
   try {
     const savedPrescription = await newPrescription.save();
@@ -169,6 +180,9 @@ const addPrescription = asyncHandler(async (req, res) => {
     sendResponse(res, 500, false, null, "Internal Server Error");
   }
 });
+
+
+
 
 const get_prescription_by_patient_id = asyncHandler(async (req, res) => {
   const { userId } = req.params;
