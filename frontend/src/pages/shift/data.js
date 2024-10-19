@@ -1,8 +1,8 @@
 const Shifts = [
     {value: "", label: "All"},
-    {value: "6.00 am - 3.00 pm", label: "Morning Shift - 6.00 am - 3.00 pm"},
-    {value: "3.00 pm - 10.00 pm", label: "Afternoon Shift - 3.00 pm - 10.00 pm"},
-    {value: "10.00 pm - 6.00 am", label: "Night Shift - 10.00 pm - 6.00 am"}
+    {value: "6.00 am - 3.00 pm", label: "Morning Shift - 6.00 am - 3.00 pm", displayName: "Morning Shift"},
+    {value: "3.00 pm - 10.00 pm", label: "Afternoon Shift - 3.00 pm - 10.00 pm", displayName: "Afternoon Shift"},
+    {value: "10.00 pm - 6.00 am", label: "Night Shift - 10.00 pm - 6.00 am", displayName: "Night Shift"}
 ]
 
 const Locations = [
