@@ -156,4 +156,26 @@ describe("Health Card API", () => {
       expect(res.body.message).toMatch(/Invalid prescription data/);
     });
   });
+
+  // Test for retrieving prescriptions by patient ID
+  describe("GET /api/health_card/get_all_prescriptions/:userId", () => {
+    it("should retrieve prescriptions for a given user", async () => {
+      const userId = "62a1c6e08bbed00110c5b9e7"; // Example userId
+      const res = await request(app).get(
+        `/api/health_card/get_all_prescriptions/${userId}`
+      );
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toMatch(/Prescription retrived successfully/);
+    });
+
+    it("should return an error if no user ID is provided", async () => {
+      const res = await request(app).get(
+        "/api/health_card/get_all_prescriptions/"
+      );
+
+      expect(res.status).toBe(404); // Expecting 404 as no userId is passed
+    });
+  });
 });
