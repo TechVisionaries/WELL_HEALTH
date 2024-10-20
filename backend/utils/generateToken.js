@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 
 class JWTTokenGenerator {
+
+    //singleton pattern
     constructor() {
         if (JWTTokenGenerator.instance) {
             return JWTTokenGenerator.instance;
