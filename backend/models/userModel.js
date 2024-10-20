@@ -74,6 +74,7 @@ const userSchema = mongoose.Schema({
     timestamps: true
 });
 
+//observer pattern + template pattern
 userSchema.pre('save', async function (next) {
     if(!this.isModified('password')){
         next();
@@ -83,10 +84,13 @@ userSchema.pre('save', async function (next) {
         next();
     }
 
+    //Strategy pattern  
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 });
 
+
+//template patter
 userSchema.methods.matchPasswords = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 }
