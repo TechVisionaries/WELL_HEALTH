@@ -365,7 +365,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
         createdAt: req.user.createdAt,
         updatedAt: req.user.updatedAt
     };
-    console.log(user);
     res.status(200).json(user);
 });
 
@@ -446,10 +445,15 @@ const resetPassword = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email: email });
 
     if(user){
-        user.password = newPassword;
-        const updatedUser = await user.save();
+        if(newPassword){
+            user.password = newPassword;
+            const updatedUser = await user.save();
 
-        res.status(201).json({ message: "Password Reset Successful!"});
+            res.status(201).json({ message: "Password Reset Successful!"});
+        }else{
+            res.status(400);
+            throw new Error('Opps...Something went wrong!');
+        }  
     }
     else{
         res.status(400);
